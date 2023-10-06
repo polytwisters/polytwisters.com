@@ -1,0 +1,116 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polytwisters: what are they?</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
+  </head>
+  <body>
+    <div class="grid-container">
+      <div class="grid-x grid-padding-x">
+        <div class="large-12 cell">
+          <h1>Polytwisters: what are they?</h1>
+        </div>
+      </div>
+
+      <div class="grid-x grid-padding-x">
+        <div class="large-12 cell">
+          <p>Polytwisters are a class of strange curved shapes with four spatial dimensions discovered by amateur mathematician Jonathan Bowers and first described in a Web page self-published in 2007. Polytwisters are the result of combining Hopf fibration with polyhedra. As 4D objects can't be completely perceived in our world, the visuals you see are actually 3D cross sections of polytwisters, just as every 3D object can be sliced by a plane to produce a 2D figure. The fourth dimension can be mapped to time to produce a smooth animation.</p>
+
+          <p>While polytwisters are arguably naturally mathematically occurring objects, their actual definition is fairly involved, and some of their properties are currently unclear or conjectural. For the benefit of those wishing to dig in, I've written up a brief explanation for lay-people, and a more detailed one for the mathematically inclined. None of this is necessary if you just want to look at twisty shapes.</p>
+
+          <h2>Lay explanation</h2>
+
+          <p>The 4D analogue of the sphere is called the 3-sphere (it's embedded in 4D space, but it's so called because it is really a three-dimensional manifold). Like the ordinary sphere, you can draw a great circle on the 3-sphere that has the maximum possible radius and is centered on the origin, separating the sphere into two hemispheres. If the Earth were perfectly spherical, the Equator would be an example of a great circle.</p>
+
+          <p>While every two distinct great circles on the sphere must intersect at exactly two points, this is not necessarily true on the 3-sphere. Counterintuitively, there are pairs of great circles on the 3-sphere that don't intersect with each other at all. Furthermore, it is possible to partition the 3-sphere into an infinite set of mutually nonintersecting great circles that completely cover the 3-sphere.</p>
+
+          <p>An even stranger property is that there is a continuous one-to-one mapping from such a set of great circles to points on the ordinary sphere. This mapping is known as the <em>Hopf fibration</em>, and it constitutes a famous example of a nontrivial fiber bundle. Hopf fibration is often studied by mathematicians for its topological properties, but its geometrical properties are interesting too, as the mapping is highly symmetrical and can be expressed concisely in terms of quaternions (4D analogue of the complex numbers). There are many visual demonstrations online of the Hopf fibration that employ a stereographic projection of the 3-sphere.</p>
+
+          <p>Jonathan Bowers, the discoverer of polytwisters, describes them as the "lovechild" of Hopf fibration and polyhedra. If you have a polyhedron inscribed in a sphere, you can use the inverse of the Hopf fibration to map the points on a sphere to a set of Hopf fibers. To turn these fibers into a solid 4D shape, we can for example take the convex hull. This produces something called a "soft polytwister." An operation analogous to the dual of a polytope converts soft polytwisters to the related family of "hard polytwisters."</p>
+
+          <p>Given a 4D solid shape, we can slice it using a 3-space to get a 3D cross section. By mapping the fourth dimension to time, polytwisters can be realized as smooth animations of 3D shapes. Sadly, cross sections have to be taken at a somewhat arbitrary angle and we can't really see the full symmetry that a 4D person would. Such are the torments of working with higher-dimensional geometry: there's beauty we can't fully perceive visually without some compromise.</p>
+
+          <p>Something I find amazing is that, as you watch the animation, the polytwister's cross sections appear to be rotating. This is purely due to the geometry of the shapes: neither the camera nor the polytwister are moving!</p>
+
+          <h2>Brief mathematical explanation</h2>
+
+          <p>The Hopf fibration is easiest to explain in terms of quaternions. For convenience, equate the unit quaternions with \(S^3\) using their components as Cartesian coordinates in Euclidean 4-space, and the complex unit quaternions (i.e. those with zero real part) similarly with \(S^2\). The Hopf fibration \(h : S^3 \rightarrow S^2\) is defined as \(h(q) = q\mathbf{i}q^*\). Given \(p \in S^2\), the preimage \(h^{-1}(\{p\})\) is a great circle on \(S^3\). These great circles are referred to as <em>Hopf fibers</em>. The <em>generalized Hopf fibration</em> comprises infinitely many Hopf fibrations nested in each other like an onion, simply defined as \(h_2(q) = ||q|| h(q / ||q||)\). The domain of \(h_2\) is all nonzero quaternions (equated with \(\mathbb{R}^4 \backslash \{\mathbf{0}\}\) again with Cartesian coordinates) and its range is all nonzero complex quaternions (equated with \(\mathbb{R}^3 \backslash \{\mathbf{0}\}\)). The preimage of a point in \(\mathbb{R}^3\) other than the origin is deemed a <em>generalized Hopf fiber</em>, formed by uniform scaling of a Hopf fiber.</p>
+
+          <p>A finite convex polyhedron \(P\) with a circumscribed 2-sphere may be converted into a <em>soft polytwister</em> as follows: take the vertices \(P\), then the preimage of those vertices via the Hopf fibration \(h\), then the convex hull of the resulting union of fibers in Euclidean 4-space. The resulting shape \(T\) is, barring degenerate cases, a four-dimensional solid. If the base polyhedron possesses symmetries, then the soft polytwister \(T\) mimics those symmetries, but in a nontrivial way (which admittedly I don't have a full understanding of).</p>
+
+          <p>We now define the <em>polar set</em> or <em>polar</em> \(S^\circ\) of a point set \(S \subseteq \mathbb{R}^n\). Given \(x \in \mathbb{R}^n\), define \(H(x) = \{y \in \mathbb{R}^n : x \cdot y \leq 1\}\) where \(\cdot\) denotes the dot product. The polar set is defined as \(S^\circ = \bigcap_{x \in S} H(x)\). The polar behaves somewhat like the dual of a convex polytope, which will prove important. We will not discuss its properties at length, but importantly the polar set of a circle centered on the origin in \(\mathbb{R}^4\) is an infinite 4D solid we call a <em>cycloplane</em>, which is <em>constructed from</em> the circle in question. A cycloplane is a Cartesian product of a closed disk and plane. We will also see the topological boundary of a cycloplane in 4-space, which is the Cartesian product of a circle and a plane.</p>
+
+          <p>A <em>convex hard polytwister</em> is simply the result of taking the polar set of a soft polytwister. Due to properties of the polar, a convex hard polytwister turns out to be the intersection of all the cycloplanes constructed from the fibers of the corresponding soft polytwister; hard polytwisters are akin to the "duals" of soft polytwisters. But while the polars of convex polyhedra are other convex polyhedra, soft and hard polytwisters are different objects. For those accustomed to the theory of convex polytopes, soft polytwisters are analogous to \(\mathcal{V}\)-polytopes (formed from the convex hulls of finite point sets) and hard polytwisters \(\mathcal{H}\)-polytopes (formed from the intersections of half-spaces), but in the polytwister domain these formulations do not produce the same shapes anymore.</p>
+          
+          <p>The comparison to \(\mathcal{H}\)-polytopes runs deeper. From visual evidence, it is believed that convex hard polytwisters possess an abstract polyhedral structure; the keystone of this relationship is that the boundaries of three cycloplanes, each constructed from distinct Hopf fibers, seem to intersect at a generalized Hopf fibers under certain conditions. This is best understood through its implications, which are following analogies:</p>
+          
+          <table>
+            <tr>
+              <th>Convex hard polytwister</td>
+              <th>Convex polyhedron</th>
+            </tr>
+            <tr>
+              <td>Cycloplane</td>
+              <td>Half-3-space</td>
+            </tr>
+            <tr>
+              <td>Cycloplane boundary</td>
+              <td>Plane</td>
+            </tr>
+            <tr>
+              <td>Intersection of two cycloplane boundaries</td>
+              <td>Line (as an intersection of two planes)</td>
+            </tr>
+            <tr>
+              <td>Intersection of three cycloplane boundaries = generalized Hopf fiber</td>
+              <td>Point (as an intersection of three planes)</td>
+            </tr>
+            <tr>
+              <td>Intersection of two cycloplane boundaries and two cycloplanes</td>
+              <td>Line segment (as an intersection of two planes and two half-3-spaces)</td>
+            </tr>
+            <tr>
+              <td>Intersection of one cycloplane and 3+ others</td>
+              <td>Convex polygon (as an intersection of one plane and 3+ half-3-spaces)</td>
+            </tr>
+            <tr>
+              <td>Ring (abstract element located at a generalized Hopf fiber)</td>
+              <td>Vertex (abstract element located at a point)</td>
+            </tr>
+            <tr>
+              <td>Strip (abstract element connecting two rings)</td>
+              <td>Edge (abstract element connecting two vertices)</td>
+            </tr>
+            <tr>
+              <td>Twister (abstract element connecting a cyclic list of strips)</td>
+              <td>Face (abstract element connecting a cyclic list of edges)</td>
+            </tr>
+          </table>
+
+          <p>The stated analogies are not perfect, and much of this is conjectural. These relationships seem to work out by visual inspection for known polytwisters, but their actual generality is unclear. Notice that the polytwister terms have one additional dimension in the topological sense compared to their polyhedron equivalents (points are 0D, fibers are 1D; half-3-spaces are 3D, cycloplanes are 4D; etc.).</p>
+
+          <p>In the above table, three new terms were introduced &mdash; <em>rings</em>, <em>strips</em>, and <em>twisters</em> &mdash; as analogies to vertices, edges, and faces in a polyhedron. Rings are simply generalized Hopf fibers. Strips are two-dimensional objects that look like a strip of paper twisted 360 degrees with the ends attached, bounded on each end by a generalized Hopf fiber. Twisters are three-dimensional solids, comprising a closed loop of strips that form a roughly polygonal rod that has been bent, twisted 360 degrees, and with its ends joined. Just as the combinatorial structure of convex polyhedra emerges from the intersections of half-spaces, all this emerges from the intersections of cycloplanes. Note that, despite being 4D objects, convex hard polytwisters still have rank 3 when viewed as abstract polytopes.</p>
+
+          <p>Assuming this (poorly understood) combinatorial structure is sound, we can port over terms from the study of polytopes, including incidences, flags, and symmetries. The notion of a regular (flag-transitive) convex polytope applies immediately to convex hard polytwisters, and produces the five "Platonic solid" polytwisters, but also an infinite family of <em>dyadic polytwisters</em> which are analogies of the regular hosohedra.</p>
+
+          <p>An even less understood aspect of Bowers' discoveries is that hard polytwisters and their twisters can be nonconvex and can intersect themselves. Bowers concentrated his search on symmetrical polytwisters, and found many polytwister equivalents of the Kepler-Poinsot polyhedra and the uniform polyhedra (whose polytwister equivalents must be both ring-transitive and strip-transitive). All that I can explain here is that these are all formed by arbitrary Boolean operations on cycloplanes constructed from generalized Hopf fibers; formalizing these figures is work yet to be done.</p>
+        </div>
+      </div>
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
