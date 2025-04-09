@@ -17,5 +17,5 @@ export function fromSpherical(
 }
 
 export function mod(x: number, y: number): number {
-  return (x % y + y) % y;
+  return ((x % y) + y) % y;
 }

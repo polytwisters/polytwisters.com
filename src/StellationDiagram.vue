@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed, type Ref } from "vue";
-import { Polytwister, C2 } from './polytwisters';
+import { Polytwister, C2 } from "./polytwisters";
 
 const props = defineProps<{ polytwister: Polytwister }>();
 
 interface Vec2 {
-  x: number,
-  y: number
+  x: number;
+  y: number;
 }
 
 interface Circle {
-  center: Vec2,
-  radius: number
+  center: Vec2;
+  radius: number;
 }
 
 const offsetX = 250;
@@ -36,11 +36,10 @@ const circles: Ref<Circle[]> = computed(() => {
     const radius = 1 / b;
     return {
       center: { x: center.real, y: center.imag },
-      radius
+      radius,
     };
   });
 });
-
 </script>
 
 <template>
@@ -52,9 +51,9 @@ const circles: Ref<Circle[]> = computed(() => {
       :r="circle.radius * scale"
       fill="transparent"
       stroke="rgba(255, 255, 255, 0.5)"
-      stroke-width="1" />
+      stroke-width="1"
+    />
   </svg>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -6,7 +6,7 @@ const model = defineModel<number>({ required: true });
 
 enum LoopMode {
   Loop,
-  Zigzag
+  Zigzag,
 }
 
 const playing = ref(false);
@@ -39,7 +39,7 @@ function goToZero() {
 }
 
 function wrap(value: number): number {
-  return mathUtils.mod(((value + 1) / 2), 1) * 2 - 1;
+  return mathUtils.mod((value + 1) / 2, 1) * 2 - 1;
 }
 
 function fold(value: number): number {
@@ -56,7 +56,8 @@ function fold(value: number): number {
 function tick(timestamp: number) {
   const deltaInSeconds = (timestamp - lastTime) / 1000;
   if (playing.value) {
-    let newValue = model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
+    let newValue =
+      model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
     if (loopMode.value === LoopMode.Loop) {
       newValue = wrap(newValue);
     } else {
@@ -106,18 +107,33 @@ function setLoopMode(newLoopMode: LoopMode) {
     </div>
     <div class="flex-1 flex justify-center items-center gap-2">
       <button class="square" @click="goToZero">0</button>
-      <button :class="{ square: true, material: true, active: playing }" @click="togglePlay">play_arrow</button>
+      <button
+        :class="{ square: true, material: true, active: playing }"
+        @click="togglePlay"
+      >
+        play_arrow
+      </button>
       <button class="square material" @click="pause">pause</button>
     </div>
     <div class="flex-1 flex justify-end items-center gap-2">
       <button
         @click="setLoopMode(LoopMode.Loop)"
-        :class="{ square: true, material: true, active: loopMode === LoopMode.Loop }">
+        :class="{
+          square: true,
+          material: true,
+          active: loopMode === LoopMode.Loop,
+        }"
+      >
         <div class="-scale-x-100">laps</div>
       </button>
       <button
         @click="setLoopMode(LoopMode.Zigzag)"
-        :class="{ square: true, material: true, active: loopMode === LoopMode.Zigzag }">
+        :class="{
+          square: true,
+          material: true,
+          active: loopMode === LoopMode.Zigzag,
+        }"
+      >
         <div class="rotate-45">turn_sharp_right</div>
       </button>
     </div>

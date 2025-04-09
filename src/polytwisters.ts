@@ -442,14 +442,14 @@ export class ConvexPolytwister {
 
   /**
    * Get the maximum distance of any point in this polytwister to the origin.
-   * 
+   *
    * This correctly handles non-degenerate polytwisters, and if the polytwister is exactly two logs
    * it will return the maximum fiber radius in the bounding torus. However, it assumes that the set
    * of logs is minimal and does not correctly handle situations such as 3 logs forming a
    * non-meeting triple. This is pure laziness.
    */
   radius() {
-    let rings = this.findRings(); 
+    let rings = this.findRings();
     if (rings.length > 0) {
       return Math.max(...rings.map((ring) => ring.abs()));
     }
@@ -463,12 +463,11 @@ export class ConvexPolytwister {
   }
 }
 
-
 export class Polytwister {
-  logs: C2[]
-  csg: CSG
+  logs: C2[];
+  csg: CSG;
 
-  convexComponents: ConvexPolytwister[]
+  convexComponents: ConvexPolytwister[];
 
   constructor(logs: C2[], csg: CSG) {
     this.logs = logs;
@@ -477,7 +476,9 @@ export class Polytwister {
     this.convexComponents = [];
     for (let intersection of this.csg.operands) {
       // Deliberately ignoring antilogs here.
-      let convexComponentLogs = intersection.logs.map((logIndex) => this.logs[logIndex]);
+      let convexComponentLogs = intersection.logs.map(
+        (logIndex) => this.logs[logIndex],
+      );
       let convexComponent = new ConvexPolytwister(convexComponentLogs);
       this.convexComponents.push(convexComponent);
     }
@@ -490,7 +491,7 @@ export class Polytwister {
   static fromR3(points: Vec3[], csgDef?: CSG): Polytwister {
     return new Polytwister(
       points.map((point) => C2.inverseHopfMapNested(point)),
-      csgDef || csg.convex(points.length)
+      csgDef || csg.convex(points.length),
     );
   }
 
@@ -524,13 +525,13 @@ export class Polytwister {
   }
 
   /**
-   * Uniformly scale the polytwister by a factor k. This multiples all the log points by 1 / k since 
+   * Uniformly scale the polytwister by a factor k. This multiples all the log points by 1 / k since
    * log radii have an inverse relationship to the norm of the log points.
    */
   scale(k: number): Polytwister {
     return new Polytwister(
       this.logs.map((x) => x.mulReal(1 / k)),
-      this.csg
+      this.csg,
     );
   }
 

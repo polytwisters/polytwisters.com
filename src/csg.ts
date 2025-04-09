@@ -52,12 +52,12 @@ export function convex(n: number): Union {
     tmp.push(i);
   }
   return {
-    operands: [{ logs: tmp }]
-  }
+    operands: [{ logs: tmp }],
+  };
 }
 
 function parseIntersection(code: string): number[] {
-    return code.split("*").map((x) => parseInt(x, 10));
+  return code.split("*").map((x) => parseInt(x, 10));
 }
 
 export function parse(code: string): Union {

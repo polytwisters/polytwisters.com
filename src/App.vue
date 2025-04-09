@@ -30,7 +30,7 @@ const polytwisterDef: Ref<PolytwisterDef> = computed(
   () => defs[polytwisterIndex.value],
 );
 const polytwister: Ref<Polytwister> = computed(() =>
-  Polytwister.fromDef(polytwisterDef.value).normalized()
+  Polytwister.fromDef(polytwisterDef.value).normalized(),
 );
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
@@ -69,10 +69,12 @@ const colors = [
   "#ff922b", // orange
   "#51cf66", // green
   "#cc5de8", // purple
-  "#fa5252" // red
+  "#fa5252", // red
 ];
 
-const baseColor: Ref<Color> = computed(() => new Color(colors[polytwisterIndex.value % colors.length]));
+const baseColor: Ref<Color> = computed(
+  () => new Color(colors[polytwisterIndex.value % colors.length]),
+);
 
 const shading: Ref<Shading> = ref(0);
 const showRings: Ref<boolean> = ref(false);
@@ -152,7 +154,7 @@ const uniforms = computed(() => ({
   ringDots: { value: ringDotsPadded.value },
   shading: { value: shading.value },
   showRings: { value: showRings.value },
-  baseColor: { value: baseColor.value }
+  baseColor: { value: baseColor.value },
 }));
 
 onMounted(() => {
@@ -200,7 +202,9 @@ onMounted(() => {
     let newCanvasWidth = canvasWidth;
     try {
       newCanvasWidth = parseFloat(
-        window.getComputedStyle(canvasContainer.value!).getPropertyValue("width")
+        window
+          .getComputedStyle(canvasContainer.value!)
+          .getPropertyValue("width"),
       );
     } catch (e) {
       // sloppy, sometimes canvasContainer is undefined, not sure why
@@ -246,8 +250,12 @@ const cameraDirection = camera.direction;
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
           <button class="square material" @click="camera.reset">home</button>
-          <button class="square material" @click="cameraControls.zoomIn">zoom_in</button>
-          <button class="square material" @click="cameraControls.zoomOut">zoom_out</button>
+          <button class="square material" @click="cameraControls.zoomIn">
+            zoom_in
+          </button>
+          <button class="square material" @click="cameraControls.zoomOut">
+            zoom_out
+          </button>
         </div>
         <Selector :defs="defs" v-model="polytwisterIndex" />
         <div class="flex-1"></div>
@@ -264,8 +272,13 @@ const cameraDirection = camera.direction;
           :cameraY="cameraY"
           :cameraDirection="cameraDirection"
         />
-        <div class="absolute top-0 left-0 size-full flex items-center justify-center" v-if="loading">
-          <div class="material-symbols-rounded animate-spin">progress_activity</div>
+        <div
+          class="absolute top-0 left-0 size-full flex items-center justify-center"
+          v-if="loading"
+        >
+          <div class="material-symbols-rounded animate-spin">
+            progress_activity
+          </div>
         </div>
       </div>
 
@@ -286,34 +299,34 @@ body {
   background-color: black;
 }
 
-input[type=range] {
+input[type="range"] {
   -webkit-appearance: none;
   background: transparent;
 }
 
-input[type=range]::-moz-range-track {
+input[type="range"]::-moz-range-track {
   @apply bg-primary h-2 rounded-full;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
   @apply bg-primary h-2 rounded-full;
 }
 
-input[type=range]::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
   @apply bg-gray-200 size-4 rounded-full border-none cursor-pointer;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   @apply bg-gray-200 size-4 rounded-full border-none cursor-pointer -mt-1;
   -webkit-appearance: none;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

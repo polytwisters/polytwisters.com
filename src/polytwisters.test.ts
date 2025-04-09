@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { C2, Polytwister, getTorusMaxRadius } from "./polytwisters";
-import { Vec3, } from "ogl";
+import { Vec3 } from "ogl";
 
 test("pipe intersection", () => {
   let pipe1 = C2.fromR4(0, 0.3, 1, 0.3);
@@ -56,23 +56,25 @@ test("pipe intersection + ring cross section", () => {
 });
 
 test("max radius of Clifford torus", () => {
-  expect(getTorusMaxRadius(new C2(1, 0), new C2(0, 1))).toBeCloseTo(Math.sqrt(2));
+  expect(getTorusMaxRadius(new C2(1, 0), new C2(0, 1))).toBeCloseTo(
+    Math.sqrt(2),
+  );
 });
 
 test("max radius of scaled Clifford torus", () => {
   const k = 2.0;
-  expect(getTorusMaxRadius(new C2(k, 0), new C2(0, k))).toBeCloseTo(Math.sqrt(2) / k);
+  expect(getTorusMaxRadius(new C2(k, 0), new C2(0, k))).toBeCloseTo(
+    Math.sqrt(2) / k,
+  );
 });
 
 test("polytwister radius", () => {
-  const polytwister = Polytwister.fromR3(
-    [
-      new Vec3(1, 1, 1),
-      new Vec3(1, -1, -1),
-      new Vec3(-1, 1, -1),
-      new Vec3(-1, -1, 1)
-    ]
-  );
+  const polytwister = Polytwister.fromR3([
+    new Vec3(1, 1, 1),
+    new Vec3(1, -1, -1),
+    new Vec3(-1, 1, -1),
+    new Vec3(-1, -1, 1),
+  ]);
   const radius = polytwister.radius();
   expect(radius).not.toBeNaN();
   expect(radius).not.toEqual(0);

@@ -47,8 +47,8 @@ const bloatedTetratwister = {
       { logs: [1, 2], antiLogs: [0, 3] },
       { logs: [1, 3], antiLogs: [0, 2] },
       { logs: [2, 3], antiLogs: [0, 1] },
-    ]
-  }
+    ],
+  },
 };
 
 const quasitetratwister = {
@@ -60,8 +60,8 @@ const quasitetratwister = {
       { logs: [0, 2, 3], antiLogs: [1] },
       { logs: [0, 1, 3], antiLogs: [2] },
       { logs: [0, 1, 2], antiLogs: [3] },
-    ]
-  }
+    ],
+  },
 };
 
 const octatwisterPoints = [
@@ -91,14 +91,14 @@ const quasioctatwister = {
       { logs: [2, 3, 6, 7] },
       { logs: [0, 2, 4, 6] },
       { logs: [1, 3, 5, 7] },
-    ]
-  }
+    ],
+  },
 };
 
 const bloatedOctatwister = {
   name: "bloated octatwister",
   points: octatwister.points,
-  csg: { 
+  csg: {
     operands: [
       [0, 1],
       [0, 2],
@@ -114,7 +114,7 @@ const bloatedOctatwister = {
       [5, 7],
       [6, 7],
     ].map((x) => ({ logs: x })),
-  }
+  },
 };
 
 const cubetwister = {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { type PolytwisterDef } from './polytwisterDefs';
+import { type PolytwisterDef } from "./polytwisterDefs";
 
 const props = defineProps<{
-  defs: PolytwisterDef[]
+  defs: PolytwisterDef[];
 }>();
 const defs = props.defs;
 
@@ -29,5 +29,4 @@ function previous() {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
