@@ -245,7 +245,15 @@ const cameraDirection = camera.direction;
 <template>
   <div class="flex flex-col items-center text-slate-100">
     <div class="max-w-200">
-      <h1 class="text-3xl font-bold m-5 text-center">Polytwisters</h1>
+      <div class="flex flex-row items-center m-5">
+        <div class="flex-1"></div>
+        <h1 class="flex-1 text-3xl font-bold text-center">Polytwisters</h1>
+        <div class="flex-1 flex flex-row items-center justify-end gap-2">
+          <a target="_blank" href="https://github.com/polytwisters/polytwisters.com/">
+            source code
+          </a>
+        </div>
+      </div>
 
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
