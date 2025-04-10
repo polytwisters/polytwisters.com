@@ -219,7 +219,7 @@ const vKatex = {
     <h2>Changelog</h2>
 
     <p>
-      2025-04-05: Total rewrite, migrating from static videos rendered in
+      2025-04-09: Total rewrite, migrating from static videos rendered in
       Blender to an interactive real-time application.
     </p>
 
