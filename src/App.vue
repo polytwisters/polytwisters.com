@@ -11,6 +11,7 @@ import * as cameraControls from "./cameraControls";
 import * as csg from "./csg";
 import { type CSG } from "./csg";
 
+import Button from "./Button.vue";
 import Article from "./Article.vue";
 import Axes from "./Axes.vue";
 import Selector from "./Selector.vue";
@@ -257,13 +258,10 @@ const cameraDirection = camera.direction;
 
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
-          <button class="square material" @click="camera.reset">home</button>
-          <button class="square material" @click="cameraControls.zoomIn">
-            zoom_in
-          </button>
-          <button class="square material" @click="cameraControls.zoomOut">
-            zoom_out
-          </button>
+          <Button @click="camera.reset" material icon="home" help="Reset camera" />
+          <Button @click="cameraControls.zoomIn" material icon="add" help="Zoom in" />
+          <div class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none">search</div>
+          <Button @click="cameraControls.zoomOut" material icon="remove" help="Zoom out" />
         </div>
         <Selector :defs="defs" v-model="polytwisterIndex" />
         <div class="flex-1"></div>

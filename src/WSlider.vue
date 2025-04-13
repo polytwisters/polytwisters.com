@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import * as mathUtils from "./mathUtils";
+import Button from "./Button.vue";
 
 const model = defineModel<number>({ required: true });
 
@@ -106,36 +107,25 @@ function setLoopMode(newLoopMode: LoopMode) {
       />
     </div>
     <div class="flex-1 flex justify-center items-center gap-2">
-      <button class="square" @click="goToZero">0</button>
-      <button
-        :class="{ square: true, material: true, active: playing }"
-        @click="togglePlay"
-      >
-        play_arrow
-      </button>
-      <button class="square material" @click="pause">pause</button>
+      <Button @click="goToZero" text="0" help="W = 0" />
+      <Button :active="playing" @click="togglePlay" icon="play_arrow" help="Play" />
+      <Button @click="pause" icon="pause" help="Pause" />
     </div>
     <div class="flex-1 flex justify-end items-center gap-2">
-      <button
+      <Button
         @click="setLoopMode(LoopMode.Loop)"
-        :class="{
-          square: true,
-          material: true,
-          active: loopMode === LoopMode.Loop,
-        }"
-      >
-        <div class="-scale-x-100">laps</div>
-      </button>
-      <button
+        :active="loopMode === LoopMode.Loop"
+        icon="laps"
+        help="Loop mode: wrap"
+      />
+      <!-- -scale-x-100 -->
+      <Button
         @click="setLoopMode(LoopMode.Zigzag)"
-        :class="{
-          square: true,
-          material: true,
-          active: loopMode === LoopMode.Zigzag,
-        }"
-      >
-        <div class="rotate-45">turn_sharp_right</div>
-      </button>
+        :active="loopMode === LoopMode.Zigzag"
+        icon="turn_sharp_right"
+        help="Loop mode: bounce"
+      />
+      <!-- rotate-45 -->
     </div>
   </div>
 </template>
