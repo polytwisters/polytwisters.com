@@ -17,7 +17,7 @@ import Selector from "./Selector.vue";
 import WSlider from "./WSlider.vue";
 import StellationDiagram from "./StellationDiagram.vue";
 
-const secretDevMode = location.hash === "#secret_dev_mode";
+const experimentalMode = ref(false);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
@@ -292,7 +292,7 @@ const cameraDirection = camera.direction;
 
       <WSlider v-model="crossSectionW" />
 
-      <StellationDiagram :polytwister="polytwister" v-if="secretDevMode" />
+      <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
 
       <pre v-if="shaderError">{{ shaderLog }}</pre>
       <Article />
