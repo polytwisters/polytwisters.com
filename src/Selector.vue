@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type PolytwisterDef } from "./polytwisterDefs";
+import Button from "./Button.vue";
 
 const props = defineProps<{
   defs: PolytwisterDef[];
@@ -19,13 +20,13 @@ function previous() {
 
 <template>
   <div class="flex flex-row gap-2 justify-center flex-1">
-    <button class="square material" @click="previous">chevron_left</button>
+    <Button @click="previous" material icon="chevron_left" help="Previous" />
     <select v-model="index" class="text-center h-8 bg-primary p-1 rounded-sm">
       <option v-for="(def, i) in defs" :value="i">
         {{ def.name }}
       </option>
     </select>
-    <button class="square material" @click="next">chevron_right</button>
+    <Button @click="next" material icon="chevron_right" help="Next" />
   </div>
 </template>
 
