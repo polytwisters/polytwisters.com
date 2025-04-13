@@ -10,6 +10,10 @@
   src: url("./assets/fonts/material_icons.woff2") format("woff2");
 }
 
+h1 {
+  @apply text-2xl font-bold;
+}
+
 .material {
   font-family: "Material Symbols Rounded";
   font-weight: normal;

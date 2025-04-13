@@ -18,7 +18,13 @@ import Selector from "./Selector.vue";
 import WSlider from "./WSlider.vue";
 import StellationDiagram from "./StellationDiagram.vue";
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// UI
+
 const experimentalMode = ref(false);
+function toggleExperimentalMode() {
+  experimentalMode.value = !experimentalMode.value;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
@@ -245,7 +251,7 @@ const cameraDirection = camera.direction;
 
 <template>
   <div class="flex flex-col items-center text-slate-100">
-    <div class="max-w-200">
+    <div class="flex flex-col gap-2 max-w-200">
       <div class="flex flex-row items-center m-5">
         <div class="flex-1"></div>
         <h1 class="flex-1 text-3xl font-bold text-center">Polytwisters</h1>
@@ -264,7 +270,9 @@ const cameraDirection = camera.direction;
           <Button @click="cameraControls.zoomOut" material icon="remove" help="Zoom out" />
         </div>
         <Selector :defs="defs" v-model="polytwisterIndex" />
-        <div class="flex-1"></div>
+        <div class="flex-1 flex flex-row justify-end">
+          <Button @click="toggleExperimentalMode" material icon="science" help="Experimental features" :active="experimentalMode" />
+        </div>
       </div>
 
       <div class="relative my-3" ref="container" v-if="!shaderError">
@@ -287,12 +295,11 @@ const cameraDirection = camera.direction;
           </div>
         </div>
       </div>
+      <pre v-if="shaderError">{{ shaderLog }}</pre>
 
       <WSlider v-model="crossSectionW" />
 
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
-
-      <pre v-if="shaderError">{{ shaderLog }}</pre>
       <Article />
     </div>
   </div>

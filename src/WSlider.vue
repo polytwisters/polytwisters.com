@@ -107,7 +107,7 @@ function setLoopMode(newLoopMode: LoopMode) {
       />
     </div>
     <div class="flex-1 flex justify-center items-center gap-2">
-      <Button @click="goToZero" text="0" help="W = 0" />
+      <Button @click="goToZero" square text="0" help="W = 0" />
       <Button :active="playing" @click="togglePlay" icon="play_arrow" help="Play" />
       <Button @click="pause" icon="pause" help="Pause" />
     </div>
