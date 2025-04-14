@@ -167,7 +167,7 @@ Interval intersectRayPipe(Ray ray, Pipe pipe) {
 
 Ray getCameraRay() {
   Camera camera = Camera(
-    cameraPosition, // position
+    cameraPosition_, // position
     cameraDirection, // direction
     2.0, // focal length
     cameraX, // X

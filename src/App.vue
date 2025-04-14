@@ -148,7 +148,7 @@ watch(polytwister, () => {
 const uniforms = computed(() => ({
   iResolution: { value: [canvasWidth, canvasHeight] },
   crossSectionW: { value: crossSectionW.value },
-  cameraPosition: { value: camera.position.value },
+  cameraPosition_: { value: camera.position.value },
   cameraDirection: { value: camera.direction.value },
   cameraX: { value: camera.x.value },
   cameraY: { value: camera.y.value },
@@ -203,6 +203,12 @@ onMounted(() => {
       t += timestamp - lastTimestamp;
     }
     lastTimestamp = timestamp;
+    if (mesh.material.uniforms) {
+      const newUniforms = uniforms.value;
+      for (let key of Object.keys(newUniforms)) {
+        mesh.material.uniforms[key].value = newUniforms[key].value;
+      }
+    }
     renderer.render(scene, threeCamera);
     requestAnimationFrame(update);
   }
