@@ -163,7 +163,7 @@ onMounted(() => {
   const geometry = new THREE.PlaneGeometry(2, 2);
 
   let mesh: THREE.Mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-    color: new THREE.Color().setHex(0x123456)
+    color: new THREE.Color().setHex(0x000000)
   }));
   scene.add(mesh);
 
