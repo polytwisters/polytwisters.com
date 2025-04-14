@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { onMounted, useTemplateRef } from "vue";
 import * as THREE from "three";
-import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import * as wythoff from "./wythoff";
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
-const triangle = [2, 3, 5];
+const schwarzTriangle = new wythoff.SchwarzTriangle(2, 3, [5, 2]);
 
-const triangleVertices = wythoff.makeSphericalTriangle(
-  Math.PI / triangle[0], Math.PI / triangle[1], Math.PI / triangle[2]
-);
-const wythoffResult = wythoff.PointGroup.fromSchwarzTriangle(triangle[0], triangle[1], triangle[2]);
-const polyhedron = wythoffResult.makePolyhedron();
+const triangleVertices = schwarzTriangle.vertices();
+const group = wythoff.PointGroup.fromSchwarzTriangle(schwarzTriangle);
+const polyhedron = group.makePolyhedron();
 const vertices = polyhedron.vertices;
 
 onMounted(() => {

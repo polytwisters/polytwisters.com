@@ -3,11 +3,9 @@ import { Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 import * as wythoff from "./wythoff";
 
-test("spherical triangles", () => {
-  const angle1 = Math.PI / 2;
-  const angle2 = Math.PI / 3;
-  const angle3 = Math.PI / 5;
-  const result = wythoff.makeSphericalTriangle(angle1, angle2, angle3);
+test("SchwarzTriangles' vertices have correct interior angles", () => {
+  const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
+  const result = triangle.vertices();
 
   for (let vector of result) {
     expect(vector.len()).toBeCloseTo(1.0);
@@ -16,50 +14,53 @@ test("spherical triangles", () => {
   const expectedAngle1 = mathUtils.reject(result[1], result[0]).angle(
     mathUtils.reject(result[2], result[0])
   );
-  expect(expectedAngle1).toBeCloseTo(angle1);
+  expect(expectedAngle1).toBeCloseTo(triangle.angle1);
 
   const expectedAngle2 = mathUtils.reject(result[2], result[1]).angle(
     mathUtils.reject(result[0], result[1])
   );
-  expect(expectedAngle2).toBeCloseTo(angle2);
+  expect(expectedAngle2).toBeCloseTo(triangle.angle2);
 
   const expectedAngle3 = mathUtils.reject(result[1], result[2]).angle(
     mathUtils.reject(result[0], result[2])
   );
-  expect(expectedAngle3).toBeCloseTo(angle3);
+  expect(expectedAngle3).toBeCloseTo(triangle.angle3);
 });
 
-test("spherical triangle mirrors", () => {
-  const angle1 = Math.PI / 2;
-  const angle2 = Math.PI / 3;
-  const angle3 = Math.PI / 5;
-  const result = wythoff.makeSphericalTriangleMirrors(angle1, angle2, angle3);
-  expect(Math.PI - result[1].angle(result[2])).toBeCloseTo(angle1);
-  expect(Math.PI - result[2].angle(result[0])).toBeCloseTo(angle2);
-  expect(Math.PI - result[0].angle(result[1])).toBeCloseTo(angle3);
+test("SchwarzTriangle's mirrors have correct angles", () => {
+  const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
+  const result = triangle.mirrors();
+  expect(Math.PI - result[1].angle(result[2])).toBeCloseTo(triangle.angle1);
+  expect(Math.PI - result[2].angle(result[0])).toBeCloseTo(triangle.angle2);
+  expect(Math.PI - result[0].angle(result[1])).toBeCloseTo(triangle.angle3);
 });
 
-test("icosahedral group has order 120", () => {
-  expect(wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).order).toBe(120);
+test("Icosahedral group has order 120", () => {
+  const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
+  expect(wythoff.PointGroup.fromSchwarzTriangle(triangle).order).toBe(120);
 });
 
-test("octahedron 4 | 2 3 has 6 vertices", () => {
-  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(4, 2, 3).makePolyhedron();
+test("4 | 2 3 (octahedron) has 6 vertices", () => {
+  const triangle = new wythoff.SchwarzTriangle(4, 2, 3);
+  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron();
   expect(polyhedron.vertices.length).toBe(6);
   expect(polyhedron.edges.length).toBe(12);
 });
 
-test("icosahedron 5 | 2 3 has 12 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(5, 2, 3).orbit();
+test("5 | 2 3 (icosahedron) has 12 vertices", () => {
+  const triangle = new wythoff.SchwarzTriangle(5, 2, 3);
+  const points = wythoff.PointGroup.fromSchwarzTriangle(triangle).orbit();
   expect(points.length).toBe(12);
 });
 
-test("dodecahedron 3 | 2 5 has 20 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(3, 2, 5).orbit();
+test("3 | 2 5 (dodecahedron) has 20 vertices", () => {
+  const triangle = new wythoff.SchwarzTriangle(3, 2, 5);
+  const points = wythoff.PointGroup.fromSchwarzTriangle(triangle).orbit();
   expect(points.length).toBe(20);
 });
 
-test("icosidodecahedron 2 | 3 5 has 30 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).orbit();
+test("2 | 3 5 (icosidodecahedron) has 30 vertices", () => {
+  const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
+  const points = wythoff.PointGroup.fromSchwarzTriangle(triangle).orbit();
   expect(points.length).toBe(30);
 });
