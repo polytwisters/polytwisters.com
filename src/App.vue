@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
-import { Renderer, Geometry, Program, Mesh, Vec3, Color } from "ogl";
+import { Vec3, Color } from "ogl";
+import * as THREE from "three";
 
 import * as polytwisters from "./polytwisters";
 import { Polytwister } from "./polytwisters";
@@ -129,14 +130,8 @@ const fragmentShader = computed(() =>
 );
 
 const vertexShader = `
-attribute vec2 uv;
-attribute vec2 position;
-
-varying vec2 vUv;
-
 void main() {
-  vUv = uv;
-  gl_Position = vec4(position, 0, 1);
+  gl_Position = vec4(position, 1);
 }
 `;
 
@@ -167,64 +162,40 @@ const uniforms = computed(() => ({
 onMounted(() => {
   cameraControls.enablePointerEvents();
 
-  const renderer = new Renderer({
-    canvas: canvas.value!,
-    width: canvasWidth,
-    height: canvasHeight,
-  });
-  const gl = renderer.gl;
+  const threeCamera = new THREE.Camera();
+  threeCamera.position.z = 0;
 
-  // Triangle that covers viewport, with UVs that still span 0 > 1 across viewport
-  const geometry = new Geometry(gl, {
-    position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
-    uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
+  const scene = new THREE.Scene();
+
+  const geometry = new THREE.PlaneGeometry(2, 2);
+
+  let mesh: THREE.Mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+    color: new THREE.Color().setHex(0x123456)
+  }));
+  scene.add(mesh);
+
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas.value
   });
 
-  let mesh: Mesh | null = null;
-  let program: Program | null = null;
+  renderer.setSize(800, 500);
+  renderer.render(scene, threeCamera);
 
   watch(
     fragmentShader,
     (newValue) => {
       loading.value = true;
-      program = new Program(gl, {
-        vertex: vertexShader,
-        fragment: newValue,
+      const material = new THREE.ShaderMaterial({
         uniforms: uniforms.value,
+        vertexShader: vertexShader,
+        fragmentShader: newValue
       });
-      let log = gl.getShaderInfoLog(program.fragmentShader);
-      if (log !== "") {
-        shaderError.value = true;
-        shaderLog.value = `Error in fragment shader\n${log}`;
-      }
-
-      mesh = new Mesh(gl, { geometry, program });
+      mesh.material = material;
       loading.value = false;
     },
     { immediate: true },
   );
 
-  // Periodically change the canvas size to match the containing element.
-  setInterval(() => {
-    let newCanvasWidth = canvasWidth;
-    try {
-      newCanvasWidth = parseFloat(
-        window
-          .getComputedStyle(canvasContainer.value!)
-          .getPropertyValue("width"),
-      );
-    } catch (e) {
-      // sloppy, sometimes canvasContainer is undefined, not sure why
-      return;
-    }
-    if (newCanvasWidth === canvasWidth) {
-      return;
-    }
-    setCanvasWidth(newCanvasWidth);
-    renderer.setSize(canvasWidth, canvasHeight);
-  }, 1000);
-
-  requestAnimationFrame(update);
   let t: number = 0.0;
   let lastTimestamp: number | null = null;
   function update(timestamp: number) {
@@ -232,14 +203,10 @@ onMounted(() => {
       t += timestamp - lastTimestamp;
     }
     lastTimestamp = timestamp;
-    if (program !== null) {
-      program.uniforms = uniforms.value;
-    }
-    if (mesh !== null) {
-      renderer.render({ scene: mesh });
-    }
+    renderer.render(scene, threeCamera);
     requestAnimationFrame(update);
   }
+  requestAnimationFrame(update);
 });
 
 // For some reason the Axes props don't work if I try to use the imports
@@ -288,7 +255,7 @@ const cameraDirection = camera.direction;
         />
         <div
           class="absolute top-0 left-0 size-full flex items-center justify-center"
-          v-if="loading"
+          v-if="false"
         >
           <div class="material-symbols-rounded animate-spin">
             progress_activity

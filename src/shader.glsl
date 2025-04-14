@@ -11,10 +11,8 @@
 precision highp float;
 uniform vec2 iResolution;
 
-varying vec2 vUv;
-
 // Camera & viewer parameters.
-uniform vec3 cameraPosition;
+uniform vec3 cameraPosition_; // cameraPosition_ is used by Three.js
 uniform vec3 cameraDirection;
 uniform vec3 cameraX;
 uniform vec3 cameraY;
@@ -177,7 +175,7 @@ Ray getCameraRay() {
   );
 
   // Normalized 0 to 1. Y-axis is up.
-  vec2 positionUnipolar = vUv;
+  vec2 positionUnipolar = gl_FragCoord.xy / iResolution;
   // Normalized -1 to 1 in both axes.
   vec2 positionBipolar = positionUnipolar * 2.0 - 1.0;
   float aspectRatio = iResolution.x / iResolution.y;
