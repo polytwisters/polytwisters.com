@@ -2,6 +2,16 @@ import { Vec3 } from "ogl";
 import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 
+interface Polyhedron {
+  vertices: Vector3[],
+  edges: [number, number][]
+}
+
+interface Vertex {
+  position: Vector3,
+  matrix: Matrix3
+}
+
 /**
  * Given three interior angles of a spherical triangle, return the side length of the side opposite
  * the FIRST angle.
@@ -192,11 +202,6 @@ export class PointGroup {
   }
 }
 
-interface Vertex {
-  position: Vector3,
-  matrix: Matrix3
-}
-
 function findVertex(point: Vector3, vertices: Vertex[]): number | null {
   for (let [i, candidate] of vertices.entries()) {
     if (candidate.position.distanceTo(point) <= 1e-3) {
@@ -225,9 +230,4 @@ function dedupeEdges(edges: [number, number][]): [number, number][] {
     }
   }
   return result;
-}
-
-interface Polyhedron {
-  vertices: Vector3[],
-  edges: [number, number][]
 }
