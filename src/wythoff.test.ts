@@ -39,26 +39,26 @@ test("spherical triangle mirrors", () => {
   expect(Math.PI - result[0].angle(result[1])).toBeCloseTo(angle3);
 });
 
-test("point group", () => {
+test("icosahedral group has order 120", () => {
   expect(wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).order).toBe(120);
 });
 
-test("wythoff octahedron vertices", () => {
+test("octahedron 4 | 2 3 has 6 vertices", () => {
   const points = wythoff.PointGroup.fromSchwarzTriangle(4, 2, 3).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(6);
 });
 
-test("wythoff icosahedron vertices", () => {
+test("icosahedron 5 | 2 3 has 12 vertices", () => {
   const points = wythoff.PointGroup.fromSchwarzTriangle(5, 2, 3).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(12);
 });
 
-test("wythoff dodecahedron vertices", () => {
+test("dodecahedron 3 | 2 5 has 20 vertices", () => {
   const points = wythoff.PointGroup.fromSchwarzTriangle(3, 2, 5).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(20);
 });
 
-test("wythoff icosidodecahedron vertices", () => {
+test("icosidodecahedron 2 | 3 5 has 30 vertices", () => {
   const points = wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(30);
 });
