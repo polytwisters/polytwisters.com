@@ -19,3 +19,17 @@ export function fromSpherical(
 export function mod(x: number, y: number): number {
   return ((x % y) + y) % y;
 }
+
+/**
+ * Rejection vector: reject A onto B.
+ */
+export function reject(a: Vec3, b: Vec3): Vec3 {
+  return a.clone().sub(b.clone().multiply(a.dot(b) / b.dot(b)));
+}
+
+/**
+ * Reflect the vector a through the plane orthogonal to unit vector b.
+ */
+export function reflect(a: Vec3, b: Vec3): Vec3 {
+  return a.clone().sub(a, b.clone().multiply(2 * a.dot(b)));
+}
