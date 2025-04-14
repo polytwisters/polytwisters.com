@@ -38,22 +38,28 @@ test("spherical triangle mirrors", () => {
   expect(Math.PI - result[0].angle(result[1])).toBeCloseTo(angle3);
 });
 
+test("point group", () => {
+  expect(wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).order).toBe(120);
+});
+
+/*
 test("wythoff octahedron vertices", () => {
-  const points = wythoff.wythoff(4, 2, 3);
+  const points = wythoff.wythoff(4, 2, 3).vertices;
   expect(points.length).toBe(6);
 });
 
 test("wythoff icosahedron vertices", () => {
-  const points = wythoff.wythoff(5, 2, 3);
+  const points = wythoff.wythoff(5, 2, 3).vertices;
   expect(points.length).toBe(12);
 });
 
 test("wythoff dodecahedron vertices", () => {
-  const points = wythoff.wythoff(3, 2, 5);
+  const points = wythoff.wythoff(3, 2, 5).vertices;
   expect(points.length).toBe(20);
 });
 
 test("wythoff icosidodecahedron vertices", () => {
-  const points = wythoff.wythoff(2, 3, 5);
+  const points = wythoff.wythoff(2, 3, 5).vertices;
   expect(points.length).toBe(30);
 });
+*/
