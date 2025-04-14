@@ -18,6 +18,7 @@ import Axes from "./Axes.vue";
 import Selector from "./Selector.vue";
 import WSlider from "./WSlider.vue";
 import StellationDiagram from "./StellationDiagram.vue";
+import Wythoff from "./Wythoff.vue";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -227,6 +228,8 @@ const cameraDirection = camera.direction;
           </a>
         </div>
       </div>
+
+      <Wythoff v-if="experimentalMode" />
 
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">

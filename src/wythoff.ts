@@ -49,9 +49,8 @@ const MIN_DISTANCE = 1e-3;
  */
 export function wythoff(n1: number, n2: number, n3: number): Vec3[] {
   const mirrors = makeSphericalTriangleMirrors(Math.PI / n1, Math.PI / n2, Math.PI / n3);
-  const stack = [new Vec3(1, 0, 0)];
+  const stack = [new Vec3(0, 0, 1)];
   const pointsVisited: Vec3[] = [];
-
 
   for (let i = 0; i < 200; i++) {
     const point = stack.pop();

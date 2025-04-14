@@ -38,12 +38,22 @@ test("spherical triangle mirrors", () => {
   expect(Math.PI - result[0].angle(result[1])).toBeCloseTo(angle3);
 });
 
-test("wythoff", () => {
-  const points = wythoff.wythoff(2, 3, 4);
+test("wythoff octahedron vertices", () => {
+  const points = wythoff.wythoff(4, 2, 3);
   expect(points.length).toBe(6);
 });
 
-test("wythoff", () => {
-  const points = wythoff.wythoff(2, 3, 5);
+test("wythoff icosahedron vertices", () => {
+  const points = wythoff.wythoff(5, 2, 3);
   expect(points.length).toBe(12);
+});
+
+test("wythoff dodecahedron vertices", () => {
+  const points = wythoff.wythoff(3, 2, 5);
+  expect(points.length).toBe(20);
+});
+
+test("wythoff icosidodecahedron vertices", () => {
+  const points = wythoff.wythoff(2, 3, 5);
+  expect(points.length).toBe(30);
 });
