@@ -29,7 +29,8 @@ onMounted(() => {
       new THREE.SphereGeometry(0.05),
       new THREE.MeshBasicMaterial({ color: "red" })
     );
-    dot.position.set(point.x, point.y, point.z);
+    const offset = 1.05;
+    dot.position.set(point.x * offset, point.y * offset, point.z * offset);
     scene.add(dot);
   }
 
