@@ -44,21 +44,22 @@ test("icosahedral group has order 120", () => {
 });
 
 test("octahedron 4 | 2 3 has 6 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(4, 2, 3).orbit(new Vector3(0, 0, 1));
-  expect(points.length).toBe(6);
+  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(4, 2, 3).makePolyhedron();
+  expect(polyhedron.vertices.length).toBe(6);
+  expect(polyhedron.edges.length).toBe(12);
 });
 
 test("icosahedron 5 | 2 3 has 12 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(5, 2, 3).orbit(new Vector3(0, 0, 1));
+  const points = wythoff.PointGroup.fromSchwarzTriangle(5, 2, 3).orbit();
   expect(points.length).toBe(12);
 });
 
 test("dodecahedron 3 | 2 5 has 20 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(3, 2, 5).orbit(new Vector3(0, 0, 1));
+  const points = wythoff.PointGroup.fromSchwarzTriangle(3, 2, 5).orbit();
   expect(points.length).toBe(20);
 });
 
 test("icosidodecahedron 2 | 3 5 has 30 vertices", () => {
-  const points = wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).orbit(new Vector3(0, 0, 1));
+  const points = wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).orbit();
   expect(points.length).toBe(30);
 });

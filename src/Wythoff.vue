@@ -8,13 +8,14 @@ import * as wythoff from "./wythoff";
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
-const triangle = [3, 5, 2];
+const triangle = [4, 2, 3];
 
 const triangleVertices = wythoff.makeSphericalTriangle(
   Math.PI / triangle[0], Math.PI / triangle[1], Math.PI / triangle[2]
 );
 const wythoffResult = wythoff.PointGroup.fromSchwarzTriangle(triangle[0], triangle[1], triangle[2]);
-const vertices = wythoffResult.orbit(new Vector3(0, 0, 1));
+const polyhedron = wythoffResult.makePolyhedron();
+const vertices = polyhedron.vertices;
 
 onMounted(() => {
   const threeCamera = new THREE.PerspectiveCamera(45, 1.0, 1, 1000);
@@ -49,8 +50,7 @@ onMounted(() => {
     scene.add(dot);
   }
 
-  /*
-  for (let edge of wythoffResult.edges) {
+  for (let edge of polyhedron.edges) {
     let geometry = new THREE.BufferGeometry();
     const point1 = vertices[edge[0]];
     const point2 = vertices[edge[1]];
@@ -66,7 +66,6 @@ onMounted(() => {
     );
     scene.add(line);
   }
-    */
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
   const controls = new OrbitControls(threeCamera, renderer.domElement);

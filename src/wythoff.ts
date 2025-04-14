@@ -13,6 +13,8 @@ function sphericalTriangleSide(angle1: number, angle2: number, angle3: number): 
   )
 }
 
+const GENERATOR_POINT = new Vector3(0, 0, 1);
+
 /**
  * Given three interior angles of a spherical triangle, produce three unit vectors realizing that
  * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1).
@@ -71,7 +73,15 @@ function dedupePoints(points: Vector3[]): Vector3[] {
   return result;
 }
 
+/**
+ * A point group is a finite collection of 3x3 orthogonal matrices with the property that the
+ * product of any two matrices, or the inverse of any one matrix, is also in the group. In this
+ * software point groups are produced algorithmically and generated from a set of three mirrors, and
+ * all point groups are achiral.
+ */
 export class PointGroup {
+  // The operators are three reflection matrices that generate the group. The first two operators
+  // are guaranteed to leave GENERATOR_POINT (0, 0, 1) invariant, while the third one is not.
   operators: Matrix3[];
   elements: PointGroupElement[];
 
@@ -129,11 +139,95 @@ export class PointGroup {
     return new PointGroup(operators, elements);
   }
 
-  orbit(point: Vector3): Vector3[] {
+  orbit(): Vector3[] {
     let result = this.elements.map((element) =>
-      point.clone().applyMatrix3(element.matrix)
+      GENERATOR_POINT.clone().applyMatrix3(element.matrix)
     );
     result = dedupePoints(result);
     return result;
   }
+
+  makePolyhedron(): Polyhedron {
+    // Apply all elements in the group to the vertex, keeping track of the matrices used to produce
+    // them.
+    let vertexCandidates = this.elements.map((element) =>
+      ({
+        position: GENERATOR_POINT.clone().applyMatrix3(element.matrix),
+        matrix: element.matrix
+      })
+    );
+
+    // Deduplicate the vertices.
+    const vertices: Vertex[] = [];
+    for (let vertex of vertexCandidates) {
+      if (!vertices.some((vertex2) => vertex.position.distanceTo(vertex2.position) <= 1e-3)) {
+        vertices.push(vertex);
+      }
+    }
+
+    let edges: [number, number][] = [];
+
+    // To produce edges, we take advantage of the following facts:
+    // 1. If p is the generator point, then R1*p is an adjacent vertex. (R2 p = R3 p = p, so there's
+    // no need to check those; consequently the polyhedron is edge-transitive.) So
+    // [p, R1*p] gives us an edge.
+    // 2. All other edges are formed by taking all elements of the group and transforming that edge.
+    for (let element of this.elements) {
+      const vertex1 = GENERATOR_POINT.clone().applyMatrix3(element.matrix);
+      const vertex2 = GENERATOR_POINT.clone().applyMatrix3(this.operators[0]).applyMatrix3(element.matrix);
+      const i = findVertex(vertex1, vertices);
+      const j = findVertex(vertex2, vertices);
+      if (i === null || j === null) {
+        throw new Error("Can't find edge ending")
+      }
+      edges.push([i, j]);
+    }
+
+    edges = dedupeEdges(edges);
+
+    return {
+      vertices: vertices.map((x) => x.position),
+      edges
+    };
+  }
+}
+
+interface Vertex {
+  position: Vector3,
+  matrix: Matrix3
+}
+
+function findVertex(point: Vector3, vertices: Vertex[]): number | null {
+  for (let [i, candidate] of vertices.entries()) {
+    if (candidate.position.distanceTo(point) <= 1e-3) {
+      return i;
+    }
+  }
+  return null;
+}
+
+function dedupeEdges(edges: [number, number][]): [number, number][] {
+  const result: [number, number][] = [];
+  for (let edge of edges) {
+    let found = false;
+    for (let edge2 of result) {
+      if (edge[0] === edge2[0] && edge[1] === edge2[1]) {
+        found = true;
+        break;
+      }
+      if (edge[0] === edge2[1] && edge[1] === edge2[0]) {
+        found = true;
+        break;
+      }
+    }
+    if (found === false) {
+      result.push(edge);
+    }
+  }
+  return result;
+}
+
+interface Polyhedron {
+  vertices: Vector3[],
+  edges: [number, number][]
 }
