@@ -1,4 +1,5 @@
 import { test, expect } from "vitest";
+import { Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 import * as wythoff from "./wythoff";
 
@@ -42,24 +43,22 @@ test("point group", () => {
   expect(wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).order).toBe(120);
 });
 
-/*
 test("wythoff octahedron vertices", () => {
-  const points = wythoff.wythoff(4, 2, 3).vertices;
+  const points = wythoff.PointGroup.fromSchwarzTriangle(4, 2, 3).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(6);
 });
 
 test("wythoff icosahedron vertices", () => {
-  const points = wythoff.wythoff(5, 2, 3).vertices;
+  const points = wythoff.PointGroup.fromSchwarzTriangle(5, 2, 3).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(12);
 });
 
 test("wythoff dodecahedron vertices", () => {
-  const points = wythoff.wythoff(3, 2, 5).vertices;
+  const points = wythoff.PointGroup.fromSchwarzTriangle(3, 2, 5).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(20);
 });
 
 test("wythoff icosidodecahedron vertices", () => {
-  const points = wythoff.wythoff(2, 3, 5).vertices;
+  const points = wythoff.PointGroup.fromSchwarzTriangle(2, 3, 5).orbit(new Vector3(0, 0, 1));
   expect(points.length).toBe(30);
 });
-*/

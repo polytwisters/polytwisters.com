@@ -1,5 +1,5 @@
 import { Vec3 } from "ogl";
-import { Matrix3 } from "three";
+import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 
 /**
@@ -61,6 +61,16 @@ interface PointGroupElement {
   coxeterWord: number[],
 }
 
+function dedupePoints(points: Vector3[]): Vector3[] {
+  const result: Vector3[] = [];
+  for (let point of points) {
+    if (!result.some((point2) => point.distanceTo(point2) <= 1e-3)) {
+      result.push(point);
+    }
+  }
+  return result;
+}
+
 export class PointGroup {
   operators: Matrix3[];
   elements: PointGroupElement[];
@@ -118,69 +128,12 @@ export class PointGroup {
 
     return new PointGroup(operators, elements);
   }
+
+  orbit(point: Vector3): Vector3[] {
+    let result = this.elements.map((element) =>
+      point.clone().applyMatrix3(element.matrix)
+    );
+    result = dedupePoints(result);
+    return result;
+  }
 }
-
-// const MIN_DISTANCE = 1e-3;
-
-// interface Vertex {
-//   position: Vec3,
-//   coxeterWord: number[],
-//   parent: number | null,
-// }
-
-// interface WythoffResult {
-//   vertices: Vec3[],
-//   edges: [number, number][]
-// }
-
-// /**
-//  * Given a Schwarz triangle (n1 n2 n3) with angles pi/n1 pi/n2 pi/n3, start with the point located
-//  * at the n1 angle and find the orbit of that point. This implements a special case of the Wythoff
-//  * construction where the generator point is always at an angle, and therefore produces only regular
-//  * and quasiregular polyhedra.
-//  */
-// export function wythoff(n1: number, n2: number, n3: number): WythoffResult {
-//   const mirrors = makeSphericalTriangleMirrors(Math.PI / n1, Math.PI / n2, Math.PI / n3);
-//   const stack: Vertex[] = [
-//     { position: realizeCoxeterWord([], mirrors), coxeterWord: [], parent: null }
-//   ];
-//   const vertices: Vertex[] = [];
-
-//   for (let i = 0; i < 200; i++) {
-//     const candidate = stack.pop();
-//     if (!candidate) {
-//       break;
-//     }
-//     if (vertices.every((x) => x.position.distance(candidate.position) > MIN_DISTANCE)) {
-//       const parentIndex = vertices.length;
-//       vertices.push(candidate);
-//       for (let operator = 0; operator < 3; operator++) {
-//         const coxeterWord = [operator].concat(candidate.coxeterWord);
-//         const position = realizeCoxeterWord(coxeterWord, mirrors);
-//         stack.push({
-//           position: position,
-//           coxeterWord,
-//           parent: parentIndex
-//         });
-//       }
-//     }
-//   }
-
-//   const edges: [number, number][] = [];
-//   for (let i = 0; i < vertices.length; i++) {
-//     const vertex = vertices[i];
-//     for (let operator = 0; operator < 3; operator++) {
-//       const coxeterWord = vertex.coxeterWord.concat([operator]);
-//       const position = realizeCoxeterWord(coxeterWord, mirrors);
-//       for (let j = 0; j < vertices.length; j++) {
-//         if (vertices[j].position.distance(position) <= MIN_DISTANCE && i !== j) {
-//           edges.push([i, j]);
-//         }
-//       }
-//     }
-//   }
-
-//   let vertexPositions = vertices.map((x) => x.position);
-
-//   return { vertices: vertexPositions, edges };
-// }
