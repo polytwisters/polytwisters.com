@@ -1,10 +1,11 @@
 import { Vec3 } from "ogl";
-import { Matrix3, Vector3 } from "three";
+import { EdgesGeometry, Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 
 interface Polyhedron {
   vertices: Vector3[],
   edges: [number, number][]
+  faces: number[][]
 }
 
 interface Vertex {
@@ -192,12 +193,27 @@ export class PointGroup {
       }
       edges.push([i, j]);
     }
-
     edges = dedupeEdges(edges);
+
+    // To produce faces, we use:
+    // (R2 * R1)^n p, n2 points
+    // (R3 * R1)^n p, n3 points
+    let edgeOperator1 = realizeCoxeterWord([0, 1], this.operators);
+    let vertex = GENERATOR_POINT;
+    let faceVertices = [];
+    for (let i = 0; i < 5; i++) {
+      vertex = vertex.clone().applyMatrix3(edgeOperator1);
+      const vertexIndex = findVertex(vertex, vertices);
+      if (vertexIndex === null) {
+        throw new Error("Vertex not found");
+      }
+      faceVertices.push(vertexIndex);
+    }
 
     return {
       vertices: vertices.map((x) => x.position),
-      edges
+      edges,
+      faces: [faceVertices]
     };
   }
 }

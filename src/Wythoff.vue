@@ -8,7 +8,7 @@ import * as wythoff from "./wythoff";
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
-const triangle = [4, 2, 3];
+const triangle = [2, 3, 5];
 
 const triangleVertices = wythoff.makeSphericalTriangle(
   Math.PI / triangle[0], Math.PI / triangle[1], Math.PI / triangle[2]
@@ -63,6 +63,35 @@ onMounted(() => {
     let line = new THREE.Line(
       geometry,
       new THREE.LineBasicMaterial({ color: "white" })
+    );
+    scene.add(line);
+  }
+
+  for (let face of polyhedron.faces) {
+    let geometry = new THREE.BufferGeometry();
+    let meshVertices = [];
+
+    let c = face.map(
+      (index) => vertices[index].clone()
+    ).reduce(
+      (vertex1, vertex2) => vertex1.add(vertex2)
+    ).multiplyScalar(1 / face.length);
+
+    for (let i = 0; i < face.length; i++) {
+      const p1 = vertices[face[i]];
+      const p2 = vertices[face[(i + 1) % face.length]];
+      meshVertices.push(p1.x, p1.y, p1.z);
+      meshVertices.push(c.x, c.y, c.z);
+      meshVertices.push(p2.x, p2.y, p2.z);
+    }
+    let meshVerticesArray = new Float32Array(meshVertices);
+    geometry.setAttribute("position", new THREE.BufferAttribute(meshVerticesArray, 3));
+    let line = new THREE.Mesh(
+      geometry,
+      new THREE.MeshBasicMaterial({
+        color: "red",
+        side: THREE.DoubleSide
+      })
     );
     scene.add(line);
   }
