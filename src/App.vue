@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
-import { Vec3, Color } from "ogl";
+import { Vec3 } from "ogl";
 import * as THREE from "three";
 
 import * as polytwisters from "./polytwisters";
@@ -80,8 +80,8 @@ const colors = [
   "#fa5252", // red
 ];
 
-const baseColor: Ref<Color> = computed(
-  () => new Color(colors[polytwisterIndex.value % colors.length]),
+const baseColor: Ref<THREE.Color> = computed(
+  () => new THREE.Color(colors[polytwisterIndex.value % colors.length]),
 );
 
 const shading: Ref<Shading> = ref(0);
