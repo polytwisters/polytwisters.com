@@ -91,23 +91,14 @@ const showRings: Ref<boolean> = ref(false);
 // Canvas
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
-const canvasContainer = useTemplateRef<HTMLElement>("container");
 
 const shaderError: Ref<boolean> = ref(false);
 const shaderLog: Ref<string> = ref("");
 
-let canvasWidth = 0;
-let canvasHeight = 0;
-
 let canvasAspectRatio = 16 / 9;
 
-function setCanvasWidth(newCanvasWidth: number) {
-  canvasWidth = newCanvasWidth;
-  canvasHeight = canvasWidth / canvasAspectRatio;
-  cameraControls.setCanvasScale(Math.min(canvasWidth, canvasHeight));
-}
-
-setCanvasWidth(1000);
+let canvasWidth = 1000;
+let canvasHeight = canvasWidth / canvasAspectRatio;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
@@ -179,7 +170,7 @@ onMounted(() => {
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value!  });
   let material: THREE.ShaderMaterial | null = null;
 
-  renderer.setSize(800, 500);
+  renderer.setSize(canvasWidth, canvasHeight, false);
   renderer.render(scene, threeCamera);
 
   watch(
@@ -210,6 +201,7 @@ onMounted(() => {
         material.uniforms[key].value = newUniforms[key].value;
       }
     }
+
     renderer.render(scene, threeCamera);
     requestAnimationFrame(update);
   }
@@ -252,6 +244,8 @@ const cameraDirection = camera.direction;
       <div class="relative my-3" ref="container" v-if="!shaderError">
         <canvas
           ref="canvas"
+          class="block w-full"
+          :style="{ 'aspect-ratio': canvasAspectRatio + ' / 1' }"
           @pointerdown="cameraControls.canvasPointerDown"
           @wheel.prevent="cameraControls.canvasWheel"
         ></canvas>
