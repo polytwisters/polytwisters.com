@@ -145,19 +145,21 @@ watch(polytwister, () => {
   crossSectionW.value = 0;
 });
 
-const uniforms = computed(() => ({
-  iResolution: { value: [canvasWidth, canvasHeight] },
-  crossSectionW: { value: crossSectionW.value },
-  cameraPosition_: { value: camera.position.value },
-  cameraDirection: { value: camera.direction.value },
-  cameraX: { value: camera.x.value },
-  cameraY: { value: camera.y.value },
-  pipes: { value: pipesR3.value },
-  ringDots: { value: ringDotsPadded.value },
-  shading: { value: shading.value },
-  showRings: { value: showRings.value },
-  baseColor: { value: baseColor.value },
-}));
+function getUniforms(): {[key: string]: any} {
+  return {
+    iResolution: { value: [canvasWidth, canvasHeight] },
+    crossSectionW: { value: crossSectionW.value },
+    cameraPosition_: { value: camera.position.value },
+    cameraDirection: { value: camera.direction.value },
+    cameraX: { value: camera.x.value },
+    cameraY: { value: camera.y.value },
+    pipes: { value: pipesR3.value },
+    ringDots: { value: ringDotsPadded.value },
+    shading: { value: shading.value },
+    showRings: { value: showRings.value },
+    baseColor: { value: baseColor.value },
+  };
+}
 
 onMounted(() => {
   cameraControls.enablePointerEvents();
@@ -174,9 +176,8 @@ onMounted(() => {
   }));
   scene.add(mesh);
 
-  const renderer = new THREE.WebGLRenderer({
-    canvas: canvas.value
-  });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value!  });
+  let material: THREE.ShaderMaterial | null = null;
 
   renderer.setSize(800, 500);
   renderer.render(scene, threeCamera);
@@ -185,8 +186,8 @@ onMounted(() => {
     fragmentShader,
     (newValue) => {
       loading.value = true;
-      const material = new THREE.ShaderMaterial({
-        uniforms: uniforms.value,
+      material = new THREE.ShaderMaterial({
+        uniforms: getUniforms(),
         vertexShader: vertexShader,
         fragmentShader: newValue
       });
@@ -203,10 +204,10 @@ onMounted(() => {
       t += timestamp - lastTimestamp;
     }
     lastTimestamp = timestamp;
-    if (mesh.material.uniforms) {
-      const newUniforms = uniforms.value;
+    if (material) {
+      const newUniforms = getUniforms();
       for (let key of Object.keys(newUniforms)) {
-        mesh.material.uniforms[key].value = newUniforms[key].value;
+        material.uniforms[key].value = newUniforms[key].value;
       }
     }
     renderer.render(scene, threeCamera);
