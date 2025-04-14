@@ -3,7 +3,7 @@ import * as mathUtils from "./mathUtils";
 
 /**
  * Given three interior angles of a spherical triangle, return the side length of the side opposite
- * the first angle.
+ * the FIRST angle.
  */
 function sphericalTriangleSide(angle1: number, angle2: number, angle3: number): number {
   return Math.acos(
@@ -14,7 +14,7 @@ function sphericalTriangleSide(angle1: number, angle2: number, angle3: number): 
 
 /**
  * Given three interior angles of a spherical triangle, produce three unit vectors realizing that
- * spherical triangle on the unit sphere.
+ * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1).
  */
 export function makeSphericalTriangle(angle1: number, angle2: number, angle3: number): Vec3[] {
   if (angle1 + angle2 + angle3 < Math.PI) {
