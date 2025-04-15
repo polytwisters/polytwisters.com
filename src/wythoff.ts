@@ -80,7 +80,6 @@ export class SchwarzTriangle {
     const point2 = mathUtils.fromSpherical(1, 0, Math.PI / 2 - side12);
     const point3 = mathUtils.fromSpherical(1, this.angle1, Math.PI / 2 - side13);
     const result = [point1, point2, point3];
-    console.log(point3);
     return result;
   }
 
@@ -138,10 +137,12 @@ export class PointGroup {
   // are guaranteed to leave GENERATOR_POINT (0, 0, 1) invariant, while the third one is not.
   operators: Matrix3[];
   elements: PointGroupElement[];
+  schwarzTriangle: SchwarzTriangle;
 
   constructor(schwarzTriangle: SchwarzTriangle, operators: Matrix3[], elements: PointGroupElement[]) {
     this.operators = operators;
     this.elements = elements;
+    this.schwarzTriangle = schwarzTriangle;
   }
 
   get order(): number {
@@ -244,7 +245,7 @@ export class PointGroup {
     let edgeOperator1 = realizeCoxeterWord([0, 1], this.operators);
     let vertex = GENERATOR_POINT;
     let faceVertices = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < this.schwarzTriangle.n3.n; i++) {
       vertex = vertex.clone().applyMatrix3(edgeOperator1);
       const vertexIndex = findVertex(vertex, vertices);
       if (vertexIndex === null) {
@@ -252,11 +253,23 @@ export class PointGroup {
       }
       faceVertices.push(vertexIndex);
     }
+  
+    let edgeOperator2 = realizeCoxeterWord([0, 2], this.operators);
+    let vertex2 = GENERATOR_POINT;
+    let faceVertices2 = [];
+    for (let i = 0; i < this.schwarzTriangle.n2.n; i++) {
+      vertex2 = vertex2.clone().applyMatrix3(edgeOperator2);
+      const vertexIndex = findVertex(vertex2, vertices);
+      if (vertexIndex === null) {
+        throw new Error("Vertex not found");
+      }
+      faceVertices2.push(vertexIndex);
+    }
 
     return {
       vertices: vertices.map((x) => x.position),
       edges,
-      faces: [faceVertices]
+      faces: [faceVertices, faceVertices2]
     };
   }
 }

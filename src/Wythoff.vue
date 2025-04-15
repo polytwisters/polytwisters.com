@@ -20,12 +20,11 @@ onMounted(() => {
 
   const scene = new THREE.Scene();
 
-  let geometry = new THREE.SphereGeometry(1);
-  let mesh: THREE.Mesh = new THREE.Mesh(
-    geometry,
-    new THREE.MeshBasicMaterial({ color: "#abcdef", transparent: true, opacity: 0.5 })
-  );
-  scene.add(mesh);
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(10, 10, 10);
+  light.target.position.set(0, 0, 0);
+  scene.add(light);
+  scene.add(light.target);
 
   for (let i = 0; i < 3; i++) {
     let dot = new THREE.Mesh(
@@ -83,14 +82,15 @@ onMounted(() => {
     }
     let meshVerticesArray = new Float32Array(meshVertices);
     geometry.setAttribute("position", new THREE.BufferAttribute(meshVerticesArray, 3));
-    let line = new THREE.Mesh(
+    geometry.computeVertexNormals();
+    let mesh = new THREE.Mesh(
       geometry,
-      new THREE.MeshBasicMaterial({
-        color: "red",
+      new THREE.MeshPhongMaterial({
+        color: ["red", "yellow", "blue"][face.length - 3],
         side: THREE.DoubleSide
       })
     );
-    scene.add(line);
+    scene.add(mesh);
   }
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
