@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
-import { Renderer, Geometry, Program, Mesh, Vec3, Color } from "ogl";
+import { Vec3 } from "ogl";
+import * as THREE from "three";
 
 import * as polytwisters from "./polytwisters";
 import { Polytwister } from "./polytwisters";
@@ -79,8 +80,8 @@ const colors = [
   "#fa5252", // red
 ];
 
-const baseColor: Ref<Color> = computed(
-  () => new Color(colors[polytwisterIndex.value % colors.length]),
+const baseColor: Ref<THREE.Color> = computed(
+  () => new THREE.Color(colors[polytwisterIndex.value % colors.length]),
 );
 
 const shading: Ref<Shading> = ref(0);
@@ -90,23 +91,14 @@ const showRings: Ref<boolean> = ref(false);
 // Canvas
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
-const canvasContainer = useTemplateRef<HTMLElement>("container");
 
 const shaderError: Ref<boolean> = ref(false);
 const shaderLog: Ref<string> = ref("");
 
-let canvasWidth = 0;
-let canvasHeight = 0;
-
 let canvasAspectRatio = 16 / 9;
 
-function setCanvasWidth(newCanvasWidth: number) {
-  canvasWidth = newCanvasWidth;
-  canvasHeight = canvasWidth / canvasAspectRatio;
-  cameraControls.setCanvasScale(Math.min(canvasWidth, canvasHeight));
-}
-
-setCanvasWidth(1000);
+let canvasWidth = 1000;
+let canvasHeight = canvasWidth / canvasAspectRatio;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
@@ -129,14 +121,8 @@ const fragmentShader = computed(() =>
 );
 
 const vertexShader = `
-attribute vec2 uv;
-attribute vec2 position;
-
-varying vec2 vUv;
-
 void main() {
-  vUv = uv;
-  gl_Position = vec4(position, 0, 1);
+  gl_Position = vec4(position, 1);
 }
 `;
 
@@ -150,81 +136,58 @@ watch(polytwister, () => {
   crossSectionW.value = 0;
 });
 
-const uniforms = computed(() => ({
-  iResolution: { value: [canvasWidth, canvasHeight] },
-  crossSectionW: { value: crossSectionW.value },
-  cameraPosition: { value: camera.position.value },
-  cameraDirection: { value: camera.direction.value },
-  cameraX: { value: camera.x.value },
-  cameraY: { value: camera.y.value },
-  pipes: { value: pipesR3.value },
-  ringDots: { value: ringDotsPadded.value },
-  shading: { value: shading.value },
-  showRings: { value: showRings.value },
-  baseColor: { value: baseColor.value },
-}));
+function getUniforms(): {[key: string]: any} {
+  return {
+    iResolution: { value: [canvasWidth, canvasHeight] },
+    crossSectionW: { value: crossSectionW.value },
+    cameraPosition_: { value: camera.position.value },
+    cameraDirection: { value: camera.direction.value },
+    cameraX: { value: camera.x.value },
+    cameraY: { value: camera.y.value },
+    pipes: { value: pipesR3.value },
+    ringDots: { value: ringDotsPadded.value },
+    shading: { value: shading.value },
+    showRings: { value: showRings.value },
+    baseColor: { value: baseColor.value },
+  };
+}
 
 onMounted(() => {
   cameraControls.enablePointerEvents();
 
-  const renderer = new Renderer({
-    canvas: canvas.value!,
-    width: canvasWidth,
-    height: canvasHeight,
-  });
-  const gl = renderer.gl;
+  const threeCamera = new THREE.Camera();
+  threeCamera.position.z = 0;
 
-  // Triangle that covers viewport, with UVs that still span 0 > 1 across viewport
-  const geometry = new Geometry(gl, {
-    position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
-    uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) },
-  });
+  const scene = new THREE.Scene();
 
-  let mesh: Mesh | null = null;
-  let program: Program | null = null;
+  const geometry = new THREE.PlaneGeometry(2, 2);
+
+  let mesh: THREE.Mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+    color: new THREE.Color().setHex(0x000000)
+  }));
+  scene.add(mesh);
+
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value!  });
+  let material: THREE.ShaderMaterial | null = null;
+
+  renderer.setSize(canvasWidth, canvasHeight, false);
+  renderer.render(scene, threeCamera);
 
   watch(
     fragmentShader,
     (newValue) => {
       loading.value = true;
-      program = new Program(gl, {
-        vertex: vertexShader,
-        fragment: newValue,
-        uniforms: uniforms.value,
+      material = new THREE.ShaderMaterial({
+        uniforms: getUniforms(),
+        vertexShader: vertexShader,
+        fragmentShader: newValue
       });
-      let log = gl.getShaderInfoLog(program.fragmentShader);
-      if (log !== "") {
-        shaderError.value = true;
-        shaderLog.value = `Error in fragment shader\n${log}`;
-      }
-
-      mesh = new Mesh(gl, { geometry, program });
+      mesh.material = material;
       loading.value = false;
     },
     { immediate: true },
   );
 
-  // Periodically change the canvas size to match the containing element.
-  setInterval(() => {
-    let newCanvasWidth = canvasWidth;
-    try {
-      newCanvasWidth = parseFloat(
-        window
-          .getComputedStyle(canvasContainer.value!)
-          .getPropertyValue("width"),
-      );
-    } catch (e) {
-      // sloppy, sometimes canvasContainer is undefined, not sure why
-      return;
-    }
-    if (newCanvasWidth === canvasWidth) {
-      return;
-    }
-    setCanvasWidth(newCanvasWidth);
-    renderer.setSize(canvasWidth, canvasHeight);
-  }, 1000);
-
-  requestAnimationFrame(update);
   let t: number = 0.0;
   let lastTimestamp: number | null = null;
   function update(timestamp: number) {
@@ -232,14 +195,17 @@ onMounted(() => {
       t += timestamp - lastTimestamp;
     }
     lastTimestamp = timestamp;
-    if (program !== null) {
-      program.uniforms = uniforms.value;
+    if (material) {
+      const newUniforms = getUniforms();
+      for (let key of Object.keys(newUniforms)) {
+        material.uniforms[key].value = newUniforms[key].value;
+      }
     }
-    if (mesh !== null) {
-      renderer.render({ scene: mesh });
-    }
+
+    renderer.render(scene, threeCamera);
     requestAnimationFrame(update);
   }
+  requestAnimationFrame(update);
 });
 
 // For some reason the Axes props don't work if I try to use the imports
@@ -278,6 +244,8 @@ const cameraDirection = camera.direction;
       <div class="relative my-3" ref="container" v-if="!shaderError">
         <canvas
           ref="canvas"
+          class="block w-full"
+          :style="{ 'aspect-ratio': canvasAspectRatio + ' / 1' }"
           @pointerdown="cameraControls.canvasPointerDown"
           @wheel.prevent="cameraControls.canvasWheel"
         ></canvas>
@@ -288,7 +256,7 @@ const cameraDirection = camera.direction;
         />
         <div
           class="absolute top-0 left-0 size-full flex items-center justify-center"
-          v-if="loading"
+          v-if="false"
         >
           <div class="material-symbols-rounded animate-spin">
             progress_activity

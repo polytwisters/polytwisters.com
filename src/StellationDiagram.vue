@@ -37,7 +37,8 @@ const circles: Ref<Circle[]> = computed(() => {
     const logNormalized = log.multiplyBySU2Matrix(u).mulReal(k);
 
     if (logNormalized.b.abs() <= EPSILON) {
-      // This eliminates parallel pipes.
+      // This eliminates parallel pipes, including the pipe that we're currently taking the
+      // stellation diagram of.
       return null;
     }
 
