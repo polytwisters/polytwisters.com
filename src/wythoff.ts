@@ -1,5 +1,5 @@
 import { Vec3 } from "ogl";
-import { EdgesGeometry, Matrix3, Vector3 } from "three";
+import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 
 interface Polyhedron {
@@ -239,37 +239,51 @@ export class PointGroup {
     }
     edges = dedupeEdges(edges);
 
-    // To produce faces, we use:
-    // (R2 * R1)^n p, n2 points
-    // (R3 * R1)^n p, n3 points
-    let edgeOperator1 = realizeCoxeterWord([0, 1], this.operators);
-    let vertex = GENERATOR_POINT;
-    let faceVertices = [];
-    for (let i = 0; i < this.schwarzTriangle.n3.n; i++) {
-      vertex = vertex.clone().applyMatrix3(edgeOperator1);
-      const vertexIndex = findVertex(vertex, vertices);
-      if (vertexIndex === null) {
-        throw new Error("Vertex not found");
+    function makeFace(edgeWalker: Matrix3, count: number): number[] {
+      let vertex = GENERATOR_POINT;
+      let face = [];
+      for (let i = 0; i < count; i++) {
+        vertex = vertex.clone().applyMatrix3(edgeWalker);
+        const vertexIndex = findVertex(vertex, vertices);
+        if (vertexIndex === null) {
+          throw new Error("Vertex not found");
+        }
+        face.push(vertexIndex);
       }
-      faceVertices.push(vertexIndex);
+      return face;
     }
   
-    let edgeOperator2 = realizeCoxeterWord([0, 2], this.operators);
-    let vertex2 = GENERATOR_POINT;
-    let faceVertices2 = [];
-    for (let i = 0; i < this.schwarzTriangle.n2.n; i++) {
-      vertex2 = vertex2.clone().applyMatrix3(edgeOperator2);
-      const vertexIndex = findVertex(vertex2, vertices);
-      if (vertexIndex === null) {
-        throw new Error("Vertex not found");
+    function symmetrizeFace(face: number[], elements: Matrix3[]): number[][] {
+      const vertexLocations = face.map((x) => vertices[x].position);
+      const result = [];
+      for (let element of elements) {
+        const vertexLocations2 = vertexLocations.map((x) => x.clone().applyMatrix3(element));
+        const vertexIndices = vertexLocations2.map((x) => {
+          let result = findVertex(x, vertices);
+          if (result === null) {
+            throw new Error("Vertex not found");
+          }
+          return result;
+        });
+        result.push(vertexIndices);
       }
-      faceVertices2.push(vertexIndex);
+      return result;
     }
+
+    const elementMatrices = this.elements.map((x) => x.matrix);
+
+    let face1 = makeFace(realizeCoxeterWord([0, 1], this.operators), this.schwarzTriangle.n3.n);
+    let face2 = makeFace(realizeCoxeterWord([0, 2], this.operators), this.schwarzTriangle.n2.n);
+    let faces: number[][] = [];
+    faces = faces.concat(symmetrizeFace(face1, elementMatrices));
+    faces = faces.concat(symmetrizeFace(face2, elementMatrices));
+    faces = faces.filter((x) => x.length > 2);
+    faces = dedupeFaces(faces);
 
     return {
       vertices: vertices.map((x) => x.position),
       edges,
-      faces: [faceVertices, faceVertices2]
+      faces
     };
   }
 }
@@ -299,6 +313,46 @@ function dedupeEdges(edges: [number, number][]): [number, number][] {
     }
     if (found === false) {
       result.push(edge);
+    }
+  }
+  return result;
+}
+
+function facesEqual(face1: number[], face2: number[]): boolean {
+  if (face1.length !== face2.length) {
+    return false;
+  }
+  const n = face1.length;
+  for (let offset = 0; offset < n; offset++) {
+    let match = true;
+    for (let i = 0; i < n; i++) {
+      if (face1[i] !== face2[(offset + i) % n]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      return true;
+    }
+    match = true;
+    for (let i = 0; i < n; i++) {
+      if (face1[i] !== face2[(offset - i + n) % n]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function dedupeFaces(faces: number[][]): number[][] {
+  const result: number[][] = [];
+  for (let face of faces) {
+    if (!result.some((candidate) => facesEqual(face, candidate))) {
+      result.push(face);
     }
   }
   return result;

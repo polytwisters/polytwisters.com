@@ -7,7 +7,7 @@ import * as wythoff from "./wythoff";
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
-const schwarzTriangle = new wythoff.SchwarzTriangle(2, 3, [5, 2]);
+const schwarzTriangle = new wythoff.SchwarzTriangle(2, 3, 5);
 
 const triangleVertices = schwarzTriangle.vertices();
 const group = wythoff.PointGroup.fromSchwarzTriangle(schwarzTriangle);
@@ -22,9 +22,9 @@ onMounted(() => {
 
   const light = new THREE.DirectionalLight(0xffffff, 1);
   light.position.set(10, 10, 10);
-  light.target.position.set(0, 0, 0);
   scene.add(light);
-  scene.add(light.target);
+  const light2 = new THREE.AmbientLight(0xffffff, 0.1);
+  scene.add(light2);
 
   for (let i = 0; i < 3; i++) {
     let dot = new THREE.Mesh(

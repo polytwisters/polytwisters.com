@@ -45,22 +45,29 @@ test("4 | 2 3 (octahedron) has 6 vertices", () => {
   const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron();
   expect(polyhedron.vertices.length).toBe(6);
   expect(polyhedron.edges.length).toBe(12);
+  expect(polyhedron.faces.length).toBe(8);
 });
 
 test("5 | 2 3 (icosahedron) has 12 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(5, 2, 3);
-  const points = wythoff.PointGroup.fromSchwarzTriangle(triangle).orbit();
-  expect(points.length).toBe(12);
+  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron();
+  expect(polyhedron.vertices.length).toBe(12);
+  expect(polyhedron.edges.length).toBe(30);
+  expect(polyhedron.faces.length).toBe(20);
 });
 
 test("3 | 2 5 (dodecahedron) has 20 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(3, 2, 5);
-  const points = wythoff.PointGroup.fromSchwarzTriangle(triangle).orbit();
-  expect(points.length).toBe(20);
+  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron();
+  expect(polyhedron.vertices.length).toBe(20);
+  expect(polyhedron.edges.length).toBe(30);
+  expect(polyhedron.faces.length).toBe(12);
 });
 
 test("2 | 3 5 (icosidodecahedron) has 30 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
-  const points = wythoff.PointGroup.fromSchwarzTriangle(triangle).orbit();
-  expect(points.length).toBe(30);
+  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron();
+  expect(polyhedron.vertices.length).toBe(30);
+  expect(polyhedron.edges.length).toBe(60);
+  expect(polyhedron.faces.length).toBe(32);
 });
