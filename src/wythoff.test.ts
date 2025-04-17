@@ -1,5 +1,4 @@
 import { test, expect } from "vitest";
-import { Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 import * as wythoff from "./wythoff";
 
@@ -8,20 +7,20 @@ test("SchwarzTriangles' vertices have correct interior angles", () => {
   const result = triangle.vertices();
 
   for (let vector of result) {
-    expect(vector.len()).toBeCloseTo(1.0);
+    expect(vector.length()).toBeCloseTo(1.0);
   }
 
-  const expectedAngle1 = mathUtils.reject(result[1], result[0]).angle(
+  const expectedAngle1 = mathUtils.reject(result[1], result[0]).angleTo(
     mathUtils.reject(result[2], result[0])
   );
   expect(expectedAngle1).toBeCloseTo(triangle.angle1);
 
-  const expectedAngle2 = mathUtils.reject(result[2], result[1]).angle(
+  const expectedAngle2 = mathUtils.reject(result[2], result[1]).angleTo(
     mathUtils.reject(result[0], result[1])
   );
   expect(expectedAngle2).toBeCloseTo(triangle.angle2);
 
-  const expectedAngle3 = mathUtils.reject(result[1], result[2]).angle(
+  const expectedAngle3 = mathUtils.reject(result[1], result[2]).angleTo(
     mathUtils.reject(result[0], result[2])
   );
   expect(expectedAngle3).toBeCloseTo(triangle.angle3);
@@ -30,9 +29,9 @@ test("SchwarzTriangles' vertices have correct interior angles", () => {
 test("SchwarzTriangle's mirrors have correct angles", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
   const result = triangle.mirrors();
-  expect(Math.PI - result[1].angle(result[2])).toBeCloseTo(triangle.angle1);
-  expect(Math.PI - result[2].angle(result[0])).toBeCloseTo(triangle.angle2);
-  expect(Math.PI - result[0].angle(result[1])).toBeCloseTo(triangle.angle3);
+  expect(Math.PI - result[1].angleTo(result[2])).toBeCloseTo(triangle.angle1);
+  expect(Math.PI - result[2].angleTo(result[0])).toBeCloseTo(triangle.angle2);
+  expect(Math.PI - result[0].angleTo(result[1])).toBeCloseTo(triangle.angle3);
 });
 
 test("Icosahedral group has order 120", () => {
