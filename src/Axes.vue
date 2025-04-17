@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Vec3 } from "ogl";
+import { Vector3 } from "three";
 
 const props = defineProps({
-  cameraX: { type: Vec3, required: true },
-  cameraY: { type: Vec3, required: true },
-  cameraDirection: { type: Vec3, required: true },
+  cameraX: { type: Vector3, required: true },
+  cameraY: { type: Vector3, required: true },
+  cameraDirection: { type: Vector3, required: true },
 });
 
 interface LineSpec {
