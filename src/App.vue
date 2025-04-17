@@ -41,6 +41,10 @@ const polytwisterDef: Ref<PolytwisterDef> = computed(
 const polytwister: Ref<Polytwister> = computed(() =>
   Polytwister.fromDef(polytwisterDef.value).normalized(),
 );
+const polytwisterSymbol: Ref<polytwisterDefs.PolytwisterSymbolLike> = computed(() =>
+  polytwisterDef.value.symbol,
+);
+
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
 const rings = computed(() => polytwister.value.findRings());
@@ -229,8 +233,6 @@ const cameraDirection = camera.direction;
         </div>
       </div>
 
-      <Wythoff v-if="experimentalMode" />
-
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
           <Button @click="camera.reset" material icon="home" help="Reset camera" />
@@ -270,7 +272,9 @@ const cameraDirection = camera.direction;
 
       <WSlider v-model="crossSectionW" />
 
+      <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
+
       <Article />
     </div>
   </div>

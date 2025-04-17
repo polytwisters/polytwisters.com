@@ -1,5 +1,6 @@
 import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
+import { type Fraction, type FractionLike, asFraction } from "./fraction";
 
 interface Polyhedron {
   vertices: Vector3[],
@@ -10,26 +11,6 @@ interface Polyhedron {
 interface Vertex {
   position: Vector3,
   matrix: Matrix3
-}
-
-interface Fraction {
-  n: number,
-  d: number
-}
-
-type Fractionable = number | Fraction | [number, number];
-
-function asFraction(thing: Fractionable): Fraction {
-  if (typeof thing === "number") {
-    if (thing !== Math.floor(thing)) {
-      throw new Error("Non-integer used as fraction. Try writing [a, b] instead of a / b.");
-    }
-    return { n: thing, d: 1 }
-  }
-  if (Array.isArray(thing)) {
-    return { n: thing[0], d: thing[1] };
-  }
-  return thing;
 }
 
 function schwarzAngle(fraction: Fraction): number {
@@ -47,7 +28,7 @@ export class SchwarzTriangle {
   n2: Fraction;
   n3: Fraction;
 
-  constructor(n1: Fractionable, n2: Fractionable, n3: Fractionable) {
+  constructor(n1: FractionLike, n2: FractionLike, n3: FractionLike) {
     this.n1 = asFraction(n1);
     this.n2 = asFraction(n2);
     this.n3 = asFraction(n3);
