@@ -22,6 +22,9 @@ type Fractionable = number | Fraction | [number, number];
 
 function asFraction(thing: Fractionable): Fraction {
   if (typeof thing === "number") {
+    if (thing !== Math.floor(thing)) {
+      throw new Error("Non-integer used as fraction. Try writing [a, b] instead of a / b.");
+    }
     return { n: thing, d: 1 }
   }
   if (Array.isArray(thing)) {
@@ -49,11 +52,18 @@ export class SchwarzTriangle {
     this.n1 = asFraction(n1);
     this.n2 = asFraction(n2);
     this.n3 = asFraction(n3);
+    this.check();
   }
 
   get angle1() { return schwarzAngle(this.n1); }
   get angle2() { return schwarzAngle(this.n2); }
   get angle3() { return schwarzAngle(this.n3); }
+
+  private check() {
+    if (this.angle1 + this.angle2 + this.angle3 <= Math.PI) {
+      throw new Error("Invalid spherical triangle: angles must sum to more than 180 degrees");
+    }
+  }
 
   /**
    * Given three interior angles of a spherical triangle, return the side length of the side opposite
@@ -71,9 +81,6 @@ export class SchwarzTriangle {
    * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1).
    */
   vertices(): Vec3[] {
-    if (this.angle1 + this.angle2 + this.angle3 < Math.PI) {
-      throw new Error("Invalid spherical triangle: angles must sum to 180 degrees or more");
-    }
     const point1 = new Vec3(0, 0, 1);
     const side12 = SchwarzTriangle.sphericalTriangleSide(this.angle3, this.angle1, this.angle2);
     const side13 = SchwarzTriangle.sphericalTriangleSide(this.angle2, this.angle1, this.angle3);

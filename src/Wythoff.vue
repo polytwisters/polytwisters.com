@@ -7,16 +7,15 @@ import * as wythoff from "./wythoff";
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
-const schwarzTriangle = new wythoff.SchwarzTriangle(2, 3, 5);
+const schwarzTriangle = new wythoff.SchwarzTriangle(3, 5, [3, 2]);
 
-const triangleVertices = schwarzTriangle.vertices();
 const group = wythoff.PointGroup.fromSchwarzTriangle(schwarzTriangle);
 const polyhedron = group.makePolyhedron();
 const vertices = polyhedron.vertices;
 
 onMounted(() => {
   const threeCamera = new THREE.PerspectiveCamera(45, 1.0, 1, 1000);
-  threeCamera.position.z = 5;
+  threeCamera.position.z = 3;
 
   const scene = new THREE.Scene();
 
@@ -26,20 +25,9 @@ onMounted(() => {
   const light2 = new THREE.AmbientLight(0xffffff, 0.1);
   scene.add(light2);
 
-  for (let i = 0; i < 3; i++) {
-    let dot = new THREE.Mesh(
-      new THREE.SphereGeometry(0.03),
-      new THREE.MeshBasicMaterial({ color: ["red", "lime", "blue"][i] })
-    );
-    const offset = 1.05;
-    const point = triangleVertices[i];
-    dot.position.set(point.x * offset, point.y * offset, point.z * offset);
-    scene.add(dot);
-  }
-
   for (let point of vertices) {
     let dot = new THREE.Mesh(
-      new THREE.SphereGeometry(0.03),
+      new THREE.SphereGeometry(0.01),
       new THREE.MeshBasicMaterial()
     );
     dot.position.set(point.x, point.y, point.z);
