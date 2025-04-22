@@ -3,7 +3,7 @@ import { PolytwisterDef } from "./polytwisterDefs";
 import { type CSG } from "./csg";
 import * as csg from "./csg";
 import { Polyhedron, symbolToPolyhedron } from "./wythoff";
-import { SchlafliSymbol } from "./symbol";
+import { PolytwisterSymbol } from "./symbol";
 
 const EPSILON = 1e-5;
 
@@ -501,12 +501,17 @@ export class Polytwister {
 
   static fromDef2(def: PolytwisterDef): Polytwister {
     const polyhedron = symbolToPolyhedron(
-      SchlafliSymbol.from(def.symbol)
+      PolytwisterSymbol.from(def.symbol)
     );
     const faces = polyhedron.faces;
+    const rings = polyhedron.vertices;
     const logs: C2[] = [];
     for (let face of faces) {
-      logs.push(C2.inverseHopfMapNormalized(face.center));
+      let ring = C2.inverseHopfMapNormalized(rings[face.vertexIndices[0]]);
+      let unscaledLogPoint = C2.inverseHopfMapNormalized(face.center);
+      // Find k so that the inner product <ring, unscaledLogPoint * k> = 1.
+      let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
+      logs.push(logPoint);
     }
     return new Polytwister(logs, csg.convex(logs.length));
   }

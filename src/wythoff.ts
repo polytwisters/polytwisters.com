@@ -1,7 +1,7 @@
 import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 import { type Fraction, type FractionLike, asFraction } from "./fraction";
-import { type PolytwisterSymbolLike, SchlafliSymbol } from "./symbol";
+import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
 
 export interface Polyhedron {
   vertices: Vector3[],
@@ -46,8 +46,8 @@ export class SchwarzTriangle {
   get angle3() { return schwarzAngle(this.n3); }
 
   static fromSymbol(symbol: PolytwisterSymbolLike) {
-    const symbol2 = SchlafliSymbol.from(symbol);
-    return new SchwarzTriangle(symbol2.ringFigure, symbol2.twister, 2);
+    const symbol2 = PolytwisterSymbol.from(symbol);
+    return new SchwarzTriangle(symbol2.ring, symbol2.twister1, symbol2.twister2);
   }
 
   private check() {
@@ -200,7 +200,7 @@ export class PointGroup {
     return result;
   }
 
-  makePolyhedron(): Polyhedron {
+  makePolyhedron(quasiregular: boolean): Polyhedron {
     // Apply all elements in the group to the vertex, keeping track of the matrices used to produce
     // them.
     let vertexCandidates = this.elements.map((element) =>
@@ -285,19 +285,21 @@ export class PointGroup {
 
     const schwarzTriangleVertices = this.schwarzTriangle.vertices();
 
+    let faces: Face[] = [];
     let face1 = makeFace(
       realizeCoxeterWord([0, 1], this.operators),
       this.schwarzTriangle.n3.n,
       schwarzTriangleVertices[2],
     );
-    let face2 = makeFace(
-      realizeCoxeterWord([0, 2], this.operators),
-      this.schwarzTriangle.n2.n,
-      schwarzTriangleVertices[1],
-    );
-    let faces: Face[] = [];
     faces = faces.concat(symmetrizeFace(face1, elementMatrices));
-    faces = faces.concat(symmetrizeFace(face2, elementMatrices));
+    if (quasiregular) {
+      let face2 = makeFace(
+        realizeCoxeterWord([0, 2], this.operators),
+        this.schwarzTriangle.n2.n,
+        schwarzTriangleVertices[1],
+      );
+      faces = faces.concat(symmetrizeFace(face2, elementMatrices));
+    }
     // faces = faces.filter((x) => x.vertexIndices.length > 2);
     faces = dedupeFaces(faces);
 
@@ -340,7 +342,38 @@ function dedupeEdges(edges: [number, number][]): [number, number][] {
 }
 
 function facesEqual(face1: Face, face2: Face): boolean {
-  return face1.center.distanceTo(face2.center) <= 1e-3;
+  if (face1.center.distanceTo(face2.center) > 1e-3) {
+    return false;
+  }
+  const vertices1 = face1.vertexIndices;
+  const vertices2 = face2.vertexIndices;
+  if (vertices1.length !== vertices2.length) {
+    return false;
+  }
+  const n = vertices1.length;
+  for (let offset = 0; offset < n; offset++) {
+    let match = true;
+    for (let i = 0; i < n; i++) {
+      if (vertices1[i] !== vertices2[(offset + i) % n]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      return true;
+    }
+    match = true;
+    for (let i = 0; i < n; i++) {
+      if (vertices1[i] !== vertices2[(offset - i + n) % n]) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function dedupeFaces(faces: Face[]): Face[] {
@@ -353,8 +386,8 @@ function dedupeFaces(faces: Face[]): Face[] {
   return result;
 }
 
-export function symbolToPolyhedron(symbol: SchlafliSymbol): Polyhedron {
+export function symbolToPolyhedron(symbol: PolytwisterSymbol): Polyhedron {
   return PointGroup.fromSchwarzTriangle(
     SchwarzTriangle.fromSymbol(symbol)
-  ).makePolyhedron();
+  ).makePolyhedron(symbol.quasiregular);
 }

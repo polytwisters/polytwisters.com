@@ -1,24 +1,52 @@
 import { asFraction, type Fraction, type FractionLike } from "./fraction";
 
-// Typechecking fails with the tuple [FractionLike, FractionLike] unfortunately.
-export type PolytwisterSymbolLike = FractionLike[] | SchlafliSymbol;
+export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
 
-export class SchlafliSymbol {
-  twister: Fraction;
-  ringFigure: Fraction;
+/**
+ * A Wythoff-style symbol for a polytwister. The fields "ring," "twister1," and
+ * "twister2" are the angles between three mirrors. The generator point is
+ * placed at the "ring" mirror. If "quasiregular" is false, a generator plane
+ * is placed at "twister1" only. If it is true, a generator plane is placed at
+ * both types of twisters.
+ */
+export class PolytwisterSymbol {
+  ring: Fraction;
+  twister1: Fraction;
+  twister2: Fraction;
+  quasiregular: boolean;
   
-  constructor(twister: FractionLike, ringFigure: FractionLike) {
-    this.twister = asFraction(twister);
-    this.ringFigure = asFraction(ringFigure);
+  constructor(ring: Fraction, twister1: Fraction, twister2: Fraction, quasiregular: boolean) {
+    this.ring = ring;
+    this.twister1 = twister1;
+    this.twister2 = twister2;
+    this.quasiregular = quasiregular;
   }
 
   static from(thing: PolytwisterSymbolLike) {
-    if (thing instanceof SchlafliSymbol) {
-      return new SchlafliSymbol(thing.twister, thing.ringFigure);
+    if (thing instanceof PolytwisterSymbol) {
+      return new PolytwisterSymbol(
+        thing.ring,
+        thing.twister1,
+        thing.twister2,
+        thing.quasiregular
+      );
     }
-    if (thing.length !== 2) {
-      throw new Error("Must have length 2");
+    if (thing.length === 2) {
+      return new PolytwisterSymbol(
+        asFraction(thing[1]),
+        asFraction(2),
+        asFraction(thing[0]),
+        false
+      );
     }
-    return new SchlafliSymbol(thing[0], thing[1]);
+    if (thing.length === 3) {
+      return new PolytwisterSymbol(
+        asFraction(thing[2]),
+        asFraction(thing[0]),
+        asFraction(thing[1]),
+        true
+      );
+    }
+    throw new Error("Invalid polytwister symbol");
   }
 }

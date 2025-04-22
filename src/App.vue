@@ -11,7 +11,7 @@ import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
 import * as csg from "./csg";
 import { type CSG } from "./csg";
-import { SchlafliSymbol } from "./symbol";
+import { PolytwisterSymbol } from "./symbol";
 
 import Button from "./Button.vue";
 import Article from "./Article.vue";
@@ -44,8 +44,8 @@ const polytwisterDef: Ref<PolytwisterDef> = computed(
 const polytwister: Ref<Polytwister> = computed(() =>
   Polytwister.fromDef2(polytwisterDef.value).normalized(),
 );
-const polytwisterSymbol: Ref<SchlafliSymbol> = computed(() =>
-  SchlafliSymbol.from(polytwisterDef.value.symbol),
+const polytwisterSymbol: Ref<PolytwisterSymbol> = computed(() =>
+  PolytwisterSymbol.from(polytwisterDef.value.symbol),
 );
 
 const numPipes = computed(() => polytwister.value.numLogs);

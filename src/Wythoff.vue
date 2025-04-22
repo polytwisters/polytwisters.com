@@ -4,10 +4,10 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import * as wythoff from "./wythoff";
-import { SchlafliSymbol, type PolytwisterSymbolLike } from "./symbol";
+import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
 
 const props = defineProps<{ symbol: PolytwisterSymbolLike }>();
-const symbol = computed(() => SchlafliSymbol.from(props.symbol));
+const symbol = computed(() => PolytwisterSymbol.from(props.symbol));
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
@@ -16,7 +16,7 @@ const schwarzTriangle = computed(() => wythoff.SchwarzTriangle.fromSymbol(symbol
 const group = computed(() =>
   wythoff.PointGroup.fromSchwarzTriangle(schwarzTriangle.value)
 );
-const polyhedron = computed(() => group.value.makePolyhedron());
+const polyhedron = computed(() => group.value.makePolyhedron(symbol.value.quasiregular));
 
 onMounted(() => {
   const threeCamera = new THREE.PerspectiveCamera(45, 1.0, 1, 1000);

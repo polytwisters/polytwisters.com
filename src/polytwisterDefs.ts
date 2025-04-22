@@ -1,6 +1,5 @@
 import { C2 } from "./polytwisters";
 import { type Union, type Intersection } from "./csg";
-import * as csg from "./csg";
 import { Vector3, Matrix3 } from "three";
 
 import { PolytwisterSymbolLike } from "./symbol";
@@ -26,51 +25,6 @@ export interface PolytwisterDef {
   name: string;
   symbol: PolytwisterSymbolLike
 }
-
-const tetratwister = {
-  name: "tetratwister",
-  symbol: [3, 3],
-};
-
-const bloatedTetratwister = {
-  name: "bloated tetratwister",
-  symbol: [3, [3, 2]],
-};
-
-const quasitetratwister = {
-  name: "quasitetratwister",
-  symbol: [[3, 2], 3],
-};
-
-const octatwister = {
-  name: "octatwister",
-  symbol: [3, 4],
-};
-
-const quasioctatwister = {
-  name: "quasioctatwister",
-  symbol: [[3, 2], 4],
-};
-
-const bloatedOctatwister = {
-  name: "bloated octatwister",
-  symbol: [3, [4, 3]],
-};
-
-const cubetwister = {
-  name: "cubetwister",
-  symbol: [4, 3],
-};
-
-const dodecatwister = {
-  name: "dodecatwister",
-  symbol: [5, 3],
-};
-
-const icosatwister = {
-  name: "icosatwister",
-  symbol: [3, 5],
-};
 
 function dyadicTwister(n: number): PolytwisterDef {
   const result = {
@@ -99,21 +53,55 @@ function starDyadicTwister(n: number, d: number): PolytwisterDef {
 }
 
 export const allPolytwisterDefs: PolytwisterDef[] = [
-  tetratwister,
-  bloatedTetratwister,
-  quasitetratwister,
-  cubetwister,
-  octatwister,
-  quasioctatwister,
-  bloatedOctatwister,
-  dodecatwister,
-  icosatwister,
+  {
+    name: "tetratwister",
+    symbol: [3, 3],
+  },
+  {
+    name: "cubetwister",
+    symbol: [4, 3],
+  },
+  {
+    name: "octatwister",
+    symbol: [3, 4],
+  },
+  {
+    name: "dodecatwister",
+    symbol: [5, 3],
+  },
+  {
+    name: "icosatwister",
+    symbol: [3, 5],
+  },
   dyadicTwister(3),
   dyadicTwister(4),
   dyadicTwister(5),
-  starDyadicTwister(3, 2),
-  starDyadicTwister(4, 3),
-  starDyadicTwister(5, 2),
-  starDyadicTwister(5, 3),
-  starDyadicTwister(5, 4),
+  {
+    name: "cuboctatwister",
+    symbol: [3, 4, 2],
+  },
+  {
+    name: "icosidodecatwister",
+    symbol: [3, 5, 2],
+  },
+  {
+    name: "sheaved tetratwister",
+    symbol: [3, 2, 3],
+  },
+  {
+    name: "sheaved cubetwister",
+    symbol: [4, 2, 3],
+  },
+  {
+    name: "sheaved octatwister",
+    symbol: [3, 2, 4],
+  },
+  {
+    name: "sheaved dodecatwister",
+    symbol: [5, 2, 3],
+  },
+  {
+    name: "sheaved icosatwister",
+    symbol: [3, 2, 5],
+  },
 ];
