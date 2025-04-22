@@ -503,18 +503,10 @@ export class Polytwister {
     const polyhedron = symbolToPolyhedron(
       SchlafliSymbol.from(def.symbol)
     );
-    const vertices = polyhedron.vertices;
     const faces = polyhedron.faces;
-    const rings = vertices.map((point) => C2.inverseHopfMapNormalized(point));
     const logs: C2[] = [];
     for (let face of faces) {
-      const twisterRings = face.vertexIndices.map((index) => rings[index]);
-      const pipes = C2.intersect(twisterRings[0], twisterRings[1], twisterRings[2]);
-      if (pipes[0].abs() < pipes[1].abs()) {
-        logs.push(pipes[0]);
-      } else {
-        logs.push(pipes[1]);
-      }
+      logs.push(C2.inverseHopfMapNormalized(face.center));
     }
     return new Polytwister(logs, csg.convex(logs.length));
   }

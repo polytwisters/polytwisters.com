@@ -10,7 +10,8 @@ export interface Polyhedron {
 }
 
 interface Face {
-  vertexIndices: number[]
+  vertexIndices: number[],
+  center: Vector3
 }
 
 interface Vertex {
@@ -241,7 +242,7 @@ export class PointGroup {
      * An edge walker is a matrix M that, given any vertex v, Mv is an adjacent
      * vertex. Thus v, Mv, M^2 v, M^3 v, etc. produces all vertices of the face.
      */
-    function makeFace(edgeWalker: Matrix3, count: number): Face {
+    function makeFace(edgeWalker: Matrix3, count: number, center: Vector3): Face {
       let vertex = GENERATOR_POINT;
       let face = [];
       for (let i = 0; i < count; i++) {
@@ -253,7 +254,8 @@ export class PointGroup {
         face.push(vertexIndex);
       }
       return {
-        vertexIndices: face
+        vertexIndices: face,
+        center
       };
     }
   
@@ -273,21 +275,30 @@ export class PointGroup {
           }
           return result;
         });
-        result.push({
-          vertexIndices
-        });
+        const center = face.center.clone().applyMatrix3(element);
+        result.push({ vertexIndices, center });
       }
       return result;
     }
 
     const elementMatrices = this.elements.map((x) => x.matrix);
 
-    let face1 = makeFace(realizeCoxeterWord([0, 1], this.operators), this.schwarzTriangle.n3.n);
-    let face2 = makeFace(realizeCoxeterWord([0, 2], this.operators), this.schwarzTriangle.n2.n);
+    const schwarzTriangleVertices = this.schwarzTriangle.vertices();
+
+    let face1 = makeFace(
+      realizeCoxeterWord([0, 1], this.operators),
+      this.schwarzTriangle.n3.n,
+      schwarzTriangleVertices[2],
+    );
+    let face2 = makeFace(
+      realizeCoxeterWord([0, 2], this.operators),
+      this.schwarzTriangle.n2.n,
+      schwarzTriangleVertices[1],
+    );
     let faces: Face[] = [];
     faces = faces.concat(symmetrizeFace(face1, elementMatrices));
     faces = faces.concat(symmetrizeFace(face2, elementMatrices));
-    faces = faces.filter((x) => x.vertexIndices.length > 2);
+    // faces = faces.filter((x) => x.vertexIndices.length > 2);
     faces = dedupeFaces(faces);
 
     return {
@@ -328,40 +339,14 @@ function dedupeEdges(edges: [number, number][]): [number, number][] {
   return result;
 }
 
-function facesEqual(face1: number[], face2: number[]): boolean {
-  if (face1.length !== face2.length) {
-    return false;
-  }
-  const n = face1.length;
-  for (let offset = 0; offset < n; offset++) {
-    let match = true;
-    for (let i = 0; i < n; i++) {
-      if (face1[i] !== face2[(offset + i) % n]) {
-        match = false;
-        break;
-      }
-    }
-    if (match) {
-      return true;
-    }
-    match = true;
-    for (let i = 0; i < n; i++) {
-      if (face1[i] !== face2[(offset - i + n) % n]) {
-        match = false;
-        break;
-      }
-    }
-    if (match) {
-      return true;
-    }
-  }
-  return false;
+function facesEqual(face1: Face, face2: Face): boolean {
+  return face1.center.distanceTo(face2.center) <= 1e-3;
 }
 
 function dedupeFaces(faces: Face[]): Face[] {
   const result: Face[] = [];
   for (let face of faces) {
-    if (!result.some((candidate) => facesEqual(face.vertexIndices, candidate.vertexIndices))) {
+    if (!result.some((candidate) => facesEqual(face, candidate))) {
       result.push(face);
     }
   }
