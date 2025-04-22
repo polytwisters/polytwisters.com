@@ -88,8 +88,10 @@ const colors = [
   "#fa5252", // red
 ];
 
-const baseColor: Ref<THREE.Color> = computed(
-  () => new THREE.Color(colors[polytwisterIndex.value % colors.length]),
+const twisterColors: Ref<THREE.Color[]> = computed(
+  () => polytwister.value.polyhedron?.faces.map((face) => 
+    new THREE.Color(colors[face.vertexIndices.length])
+  ) || []
 );
 
 const shading: Ref<Shading> = ref(0);
@@ -154,7 +156,7 @@ function getUniforms(): {[key: string]: any} {
     ringDots: { value: ringDotsPadded.value },
     shading: { value: shading.value },
     showRings: { value: showRings.value },
-    baseColor: { value: baseColor.value },
+    colors: { value: twisterColors.value },
   };
 }
 

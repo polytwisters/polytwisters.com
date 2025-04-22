@@ -474,12 +474,14 @@ export class ConvexPolytwister {
 export class Polytwister {
   logs: C2[];
   csg: CSG;
+  polyhedron: Polyhedron | null;
 
   convexComponents: ConvexPolytwister[];
 
-  constructor(logs: C2[], csg: CSG) {
+  constructor(logs: C2[], csg: CSG, polyhedron: Polyhedron | null) {
     this.logs = logs;
     this.csg = csg;
+    this.polyhedron = polyhedron;
 
     this.convexComponents = [];
     for (let intersection of this.csg.operands) {
@@ -496,6 +498,7 @@ export class Polytwister {
     return new Polytwister(
       points.map((point) => C2.inverseHopfMapNested(point)),
       csgDef || csg.convex(points.length),
+      null
     );
   }
 
@@ -513,7 +516,7 @@ export class Polytwister {
       let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
       logs.push(logPoint);
     }
-    return new Polytwister(logs, csg.convex(logs.length));
+    return new Polytwister(logs, csg.convex(logs.length), polyhedron);
   }
 
   get numLogs(): number {
@@ -553,6 +556,7 @@ export class Polytwister {
     return new Polytwister(
       this.logs.map((x) => x.mulReal(1 / k)),
       this.csg,
+      this.polyhedron
     );
   }
 

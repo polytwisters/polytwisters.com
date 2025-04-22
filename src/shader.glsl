@@ -21,7 +21,7 @@ uniform float crossSectionW;
 // Geometry parameters.
 uniform vec3 pipes[NUM_PIPES];
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
-uniform vec3 baseColor;
+uniform vec3 colors[NUM_PIPES];
 
 // Display options.
 uniform int shading;
@@ -200,7 +200,7 @@ float specular(vec3 normal, vec3 light, vec3 viewer, float exponent) {
   return pow(max(dot(reflectedNormal, viewer), 0.0), exponent);
 }
 
-vec3 shadePhong(vec3 normal, vec3 viewer) {
+vec3 shadePhong(vec3 normal, vec3 viewer, vec3 baseColor) {
   // Assume normal is normalized.
   vec3 light1 = normalize(vec3(3.0, 1.0, 1.0));
   vec3 light2 = normalize(vec3(-1.0, -1.0, -1.0));
@@ -286,9 +286,11 @@ vec4 render(Ray ray) {
   // determine that by just looking for the pipe whose intersection interval matches that tmin.
   Pipe pipe;
   bool invert = false;
+  vec3 pipeColor;
   for (int i = 0; i < NUM_PIPES; i++) {
     if (tmin == intervals[i].x || tmin == intervals[i].y) {
       pipe = Pipe(pipes[i], crossSectionW);
+      pipeColor = colors[i]; 
       if (tmin == intervals[i].y) {
         invert = true;
       }
@@ -302,7 +304,7 @@ vec4 render(Ray ray) {
   vec3 viewer = ray.direction * -1.0;
   vec3 color = shading == SHADING_DEBUG ?
     shadeDebug(normal, viewer)
-    : shadePhong(normal, viewer);
+    : shadePhong(normal, viewer, pipeColor);
   return vec4(color, 1.0);
 }
 
