@@ -67,18 +67,19 @@ onMounted(() => {
     }
 
     for (let face of polyhedron.faces) {
+      let vertexIndices = face.vertexIndices;
       let geometry = new THREE.BufferGeometry();
       let meshVertices = [];
 
-      let c = face.map(
+      let c = vertexIndices.map(
         (index) => vertices[index].clone()
       ).reduce(
         (vertex1, vertex2) => vertex1.add(vertex2)
-      ).multiplyScalar(1 / face.length);
+      ).multiplyScalar(1 / vertexIndices.length);
 
-      for (let i = 0; i < face.length; i++) {
-        const p1 = vertices[face[i]];
-        const p2 = vertices[face[(i + 1) % face.length]];
+      for (let i = 0; i < vertexIndices.length; i++) {
+        const p1 = vertices[vertexIndices[i]];
+        const p2 = vertices[vertexIndices[(i + 1) % vertexIndices.length]];
         meshVertices.push(p1.x, p1.y, p1.z);
         meshVertices.push(c.x, c.y, c.z);
         meshVertices.push(p2.x, p2.y, p2.z);
@@ -89,14 +90,13 @@ onMounted(() => {
       let mesh = new THREE.Mesh(
         geometry,
         new THREE.MeshPhongMaterial({
-          color: ["red", "yellow", "blue"][face.length - 3],
+          color: ["red", "yellow", "blue"][vertexIndices.length - 3],
           side: THREE.DoubleSide
         })
       );
       group.add(mesh);
     }
   }, { immediate: true });
-
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
   const controls = new OrbitControls(threeCamera, renderer.domElement);
