@@ -1,4 +1,3 @@
-import { Vec3 } from "ogl";
 import { Vector3, Matrix3 } from "three";
 
 export function clamp(x: number, min: number, max: number): number {
@@ -9,8 +8,8 @@ export function fromSpherical(
   distance: number,
   azimuth: number,
   elevation: number,
-): Vec3 {
-  return new Vec3(
+): Vector3 {
+  return new Vector3(
     distance * Math.cos(azimuth) * Math.cos(elevation),
     distance * Math.sin(azimuth) * Math.cos(elevation),
     distance * Math.sin(elevation),
@@ -19,10 +18,6 @@ export function fromSpherical(
 
 export function mod(x: number, y: number): number {
   return ((x % y) + y) % y;
-}
-
-export function ogl2three(v: Vec3): Vector3 {
-  return new Vector3(v.x, v.y, v.z);
 }
 
 /**
@@ -71,13 +66,13 @@ export function matrixMaxError(matrix1: Matrix3, matrix2: Matrix3): number {
 /**
  * Rejection vector: reject A onto B.
  */
-export function reject(a: Vec3, b: Vec3): Vec3 {
-  return a.clone().sub(b.clone().multiply(a.dot(b) / b.dot(b)));
+export function reject(a: Vector3, b: Vector3): Vector3 {
+  return a.clone().sub(b.clone().multiplyScalar(a.dot(b) / b.dot(b)));
 }
 
 /**
  * Reflect the vector a through the plane orthogonal to unit vector b.
  */
-export function reflect(a: Vec3, b: Vec3): Vec3 {
-  return a.clone().sub(a, b.clone().multiply(2 * a.dot(b)));
+export function reflect(a: Vector3, b: Vector3): Vector3 {
+  return a.clone().sub(b.clone().multiplyScalar(2 * a.dot(b)));
 }

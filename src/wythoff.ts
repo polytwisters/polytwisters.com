@@ -1,6 +1,6 @@
-import { Vec3 } from "ogl";
 import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
+import { type Fraction, type FractionLike, asFraction } from "./fraction";
 
 interface Polyhedron {
   vertices: Vector3[],
@@ -15,23 +15,6 @@ interface Face {
 interface Vertex {
   position: Vector3,
   matrix: Matrix3
-}
-
-interface Fraction {
-  n: number,
-  d: number
-}
-
-type Fractionable = number | Fraction | [number, number];
-
-function asFraction(thing: Fractionable): Fraction {
-  if (typeof thing === "number") {
-    return { n: thing, d: 1 }
-  }
-  if (Array.isArray(thing)) {
-    return { n: thing[0], d: thing[1] };
-  }
-  return thing;
 }
 
 function schwarzAngle(fraction: Fraction): number {
@@ -49,15 +32,22 @@ export class SchwarzTriangle {
   n2: Fraction;
   n3: Fraction;
 
-  constructor(n1: Fractionable, n2: Fractionable, n3: Fractionable) {
+  constructor(n1: FractionLike, n2: FractionLike, n3: FractionLike) {
     this.n1 = asFraction(n1);
     this.n2 = asFraction(n2);
     this.n3 = asFraction(n3);
+    this.check();
   }
 
   get angle1() { return schwarzAngle(this.n1); }
   get angle2() { return schwarzAngle(this.n2); }
   get angle3() { return schwarzAngle(this.n3); }
+
+  private check() {
+    if (this.angle1 + this.angle2 + this.angle3 <= Math.PI) {
+      throw new Error("Invalid spherical triangle: angles must sum to more than 180 degrees");
+    }
+  }
 
   /**
    * Given three interior angles of a spherical triangle, return the side length of the side opposite
@@ -74,11 +64,8 @@ export class SchwarzTriangle {
    * Given three interior angles of a spherical triangle, produce three unit vectors realizing that
    * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1).
    */
-  vertices(): Vec3[] {
-    if (this.angle1 + this.angle2 + this.angle3 < Math.PI) {
-      throw new Error("Invalid spherical triangle: angles must sum to 180 degrees or more");
-    }
-    const point1 = new Vec3(0, 0, 1);
+  vertices(): Vector3[] {
+    const point1 = new Vector3(0, 0, 1);
     const side12 = SchwarzTriangle.sphericalTriangleSide(this.angle3, this.angle1, this.angle2);
     const side13 = SchwarzTriangle.sphericalTriangleSide(this.angle2, this.angle1, this.angle3);
     const point2 = mathUtils.fromSpherical(1, 0, Math.PI / 2 - side12);
@@ -90,7 +77,7 @@ export class SchwarzTriangle {
   /**
    * Produce a set of three vectors which are the normals of the three planes that cut the triangle.
    */
-  mirrors(): Vec3[] {
+  mirrors(): Vector3[] {
     const points = this.vertices();
     return [
       points[1].clone().cross(points[2]).normalize(),
@@ -160,7 +147,7 @@ export class PointGroup {
     // Gather three reflection operators which generate the group, notated R1 R2 R3 in later comments.
     const mirrors = schwarzTriangle.mirrors();
     const operators: Matrix3[] = mirrors.map((mirror) =>
-      mathUtils.householder(mathUtils.ogl2three(mirror))
+      mathUtils.householder(mirror)
     );
     // Stack for depth-first search is initialized with the identity operator.
     const stack: PointGroupElement[] = [

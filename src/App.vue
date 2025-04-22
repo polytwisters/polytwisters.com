@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
-import { Vec3 } from "ogl";
 import * as THREE from "three";
+import { Vector3 } from "three";
 
 import * as polytwisters from "./polytwisters";
 import { Polytwister } from "./polytwisters";
@@ -41,10 +41,14 @@ const polytwisterDef: Ref<PolytwisterDef> = computed(
 const polytwister: Ref<Polytwister> = computed(() =>
   Polytwister.fromDef(polytwisterDef.value).normalized(),
 );
+const polytwisterSymbol: Ref<polytwisterDefs.PolytwisterSymbolLike> = computed(() =>
+  polytwisterDef.value.symbol,
+);
+
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
 const rings = computed(() => polytwister.value.findRings());
-const ringDots: Ref<Vec3[]> = computed(() =>
+const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
 );
 const numRings = computed(() => Math.max(rings.value.length, 1));
@@ -53,10 +57,10 @@ const maxNumRingDots = computed(() => numRings.value * 2);
 // The fragment shader requires an array of fixed size. ringDotsPadded is a version of ringDots
 // extended to always have exactly maxNumRingDots Vec3's. Dots are made "nonexistent" by setting
 // their location to something large.
-const ringDotsPadded: Ref<Vec3[]> = computed(() => {
+const ringDotsPadded: Ref<Vector3[]> = computed(() => {
   const result = ringDots.value.slice();
   while (result.length <= maxNumRingDots.value) {
-    result.push(new Vec3(10e3, 10e3, 1e3));
+    result.push(new Vector3(10e3, 10e3, 1e3));
   }
   return result;
 });
@@ -229,8 +233,6 @@ const cameraDirection = camera.direction;
         </div>
       </div>
 
-      <Wythoff v-if="experimentalMode" />
-
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
           <Button @click="camera.reset" material icon="home" help="Reset camera" />
@@ -270,7 +272,9 @@ const cameraDirection = camera.direction;
 
       <WSlider v-model="crossSectionW" />
 
+      <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
+
       <Article />
     </div>
   </div>

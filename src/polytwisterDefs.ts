@@ -1,43 +1,69 @@
 import { C2 } from "./polytwisters";
 import { type Union, type Intersection } from "./csg";
 import * as csg from "./csg";
-import { Vec3, Mat3 } from "ogl";
+import { Vector3, Matrix3 } from "three";
+
+import { SchwarzTriangle } from "./wythoff";
+import { asFraction, type Fraction, type FractionLike } from "./fraction";
 
 /**
  * Rotate all points so the first point becomes (-1,0,0).
  * For some reason doesn't work exactly right, may be a bug.
  */
-export function orientPoints(points: Vec3[]): Vec3[] {
-  const quat = C2.inverseHopfMapNormalized(points[0]).toQuaternion().inverse();
-  const mat3 = new Mat3(0, 0, 1, 0, 1, 0, 1, 0, 0);
+export function orientPoints(points: Vector3[]): Vector3[] {
+  const quat = C2.inverseHopfMapNormalized(points[0]).toQuaternion().invert();
+  const mat3 = new Matrix3(0, 0, 1, 0, 1, 0, 1, 0, 0);
   const result = points.map((point) =>
     point.clone().applyQuaternion(quat).applyMatrix3(mat3),
   );
   return result;
 }
 
-export function normalizePoints(points: Vec3[]): Vec3[] {
+export function normalizePoints(points: Vector3[]): Vector3[] {
   return points.map((point) => point.clone().normalize());
+}
+
+// Typechecking fails with the tuple [FractionLike, FractionLike] unfortunately.
+export type PolytwisterSymbolLike = FractionLike[];
+
+export class SchlafliSymbol {
+  twister: Fraction;
+  ringFigure: Fraction;
+  
+  constructor(thing: PolytwisterSymbolLike) {
+    if (thing.length !== 2) {
+      throw new Error("Must have length 2");
+    }
+    this.twister = asFraction(thing[0]);
+    this.ringFigure = asFraction(thing[1]);
+  }
+
+  asSchwarzTriangle() {
+    return new SchwarzTriangle(this.ringFigure, this.twister, 2);
+  }
 }
 
 export interface PolytwisterDef {
   name: string;
-  points: Vec3[];
+  points: Vector3[];
   csg?: Union;
+  symbol: PolytwisterSymbolLike
 }
 
 const tetratwister = {
   name: "tetratwister",
+  symbol: [3, 3],
   points: orientPoints([
-    new Vec3(1, 1, 1),
-    new Vec3(1, -1, -1),
-    new Vec3(-1, 1, -1),
-    new Vec3(-1, -1, 1),
+    new Vector3(1, 1, 1),
+    new Vector3(1, -1, -1),
+    new Vector3(-1, 1, -1),
+    new Vector3(-1, -1, 1),
   ]),
 };
 
 const bloatedTetratwister = {
   name: "bloated tetratwister",
+  symbol: [3, [3, 2]],
   points: tetratwister.points,
   csg: {
     operands: [
@@ -53,6 +79,7 @@ const bloatedTetratwister = {
 
 const quasitetratwister = {
   name: "quasitetratwister",
+  symbol: [[3, 2], 3],
   points: tetratwister.points,
   csg: {
     operands: [
@@ -77,11 +104,13 @@ const octatwisterPoints = [
 
 const octatwister = {
   name: "octatwister",
-  points: octatwisterPoints.map((x) => new Vec3(x[0], x[1], x[2])),
+  symbol: [3, 4],
+  points: octatwisterPoints.map((x) => new Vector3(x[0], x[1], x[2])),
 };
 
 const quasioctatwister = {
   name: "quasioctatwister",
+  symbol: [[3, 2], 4],
   points: octatwister.points,
   csg: {
     operands: [
@@ -97,6 +126,7 @@ const quasioctatwister = {
 
 const bloatedOctatwister = {
   name: "bloated octatwister",
+  symbol: [3, [4, 3]],
   points: octatwister.points,
   csg: {
     operands: [
@@ -119,13 +149,14 @@ const bloatedOctatwister = {
 
 const cubetwister = {
   name: "cubetwister",
+  symbol: [4, 3],
   points: [
-    new Vec3(1, 0, 0),
-    new Vec3(-1, 0, 0),
-    new Vec3(0, 1, 0),
-    new Vec3(0, -1, 0),
-    new Vec3(0, 0, 1),
-    new Vec3(0, 0, -1),
+    new Vector3(1, 0, 0),
+    new Vector3(-1, 0, 0),
+    new Vector3(0, 1, 0),
+    new Vector3(0, -1, 0),
+    new Vector3(0, 0, 1),
+    new Vector3(0, 0, -1),
   ],
 };
 
@@ -134,53 +165,55 @@ let rPhi = 1 / phi; // r = reciprocal
 
 const dodecatwister = {
   name: "dodecatwister",
+  symbol: [5, 3],
   points: [
-    new Vec3(0, 1, phi),
-    new Vec3(0, 1, -phi),
-    new Vec3(0, -1, phi),
-    new Vec3(0, -1, -phi),
-    new Vec3(1, phi, 0),
-    new Vec3(1, -phi, 0),
-    new Vec3(-1, phi, 0),
-    new Vec3(-1, -phi, 0),
-    new Vec3(phi, 0, 1),
-    new Vec3(-phi, 0, 1),
-    new Vec3(phi, 0, -1),
-    new Vec3(-phi, 0, -1),
+    new Vector3(0, 1, phi),
+    new Vector3(0, 1, -phi),
+    new Vector3(0, -1, phi),
+    new Vector3(0, -1, -phi),
+    new Vector3(1, phi, 0),
+    new Vector3(1, -phi, 0),
+    new Vector3(-1, phi, 0),
+    new Vector3(-1, -phi, 0),
+    new Vector3(phi, 0, 1),
+    new Vector3(-phi, 0, 1),
+    new Vector3(phi, 0, -1),
+    new Vector3(-phi, 0, -1),
   ],
 };
 
 const icosatwister = {
   name: "icosatwister",
+  symbol: [3, 5],
   points: [
-    new Vec3(1, 1, 1),
-    new Vec3(1, 1, -1),
-    new Vec3(1, -1, 1),
-    new Vec3(1, -1, -1),
-    new Vec3(-1, 1, 1),
-    new Vec3(-1, 1, -1),
-    new Vec3(-1, -1, 1),
-    new Vec3(-1, -1, -1),
-    new Vec3(0, phi, rPhi),
-    new Vec3(0, phi, -rPhi),
-    new Vec3(0, -phi, rPhi),
-    new Vec3(0, -phi, -rPhi),
-    new Vec3(phi, rPhi, 0),
-    new Vec3(phi, -rPhi, 0),
-    new Vec3(-phi, rPhi, 0),
-    new Vec3(-phi, -rPhi, 0),
-    new Vec3(rPhi, 0, phi),
-    new Vec3(-rPhi, 0, phi),
-    new Vec3(rPhi, 0, -phi),
-    new Vec3(-rPhi, 0, -phi),
+    new Vector3(1, 1, 1),
+    new Vector3(1, 1, -1),
+    new Vector3(1, -1, 1),
+    new Vector3(1, -1, -1),
+    new Vector3(-1, 1, 1),
+    new Vector3(-1, 1, -1),
+    new Vector3(-1, -1, 1),
+    new Vector3(-1, -1, -1),
+    new Vector3(0, phi, rPhi),
+    new Vector3(0, phi, -rPhi),
+    new Vector3(0, -phi, rPhi),
+    new Vector3(0, -phi, -rPhi),
+    new Vector3(phi, rPhi, 0),
+    new Vector3(phi, -rPhi, 0),
+    new Vector3(-phi, rPhi, 0),
+    new Vector3(-phi, -rPhi, 0),
+    new Vector3(rPhi, 0, phi),
+    new Vector3(-rPhi, 0, phi),
+    new Vector3(rPhi, 0, -phi),
+    new Vector3(-rPhi, 0, -phi),
   ],
 };
 
-function dyadicTwisterPoints(n: number): Vec3[] {
-  const points: Vec3[] = [];
+function dyadicTwisterPoints(n: number): Vector3[] {
+  const points: Vector3[] = [];
   for (let i = 0; i < n; i++) {
     const theta = (2 * Math.PI * i) / n;
-    points.push(new Vec3(0, Math.cos(theta), Math.sin(theta)));
+    points.push(new Vector3(0, Math.cos(theta), Math.sin(theta)));
   }
   return points;
 }
@@ -189,6 +222,7 @@ function dyadicTwister(n: number): PolytwisterDef {
   const points = dyadicTwisterPoints(n);
   const result = {
     name: `${n} dyadic twister`,
+    symbol: [2, n],
     points,
     csg: csg.convex(n),
   };
@@ -210,6 +244,7 @@ function starDyadicTwister(n: number, d: number): PolytwisterDef {
 
   const result = {
     name: `${n}/${d} dyadic twister`,
+    symbol: [2, [n, d]],
     points,
     csg: { operands },
   };

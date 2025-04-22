@@ -38,12 +38,12 @@ export const position = computed(() =>
   fromSpherical(distance.value, azimuth.value, elevation.value),
 );
 
-// OGL's Vec3 operations are in place, so .clone() is necessary in several operations below.
+// Vector3 operations are in place, so .clone() is necessary in several operations below.
 
 // Camera is always pointed towards the origin, so the direction vector is just the negative of the
 // position vector.
 export const direction = computed(() =>
-  position.value.clone().scale(-1.0).normalize(),
+  position.value.clone().multiplyScalar(-1.0).normalize(),
 );
 // X and Y define the screen space of the camera. They must be orthogonal to each other
 // and to Direction.

@@ -1,4 +1,4 @@
-import { Quat, Vec3 } from "ogl";
+import { Quaternion, Vector3 } from "three";
 import { PolytwisterDef } from "./polytwisterDefs";
 import { type CSG } from "./csg";
 import * as csg from "./csg";
@@ -127,23 +127,23 @@ export class C2 {
   /**
    * Convert the C2 vector into an R4 vector (x,y,z,w), ignore w and return (x,y,z).
    */
-  toVec3IgnoreW(): Vec3 {
-    return new Vec3(this.a.real, this.a.imag, this.b.real);
+  toVector3IgnoreW(): Vector3 {
+    return new Vector3(this.a.real, this.a.imag, this.b.real);
   }
 
   /**
    * Phase-rotate the vector to an R4 vector of the form (x,y,z,0), return (x,y,z).
    */
-  toVec3W0(): Vec3 {
+  toVector3W0(): Vector3 {
     let angle = this.b.angle();
     let k = Complex.fromPolar(1, -angle);
-    return this.mul(k).toVec3IgnoreW();
+    return this.mul(k).toVector3IgnoreW();
   }
 
   /**
    * Interpreting this C2 as a circle in R4, find the points on it with the given w-coordinate.
    */
-  fiberCrossSection(w: number): Vec3[] {
+  fiberCrossSection(w: number): Vector3[] {
     // The w coordinate is the imaginary part of b. We want to find all unit complex k such that
     // w = Im(kb). Let b = A exp(i theta) and draw the line corresponding to Im(b) = w.
     // The intersection points are A exp(i phi_1) and A exp(i phi_2) where
@@ -162,7 +162,7 @@ export class C2 {
     const k2 = Complex.fromPolar(1.0, phi2 - theta);
     const rotated1 = this.mul(k1);
     const rotated2 = this.mul(k2);
-    const result = [rotated1.toVec3IgnoreW(), rotated2.toVec3IgnoreW()];
+    const result = [rotated1.toVector3IgnoreW(), rotated2.toVector3IgnoreW()];
     return result;
   }
 
@@ -277,12 +277,18 @@ export class C2 {
     return this.inner(other).abs() / (this.abs() * other.abs());
   }
 
-  toQuaternion(): Quat {
-    return new Quat(this.a.real, this.a.imag, this.b.real, this.b.imag);
+  toQuaternion(): Quaternion {
+    const scale = 1 / this.abs();
+    return new Quaternion(
+      this.a.real * scale,
+      this.a.imag * scale,
+      this.b.real * scale,
+      this.b.imag * scale
+    );
   }
 
   /**
-   * Compute the "inverse Hopf map" of a Vec3, producing a point in C^2. The Hopf map h is a
+   * Compute the "inverse Hopf map" of a Vector3, producing a point in C^2. The Hopf map h is a
    * function h : S^3 -> S^2 with the property that x,y are in the same Hopf fiber iff
    * h(x) = h(y). This is a many-to-one function, so its "inverse" h^-1 picks an arbitrary
    * point in the preimage.
@@ -292,7 +298,7 @@ export class C2 {
    *
    * The main use for this is to produce a quaternion that (0, 0, 1) to the input point.
    */
-  static inverseHopfMapNormalized(point: Vec3): C2 {
+  static inverseHopfMapNormalized(point: Vector3): C2 {
     const pointNormalized = point.clone().normalize();
     if (pointNormalized.x === -1.0) {
       return C2.fromR4(0, 0, 1, 0);
@@ -307,7 +313,7 @@ export class C2 {
   }
 
   /**
-   * Compute the "inverse Hopf map" of a Vec3, producing a point in C^2. The Hopf map h is a
+   * Compute the "inverse Hopf map" of a Vector3, producing a point in C^2. The Hopf map h is a
    * function h : S^3 -> S^2 with the property that x,y are in the same Hopf fiber iff
    * h(x) = h(y). This is a many-to-one function, so its "inverse" h^-1 picks an arbitrary
    * point in the preimage.
@@ -318,8 +324,8 @@ export class C2 {
    *
    * This is the one you want to use for transforming base polyhedra into polytwisters.
    */
-  static inverseHopfMapNested(point: Vec3): C2 {
-    const length = point.len();
+  static inverseHopfMapNested(point: Vector3): C2 {
+    const length = point.length();
     return C2.inverseHopfMapNormalized(point).mulReal(length);
   }
 }
@@ -355,8 +361,8 @@ function deduplicateRings(rings: C2[]): C2[] {
  * given by the implicit equations x^2 + y^2 = 1, w = z = 0. It is not
  * handled here.
  */
-export function ringsCrossSection(rings: C2[], w: number): Vec3[] {
-  const result: Vec3[] = [];
+export function ringsCrossSection(rings: C2[], w: number): Vector3[] {
+  const result: Vector3[] = [];
   for (let ring of rings) {
     for (let dot of ring.fiberCrossSection(w)) {
       result.push(dot);
@@ -381,7 +387,7 @@ export class ConvexPolytwister {
    * Convert a set of points in R3 to the points defining the pipes of a polytwister by using
    * the inverse Hopf map.
    */
-  static fromR3(points: Vec3[]): ConvexPolytwister {
+  static fromR3(points: Vector3[]): ConvexPolytwister {
     return new ConvexPolytwister(
       points.map((point) => C2.inverseHopfMapNested(point)),
     );
@@ -396,8 +402,8 @@ export class ConvexPolytwister {
    * the R^3 vector (a.real, a.imag, b.real). This is the format that the fragment
    * shader expects in the "pipes" uniform.
    */
-  logsR3(): Vec3[] {
-    return this.logs.map((c2) => c2.toVec3W0());
+  logsR3(): Vector3[] {
+    return this.logs.map((c2) => c2.toVector3W0());
   }
 
   contains(point: C2, dontCheck: number[]): boolean {
@@ -488,7 +494,7 @@ export class Polytwister {
     return Polytwister.fromR3(polytwisterDef.points, polytwisterDef.csg);
   }
 
-  static fromR3(points: Vec3[], csgDef?: CSG): Polytwister {
+  static fromR3(points: Vector3[], csgDef?: CSG): Polytwister {
     return new Polytwister(
       points.map((point) => C2.inverseHopfMapNested(point)),
       csgDef || csg.convex(points.length),
@@ -504,8 +510,8 @@ export class Polytwister {
    * the R^3 vector (a.real, a.imag, b.real). This is the format that the fragment
    * shader expects in the "pipes" uniform.
    */
-  logsR3(): Vec3[] {
-    return this.logs.map((c2) => c2.toVec3W0());
+  logsR3(): Vector3[] {
+    return this.logs.map((c2) => c2.toVector3W0());
   }
 
   findRings(): C2[] {
