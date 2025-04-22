@@ -104,4 +104,16 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
     name: "sheaved icosatwister",
     symbol: [3, 2, 5],
   },
+  {
+    name: "rectified 3 dyadic twister",
+    symbol: [2, 3, 2],
+  },
+  {
+    name: "rectified 4 dyadic twister",
+    symbol: [2, 4, 2],
+  },
+  {
+    name: "rectified 5 dyadic twister",
+    symbol: [2, 5, 2],
+  },
 ];
