@@ -1,8 +1,9 @@
 import { Matrix3, Vector3 } from "three";
 import * as mathUtils from "./mathUtils";
 import { type Fraction, type FractionLike, asFraction } from "./fraction";
+import { type PolytwisterSymbolLike, SchlafliSymbol } from "./symbol";
 
-interface Polyhedron {
+export interface Polyhedron {
   vertices: Vector3[],
   edges: [number, number][]
   faces: number[][]
@@ -38,6 +39,11 @@ export class SchwarzTriangle {
   get angle1() { return schwarzAngle(this.n1); }
   get angle2() { return schwarzAngle(this.n2); }
   get angle3() { return schwarzAngle(this.n3); }
+
+  static fromSymbol(symbol: PolytwisterSymbolLike) {
+    const symbol2 = SchlafliSymbol.from(symbol);
+    return new SchwarzTriangle(symbol2.ringFigure, symbol2.twister, 2);
+  }
 
   private check() {
     if (this.angle1 + this.angle2 + this.angle3 <= Math.PI) {
@@ -343,4 +349,10 @@ function dedupeFaces(faces: number[][]): number[][] {
     }
   }
   return result;
+}
+
+export function symbolToPolyhedron(symbol: SchlafliSymbol): Polyhedron {
+  return PointGroup.fromSchwarzTriangle(
+    SchwarzTriangle.fromSymbol(symbol)
+  ).makePolyhedron();
 }

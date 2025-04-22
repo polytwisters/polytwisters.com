@@ -4,14 +4,14 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import * as wythoff from "./wythoff";
-import { SchlafliSymbol, type PolytwisterSymbolLike } from "./polytwisterDefs";
+import { SchlafliSymbol, type PolytwisterSymbolLike } from "./symbol";
 
 const props = defineProps<{ symbol: PolytwisterSymbolLike }>();
-const symbol = computed(() => new SchlafliSymbol(props.symbol));
+const symbol = computed(() => SchlafliSymbol.from(props.symbol));
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
-const schwarzTriangle = computed(() => symbol.value.asSchwarzTriangle());
+const schwarzTriangle = computed(() => wythoff.SchwarzTriangle.fromSymbol(symbol.value));
 
 const group = computed(() =>
   wythoff.PointGroup.fromSchwarzTriangle(schwarzTriangle.value)

@@ -2,6 +2,8 @@ import { Quaternion, Vector3 } from "three";
 import { PolytwisterDef } from "./polytwisterDefs";
 import { type CSG } from "./csg";
 import * as csg from "./csg";
+import { Polyhedron, symbolToPolyhedron } from "./wythoff";
+import { SchlafliSymbol } from "./symbol";
 
 const EPSILON = 1e-5;
 
@@ -490,15 +492,31 @@ export class Polytwister {
     }
   }
 
-  static fromDef(polytwisterDef: PolytwisterDef): Polytwister {
-    return Polytwister.fromR3(polytwisterDef.points, polytwisterDef.csg);
-  }
-
   static fromR3(points: Vector3[], csgDef?: CSG): Polytwister {
     return new Polytwister(
       points.map((point) => C2.inverseHopfMapNested(point)),
       csgDef || csg.convex(points.length),
     );
+  }
+
+  static fromDef2(def: PolytwisterDef): Polytwister {
+    const polyhedron = symbolToPolyhedron(
+      SchlafliSymbol.from(def.symbol)
+    );
+    const vertices = polyhedron.vertices;
+    const faces = polyhedron.faces;
+    const rings = vertices.map((point) => C2.inverseHopfMapNormalized(point));
+    const logs: C2[] = [];
+    for (let face of faces) {
+      const twisterRings = face.map((index) => rings[index]);
+      const pipes = C2.intersect(twisterRings[0], twisterRings[1], twisterRings[2]);
+      if (pipes[0].abs() < pipes[1].abs()) {
+        logs.push(pipes[0]);
+      } else {
+        logs.push(pipes[1]);
+      }
+    }
+    return new Polytwister(logs, csg.convex(logs.length));
   }
 
   get numLogs(): number {

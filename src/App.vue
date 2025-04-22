@@ -11,6 +11,7 @@ import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
 import * as csg from "./csg";
 import { type CSG } from "./csg";
+import { SchlafliSymbol } from "./symbol";
 
 import Button from "./Button.vue";
 import Article from "./Article.vue";
@@ -19,6 +20,8 @@ import Selector from "./Selector.vue";
 import WSlider from "./WSlider.vue";
 import StellationDiagram from "./StellationDiagram.vue";
 import Wythoff from "./Wythoff.vue";
+
+import fragmentShaderTemplate from "./shader.glsl?raw";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -39,10 +42,10 @@ const polytwisterDef: Ref<PolytwisterDef> = computed(
   () => defs[polytwisterIndex.value],
 );
 const polytwister: Ref<Polytwister> = computed(() =>
-  Polytwister.fromDef(polytwisterDef.value).normalized(),
+  Polytwister.fromDef2(polytwisterDef.value).normalized(),
 );
-const polytwisterSymbol: Ref<polytwisterDefs.PolytwisterSymbolLike> = computed(() =>
-  polytwisterDef.value.symbol,
+const polytwisterSymbol: Ref<SchlafliSymbol> = computed(() =>
+  SchlafliSymbol.from(polytwisterDef.value.symbol),
 );
 
 const numPipes = computed(() => polytwister.value.numLogs);
@@ -108,10 +111,8 @@ let canvasHeight = canvasWidth / canvasAspectRatio;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
 
-import fragmentShaderTemplate from "./shader.glsl?raw";
-
 const fragmentShaderCSGTree: Ref<CSG> = computed(
-  () => polytwisterDef.value.csg ?? csg.convex(numPipes.value),
+  () => polytwister.value.csg ?? csg.convex(numPipes.value),
 );
 
 const fragmentShaderCSGCode: Ref<string> = computed(() =>
