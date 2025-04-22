@@ -508,7 +508,7 @@ export class Polytwister {
     const rings = vertices.map((point) => C2.inverseHopfMapNormalized(point));
     const logs: C2[] = [];
     for (let face of faces) {
-      const twisterRings = face.map((index) => rings[index]);
+      const twisterRings = face.vertexIndices.map((index) => rings[index]);
       const pipes = C2.intersect(twisterRings[0], twisterRings[1], twisterRings[2]);
       if (pipes[0].abs() < pipes[1].abs()) {
         logs.push(pipes[0]);
