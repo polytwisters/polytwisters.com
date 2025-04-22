@@ -238,6 +238,8 @@ export class PointGroup {
 
     /**
      * Given an "edge walker" matrix and a number of edges, produce a face object.
+     * An edge walker is a matrix M that, given any vertex v, Mv is an adjacent
+     * vertex. Thus v, Mv, M^2 v, M^3 v, etc. produces all vertices of the face.
      */
     function makeFace(edgeWalker: Matrix3, count: number): Face {
       let vertex = GENERATOR_POINT;
@@ -255,6 +257,10 @@ export class PointGroup {
       };
     }
   
+    /**
+     * Given a Face, produce all possible transformations of it using the point
+     * group. The results are not deduplicated.
+     */
     function symmetrizeFace(face: Face, elements: Matrix3[]): Face[] {
       const vertexLocations = face.vertexIndices.map((x) => vertices[x].position);
       const result = [];
