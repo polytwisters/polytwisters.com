@@ -67,15 +67,15 @@ onMounted(() => {
     let geometry = new THREE.BufferGeometry();
     let meshVertices = [];
 
-    let c = face.map(
+    let c = face.vertexIndices.map(
       (index) => vertices[index].clone()
     ).reduce(
       (vertex1, vertex2) => vertex1.add(vertex2)
-    ).multiplyScalar(1 / face.length);
+    ).multiplyScalar(1 / face.vertexIndices.length);
 
-    for (let i = 0; i < face.length; i++) {
-      const p1 = vertices[face[i]];
-      const p2 = vertices[face[(i + 1) % face.length]];
+    for (let i = 0; i < face.vertexIndices.length; i++) {
+      const p1 = vertices[face.vertexIndices[i]];
+      const p2 = vertices[face.vertexIndices[(i + 1) % face.vertexIndices.length]];
       meshVertices.push(p1.x, p1.y, p1.z);
       meshVertices.push(c.x, c.y, c.z);
       meshVertices.push(p2.x, p2.y, p2.z);
@@ -86,7 +86,7 @@ onMounted(() => {
     let mesh = new THREE.Mesh(
       geometry,
       new THREE.MeshPhongMaterial({
-        color: ["red", "yellow", "blue"][face.length - 3],
+        color: ["red", "yellow", "blue"][face.vertexIndices.length - 3],
         side: THREE.DoubleSide
       })
     );
