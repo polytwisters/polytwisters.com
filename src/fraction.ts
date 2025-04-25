@@ -5,6 +5,25 @@ export interface Fraction {
 
 export type FractionLike = number | number[] | Fraction;
 
+export function parse(string: string): Fraction {
+  const match = string.match(/^(?<numerator>\d+)(\/(?<denominator>\d+))?$/);
+  if (!match || !match.groups) {
+    throw new Error("string");
+  }
+  const denominator = match.groups.denominator;
+  return {
+    n: parseInt(match.groups.numerator, 10),
+    d: denominator === undefined ? 1 : parseInt(denominator, 10)
+  };
+}
+
+export function fractionToString(fraction: Fraction) {
+  if (fraction.d === 1) {
+    return fraction.n.toString();
+  }
+  return `${fraction.n}/${fraction.d}`;
+}
+
 export function asFraction(thing: FractionLike): Fraction {
   if (typeof thing === "number") {
     if (thing !== Math.floor(thing)) {

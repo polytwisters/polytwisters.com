@@ -1,4 +1,5 @@
-import { asFraction, type Fraction, type FractionLike } from "./fraction";
+import { asFraction, type Fraction, type FractionLike, fractionToString } from "./fraction";
+import * as fraction from "./fraction";
 
 export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
 
@@ -20,6 +21,40 @@ export class PolytwisterSymbol {
     this.twister1 = twister1;
     this.twister2 = twister2;
     this.quasiregular = quasiregular;
+  }
+
+  toString_(): string {
+    const a = fractionToString(this.twister1);
+    const b = fractionToString(this.twister2);
+    const c = fractionToString(this.ring);
+    if (this.quasiregular) {
+      return `(${a}, ${b}) ${c}`;
+    }
+    return `{${b}, ${c}}`;
+  }
+
+  static parse(string: string): PolytwisterSymbol {
+    // Remove whitespace.
+    const tmp = string.replace(/\s+/g, "");
+    const matchSchlafli = tmp.match(/^\{(\d+(\/\d+)?),(\d+(\/\d+)?)\}$/);
+    if (matchSchlafli) {
+      return new PolytwisterSymbol(
+        fraction.parse(matchSchlafli[3]),
+        asFraction(2),
+        fraction.parse(matchSchlafli[1]),
+        false
+      );
+    }
+    const matchQuasiregular = tmp.match(/^\((\d+(\/\d+)?),(\d+(\/\d+)?)\)(\d+(\/\d+)?)$/);
+    if (!matchQuasiregular) {
+      throw new Error("Can't parse symbol");
+    }
+    return new PolytwisterSymbol(
+      fraction.parse(matchQuasiregular[5]),
+      fraction.parse(matchQuasiregular[1]),
+      fraction.parse(matchQuasiregular[3]),
+      true
+    );
   }
 
   static from(thing: PolytwisterSymbolLike) {

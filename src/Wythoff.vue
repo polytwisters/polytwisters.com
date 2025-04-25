@@ -7,7 +7,30 @@ import * as wythoff from "./wythoff";
 import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
 
 const props = defineProps<{ symbol: PolytwisterSymbolLike }>();
-const symbol = computed(() => PolytwisterSymbol.from(props.symbol));
+const symbolFromPolytwister = computed(() => PolytwisterSymbol.from(props.symbol));
+
+const lockToPolytwister = ref(true);
+const userSymbolText = ref("");
+const symbol: Ref<PolytwisterSymbol> = ref(symbolFromPolytwister.value);
+const symbolError: Ref<boolean> = ref(false);
+
+watch(symbolFromPolytwister, (newValue) => {
+  if (lockToPolytwister.value) {
+    userSymbolText.value = newValue.toString_();
+    symbol.value = newValue;
+    symbolError.value = false;
+  }
+}, { immediate: true });
+
+watch(userSymbolText, (newValue) => {
+  try {
+    const newSymbol = PolytwisterSymbol.parse(newValue);
+    symbol.value = newSymbol;
+    symbolError.value = false;
+  } catch (e) {
+    symbolError.value = true;
+  }
+}, { immediate: true });
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
@@ -126,7 +149,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <p>{{ polyhedron.vertices.length }} points</p>
+  <p class="flex flex-row gap-3">
+    <span>Symbol:</span>
+    <input type="text" v-model="userSymbolText" :disabled="lockToPolytwister" :class="{ 'bg-red-950': symbolError }">
+    <input type="checkbox" v-model="lockToPolytwister" id="lock-to-polytwister">
+    <label for="lock-to-polytwister">Lock to polytwister</label>
+  </p>
   <canvas ref="canvas2"></canvas>
 </template>
 
