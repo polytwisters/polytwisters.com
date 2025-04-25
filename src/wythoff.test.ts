@@ -65,7 +65,7 @@ test("3 | 2 5 (dodecahedron) has 20 vertices", () => {
 
 test("2 | 3 5 (icosidodecahedron) has 30 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
-  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
+  const polyhedron = wythoff.PointGroup.fromSchwarzTriangle(triangle).makePolyhedron(true);
   expect(polyhedron.vertices.length).toBe(30);
   expect(polyhedron.edges.length).toBe(60);
   expect(polyhedron.faces.length).toBe(32);
