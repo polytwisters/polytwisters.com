@@ -123,6 +123,44 @@ onMounted(() => {
       );
       group.add(mesh);
     }
+
+    const schwarzTriangleVertices = schwarzTriangle.value.vertices();
+    for (let i = 0; i < 3; i++) {
+      const point1 = schwarzTriangleVertices[i];
+      const point2 = schwarzTriangleVertices[(i + 1) % 3];
+      const numPoints = 30;
+      const points = [];
+      for (let j = 0; j < numPoints; j++) {
+        const t = j / (numPoints - 1);
+        const point = (
+          point1.clone().multiplyScalar(t).add(point2.clone().multiplyScalar(1 - t))
+        );
+        points.push(
+          point.normalize()
+        );
+      }
+
+      let tmp = [];
+      for (let j = 0; j < numPoints - 1; j++) {
+        const p1 = points[j];
+        const p2 = points[j + 1];
+        tmp.push(
+          p1.x, p1.y, p1.z,
+          p2.x, p2.y, p2.z,
+          p2.x, p2.y, p2.z,
+        );
+      }
+      let meshVertices = new Float32Array(tmp);
+
+      let geometry = new THREE.BufferGeometry();
+      geometry.setAttribute("position", new THREE.BufferAttribute(meshVertices, 3));
+      let line = new THREE.Line(
+        geometry,
+        new THREE.LineBasicMaterial({ color: "lime" })
+      );
+      group.add(line);
+    }
+
   }, { immediate: true });
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
