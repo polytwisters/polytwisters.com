@@ -49,6 +49,10 @@ input[type=text]:disabled {
   @apply text-slate-600;
 }
 
+input[type=text].error {
+  @apply bg-red-950;
+}
+
 button {
   @apply bg-primary rounded-sm h-8 p-1 cursor-pointer active:bg-active;
 }

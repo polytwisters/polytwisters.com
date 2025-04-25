@@ -11,13 +11,13 @@ const symbolFromPolytwister = computed(() => PolytwisterSymbol.from(props.symbol
 
 const lockToPolytwister = ref(true);
 const userSymbolText = ref("");
-const symbol: Ref<PolytwisterSymbol> = ref(symbolFromPolytwister.value);
+const symbolFromUser: Ref<PolytwisterSymbol> = ref(symbolFromPolytwister.value);
 const symbolError: Ref<boolean> = ref(false);
 
 watch(symbolFromPolytwister, (newValue) => {
   if (lockToPolytwister.value) {
     userSymbolText.value = newValue.toString_();
-    symbol.value = newValue;
+    symbolFromUser.value = newValue;
     symbolError.value = false;
   }
 }, { immediate: true });
@@ -25,12 +25,16 @@ watch(symbolFromPolytwister, (newValue) => {
 watch(userSymbolText, (newValue) => {
   try {
     const newSymbol = PolytwisterSymbol.parse(newValue);
-    symbol.value = newSymbol;
+    symbolFromUser.value = newSymbol;
     symbolError.value = false;
   } catch (e) {
     symbolError.value = true;
   }
 }, { immediate: true });
+
+const symbol = computed(() => 
+  lockToPolytwister.value ? symbolFromPolytwister.value : symbolFromUser.value
+);
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
@@ -151,7 +155,7 @@ onMounted(() => {
 <template>
   <p class="flex flex-row gap-3">
     <span>Symbol:</span>
-    <input type="text" v-model="userSymbolText" :disabled="lockToPolytwister" :class="{ 'bg-red-950': symbolError }">
+    <input type="text" v-model="userSymbolText" :disabled="lockToPolytwister" :class="{ error: symbolError }">
     <input type="checkbox" v-model="lockToPolytwister" id="lock-to-polytwister">
     <label for="lock-to-polytwister">Lock to polytwister</label>
   </p>
