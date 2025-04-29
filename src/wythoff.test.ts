@@ -34,6 +34,15 @@ test("SchwarzTriangle's mirrors have correct angles", () => {
   expect(Math.PI - result[0].angleTo(result[1])).toBeCloseTo(triangle.angle3);
 });
 
+test("SchwarzTriangle.fromPoints idempotent on Mobius triangles", () => {
+  const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
+  const vertices = triangle.vertices();
+  const newTriangle = wythoff.SchwarzTriangle.mobiusFromPoints(vertices[1], vertices[2]);
+  expect(newTriangle.n1).toStrictEqual(triangle.n1);
+  expect(newTriangle.n2).toStrictEqual(triangle.n2);
+  expect(newTriangle.n3).toStrictEqual(triangle.n3);
+});
+
 test("Icosahedral group has order 120", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
   expect(wythoff.PointGroup.fromSchwarzTriangle(triangle).order).toBe(120);

@@ -45,6 +45,12 @@ const group = computed(() =>
 );
 const polyhedron = computed(() => group.value.makePolyhedron(symbol.value.quasiregular));
 
+const mirrorColors = [
+  "red",
+  "lime",
+  "blue"
+];
+
 onMounted(() => {
   const threeCamera = new THREE.PerspectiveCamera(45, 1.0, 1, 1000);
   threeCamera.position.z = 3;
@@ -124,6 +130,16 @@ onMounted(() => {
       group.add(mesh);
     }
 
+    const vertices2 = schwarzTriangle.value.fundamentalMobiusTriangle();
+    for (let point of vertices2) {
+      let dot = new THREE.Mesh(
+        new THREE.SphereGeometry(0.01),
+        new THREE.MeshBasicMaterial()
+      );
+      dot.position.set(point.x, point.y, point.z);
+      group.add(dot);
+    }
+
     const schwarzTriangleVertices = schwarzTriangle.value.vertices();
     for (let i = 0; i < 3; i++) {
       const point1 = schwarzTriangleVertices[i];
@@ -136,7 +152,7 @@ onMounted(() => {
           point1.clone().multiplyScalar(t).add(point2.clone().multiplyScalar(1 - t))
         );
         points.push(
-          point.normalize()
+          point.normalize().multiplyScalar(1.1)
         );
       }
 
@@ -147,16 +163,16 @@ onMounted(() => {
         tmp.push(
           p1.x, p1.y, p1.z,
           p2.x, p2.y, p2.z,
-          p2.x, p2.y, p2.z,
+          0, 0, 0,
         );
       }
       let meshVertices = new Float32Array(tmp);
 
       let geometry = new THREE.BufferGeometry();
       geometry.setAttribute("position", new THREE.BufferAttribute(meshVertices, 3));
-      let line = new THREE.Line(
+      let line = new THREE.Mesh(
         geometry,
-        new THREE.LineBasicMaterial({ color: "lime" })
+        new THREE.MeshBasicMaterial({ color: mirrorColors[i], side: THREE.DoubleSide }),
       );
       group.add(line);
     }

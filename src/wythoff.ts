@@ -1,6 +1,7 @@
 import { Matrix3, Vector3 } from "three";
+import * as _ from "lodash";
 import * as mathUtils from "./mathUtils";
-import { type Fraction, type FractionLike, asFraction } from "./fraction";
+import { type Fraction, type FractionLike, asFraction, fractionToString } from "./fraction";
 import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
 
 export interface Polyhedron {
@@ -50,9 +51,13 @@ export class SchwarzTriangle {
     return new SchwarzTriangle(symbol2.ring, symbol2.twister1, symbol2.twister2);
   }
 
+  asString() {
+    return `(${fractionToString(this.n1)} ${fractionToString(this.n2)} ${fractionToString(this.n3)})`;
+  }
+
   private check() {
     if (this.angle1 + this.angle2 + this.angle3 <= Math.PI) {
-      throw new Error("Invalid spherical triangle: angles must sum to more than 180 degrees");
+      throw new Error(`Invalid spherical triangle ${this.asString()}: angles must sum to more than 180 degrees`);
     }
   }
 
@@ -69,7 +74,8 @@ export class SchwarzTriangle {
 
   /**
    * Given three interior angles of a spherical triangle, produce three unit vectors realizing that
-   * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1).
+   * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1),
+   * and the second is guaranteed to be of the form (x, 0, z).
    */
   vertices(): Vector3[] {
     const point1 = new Vector3(0, 0, 1);
@@ -93,6 +99,40 @@ export class SchwarzTriangle {
     ];
   }
 
+  static mobiusFromPoints(p2: Vector3, p3: Vector3): SchwarzTriangle {
+    if (Math.abs(p2.y) > 1e-3) {
+      throw new Error("Y-coordinate of p2 must be 0");
+    }
+    const p1 = GENERATOR_POINT;
+    const angle1 = mathUtils.reject(p2, p1).angleTo(mathUtils.reject(p3, p1));
+    const angle2 = mathUtils.reject(p3, p2).angleTo(mathUtils.reject(p1, p2));
+    const angle3 = mathUtils.reject(p1, p3).angleTo(mathUtils.reject(p2, p3));
+    const n1 = Math.round(Math.PI / angle1);
+    const n2 = Math.round(Math.PI / angle2);
+    const n3 = Math.round(Math.PI / angle3);
+    return new SchwarzTriangle(n1, n2, n3);
+  }
+
+  /**
+   * Find a Mobius triangle which is a fundamental triangle of this one. 
+   */
+  fundamentalMobiusTriangle(): Vector3[] {
+    const vertices = this.vertices();
+    const group = PointGroup.fromSchwarzTriangle(this);
+    let points = [
+      ...group.orbit(vertices[0]),
+      ...group.orbit(vertices[1]),
+      ...group.orbit(vertices[2]),
+    ];
+    const point1 = vertices[0];
+    points = points.filter((x) => x.distanceToSquared(point1) >= 1e-3);
+    const point2Candidates = points.filter((x) => Math.abs(x.y) >= 1e-3);
+    const point2 = _.minBy(
+      point2Candidates,
+      (x) => x.distanceToSquared(point1)
+    );
+    return points;
+  }
 }
 
 /**
@@ -192,9 +232,9 @@ export class PointGroup {
     return new PointGroup(schwarzTriangle, operators, elements);
   }
 
-  orbit(): Vector3[] {
+  orbit(point: Vector3): Vector3[] {
     let result = this.elements.map((element) =>
-      GENERATOR_POINT.clone().applyMatrix3(element.matrix)
+      point.clone().applyMatrix3(element.matrix)
     );
     result = dedupePoints(result);
     return result;
