@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch, type Ref, onMounted, useTemplateRef } from "vue";
 import * as THREE from "three";
+import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import * as wythoff from "./wythoff";
 import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
+import { Schlick_to_F0 } from "three/tsl";
 
 const props = defineProps<{ symbol: PolytwisterSymbolLike }>();
 const symbolFromPolytwister = computed(() => PolytwisterSymbol.from(props.symbol));
@@ -41,7 +43,7 @@ const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 const schwarzTriangle = computed(() => wythoff.SchwarzTriangle.fromSymbol(symbol.value));
 
 const group = computed(() =>
-  wythoff.PointGroup.fromSchwarzTriangle(schwarzTriangle.value)
+  wythoff.SymmetryGroup.fromSchwarzTriangle(schwarzTriangle.value)
 );
 const polyhedron = computed(() => group.value.makePolyhedron(symbol.value.quasiregular));
 
@@ -50,6 +52,76 @@ const mirrorColors = [
   "lime",
   "blue"
 ];
+
+
+function makeMirrorDisk(normal: Vector3): THREE.BufferGeometry {
+  const up = new Vector3(1, 1, 0);
+  const x = normal.clone().cross(up);
+  const y = normal.clone().cross(x);
+  const numPoints = 30;
+  const points = [];
+  for (let j = 0; j < numPoints; j++) {
+    const angle = j / numPoints * 2 * Math.PI;
+    const point = (
+      x.clone().multiplyScalar(Math.cos(angle))
+      .add(y.clone().multiplyScalar(Math.sin(angle)))
+    );
+    points.push(
+      point.normalize().multiplyScalar(1.1)
+    );
+  }
+
+  let tmp = [];
+  for (let j = 0; j < numPoints; j++) {
+    const p1 = points[j];
+    const p2 = points[(j + 1) % numPoints];
+    tmp.push(
+      p1.x, p1.y, p1.z,
+      p2.x, p2.y, p2.z,
+      0, 0, 0,
+    );
+  }
+  let meshVertices = new Float32Array(tmp);
+
+  let geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(meshVertices, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+/**
+ * Circular wedge.
+ */
+function wedgeGeometry(point1: Vector3, point2: Vector3): THREE.BufferGeometry {
+  const numPoints = 30;
+  const points = [];
+  for (let j = 0; j < numPoints; j++) {
+    const t = j / (numPoints - 1);
+    const point = (
+      point1.clone().multiplyScalar(t).add(point2.clone().multiplyScalar(1 - t))
+    );
+    points.push(
+      point.normalize().multiplyScalar(1.1)
+    );
+  }
+
+  let tmp = [];
+  for (let j = 0; j < numPoints - 1; j++) {
+    const p1 = points[j];
+    const p2 = points[j + 1];
+    tmp.push(
+      p1.x, p1.y, p1.z,
+      p2.x, p2.y, p2.z,
+      0, 0, 0,
+    );
+  }
+  let meshVertices = new Float32Array(tmp);
+
+  let geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(meshVertices, 3));
+  geometry.computeVertexNormals();
+  return geometry;
+}
 
 onMounted(() => {
   const threeCamera = new THREE.PerspectiveCamera(45, 1.0, 1, 1000);
@@ -140,42 +212,27 @@ onMounted(() => {
       group.add(dot);
     }
 
-    const schwarzTriangleVertices = schwarzTriangle.value.vertices();
-    for (let i = 0; i < 3; i++) {
-      const point1 = schwarzTriangleVertices[i];
-      const point2 = schwarzTriangleVertices[(i + 1) % 3];
-      const numPoints = 30;
-      const points = [];
-      for (let j = 0; j < numPoints; j++) {
-        const t = j / (numPoints - 1);
-        const point = (
-          point1.clone().multiplyScalar(t).add(point2.clone().multiplyScalar(1 - t))
-        );
-        points.push(
-          point.normalize().multiplyScalar(1.1)
-        );
-      }
-
-      let tmp = [];
-      for (let j = 0; j < numPoints - 1; j++) {
-        const p1 = points[j];
-        const p2 = points[j + 1];
-        tmp.push(
-          p1.x, p1.y, p1.z,
-          p2.x, p2.y, p2.z,
-          0, 0, 0,
-        );
-      }
-      let meshVertices = new Float32Array(tmp);
-
-      let geometry = new THREE.BufferGeometry();
-      geometry.setAttribute("position", new THREE.BufferAttribute(meshVertices, 3));
-      let line = new THREE.Mesh(
+    const schwarzTriangleVertices = schwarzTriangle.value.fundamentalMobiusTriangle();
+    for (let i = 0; i < schwarzTriangleVertices.length; i++) {
+      const geometry = makeMirrorDisk(schwarzTriangleVertices[i]);
+      const mesh = new THREE.Mesh(
         geometry,
-        new THREE.MeshBasicMaterial({ color: mirrorColors[i], side: THREE.DoubleSide }),
+        new THREE.MeshPhongMaterial({ color: mirrorColors[i % 3], side: THREE.DoubleSide })
       );
-      group.add(line);
+      group.add(mesh);
     }
+
+    /*
+    const schwarzTriangleNormals = schwarzTriangle.value.mirrors();
+    for (let i = 0; i < 3; i++) {
+      const geometry = makeMirrorDisk(schwarzTriangleNormals[i]);
+      const mesh = new THREE.Mesh(
+        geometry,
+        new THREE.MeshBasicMaterial({ color: mirrorColors[i], side: THREE.DoubleSide })
+      );
+      group.add(mesh);
+    }
+      */
 
   }, { immediate: true });
 
