@@ -54,6 +54,8 @@ const mirrorColors = [
 ];
 
 
+const diskRadius = 1.1;
+
 function makeMirrorDisk(normal: Vector3): THREE.BufferGeometry {
   const up = new Vector3(1, 1, 0);
   const x = normal.clone().cross(up);
@@ -67,7 +69,7 @@ function makeMirrorDisk(normal: Vector3): THREE.BufferGeometry {
       .add(y.clone().multiplyScalar(Math.sin(angle)))
     );
     points.push(
-      point.normalize().multiplyScalar(1.1)
+      point.normalize().multiplyScalar(diskRadius)
     );
   }
 
@@ -202,19 +204,23 @@ onMounted(() => {
       group.add(mesh);
     }
 
-    const vertices2 = schwarzTriangle.value.fundamentalMobiusTriangle();
-    for (let point of vertices2) {
+    const fundamental = schwarzTriangle.value.fundamentalMobiusTriangle();
+    for (let point of fundamental.vertices()) {
       let dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.01),
+        new THREE.SphereGeometry(0.02),
         new THREE.MeshBasicMaterial()
       );
-      dot.position.set(point.x, point.y, point.z);
+      dot.position.set(
+        point.x * diskRadius,
+        point.y * diskRadius,
+        point.z * diskRadius
+      );
       group.add(dot);
     }
 
-    const schwarzTriangleVertices = schwarzTriangle.value.fundamentalMobiusTriangle();
-    for (let i = 0; i < schwarzTriangleVertices.length; i++) {
-      const geometry = makeMirrorDisk(schwarzTriangleVertices[i]);
+    let tmp = fundamental.normals();
+    for (let i = 0; i < 3; i++) {
+      const geometry = makeMirrorDisk(tmp[i]);
       const mesh = new THREE.Mesh(
         geometry,
         new THREE.MeshPhongMaterial({ color: mirrorColors[i % 3], side: THREE.DoubleSide })

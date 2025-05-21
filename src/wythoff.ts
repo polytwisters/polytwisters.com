@@ -31,19 +31,106 @@ function isNearInteger(n: number): boolean {
 const GENERATOR_POINT = new Vector3(0, 0, 1);
 
 /**
- * A Schwarz triangle is a spherical triangle that tiles the sphere. It is specified as (a b c)
- * where the three interior angles are pi/a pi/b pi/c.
+ * A spherical triangle given by three vertices which are unit vectors.
+ */
+export class SphericalTriangle {
+  v1: Vector3;  
+  v2: Vector3;  
+  v3: Vector3;  
+
+  constructor(v1: Vector3, v2: Vector3, v3: Vector3) {
+    this.v1 = v1.clone();
+    this.v2 = v2.clone();
+    this.v3 = v3.clone();
+  }
+
+  static fromNormals(n1: Vector3, n2: Vector3, n3: Vector3) {
+    return new SphericalTriangle(
+      n2.clone().cross(n3).normalize(),
+      n3.clone().cross(n1).normalize(),
+      n1.clone().cross(n2).normalize()
+    ).minify();
+  }
+
+  vertices(): [Vector3, Vector3, Vector3] {
+    return [this.v1, this.v2, this.v3];
+  }
+
+  normals(): [Vector3, Vector3, Vector3] {
+    return [
+      this.v2.clone().cross(this.v3).normalize(),
+      this.v3.clone().cross(this.v1).normalize(),
+      this.v1.clone().cross(this.v2).normalize()
+    ];
+  }
+
+  /**
+   * Invert one or more points through the center until all side lengths are
+   * no greater than pi/2 radius, or equivalently, all pairwise dot products of
+   * vertex positions are zero or greater. This is used when getting a minimal
+   * fundamental triangle.
+   */
+  minify(): SphericalTriangle {
+    let v1 = this.v1.clone();
+    let v2 = this.v2.clone();
+    let v3 = this.v3.clone();
+    if (v1.dot(v2) < 0) {
+      v1.multiplyScalar(-1.0);
+    }
+    if (v2.dot(v3) < 0) {
+      v3.multiplyScalar(-1.0);
+    }
+    if (v1.dot(v3) < 0) {
+      throw new Error("This shouldn't happen");
+    }
+    return new SphericalTriangle(v1, v2, v3);
+  }
+
+  /**
+   * Given three interior angles of a spherical triangle, return the side length
+   * of the side opposite the FIRST angle.
+   */
+  static sphericalTriangleSide(angle1: number, angle2: number, angle3: number): number {
+    return Math.acos(
+      (Math.cos(angle1) + Math.cos(angle2) * Math.cos(angle3)) /
+      (Math.sin(angle2) * Math.sin(angle3))
+    );
+  }
+
+  /**
+   * Given three interior angles of a spherical triangle, produce a spherical
+   * triangle with those angles on the unit sphere. The first unit vector is
+   * guaranteed to be (0, 0, 1), and the second is guaranteed to be of the form
+   * (x, 0, z).
+   */
+  static fromInteriorAngles(angle1: number, angle2: number, angle3: number): SphericalTriangle {
+    const point1 = new Vector3(0, 0, 1);
+    const side12 = SphericalTriangle.sphericalTriangleSide(angle3, angle1, angle2);
+    const side13 = SphericalTriangle.sphericalTriangleSide(angle2, angle1, angle3);
+    const point2 = mathUtils.fromSpherical(1, 0, Math.PI / 2 - side12);
+    const point3 = mathUtils.fromSpherical(1, angle1, Math.PI / 2 - side13);
+    return new SphericalTriangle(point1, point2, point3);
+  }
+}
+
+/**
+ * A Schwarz triangle is a spherical triangle that tiles the sphere. It is
+ * specified as (a b c) where the three interior angles are pi/a pi/b pi/c.
  */
 export class SchwarzTriangle {
   n1: Fraction;
   n2: Fraction;
   n3: Fraction;
+  sphericalTriangle: SphericalTriangle;
 
   constructor(n1: FractionLike, n2: FractionLike, n3: FractionLike) {
     this.n1 = asFraction(n1);
     this.n2 = asFraction(n2);
     this.n3 = asFraction(n3);
     this.check();
+    this.sphericalTriangle = SphericalTriangle.fromInteriorAngles(
+      this.angle1, this.angle2, this.angle3
+    );
   }
 
   get angle1() { return schwarzAngle(this.n1); }
@@ -65,42 +152,15 @@ export class SchwarzTriangle {
     }
   }
 
-  /**
-   * Given three interior angles of a spherical triangle, return the side length of the side opposite
-   * the FIRST angle.
-   */
-  static sphericalTriangleSide(angle1: number, angle2: number, angle3: number): number {
-    return Math.acos(
-      (Math.cos(angle1) + Math.cos(angle2) * Math.cos(angle3)) /
-      (Math.sin(angle2) * Math.sin(angle3))
-    );
-  }
-
-  /**
-   * Given three interior angles of a spherical triangle, produce three unit vectors realizing that
-   * spherical triangle on the unit sphere. The first unit vector is guaranteed to be (0, 0, 1),
-   * and the second is guaranteed to be of the form (x, 0, z).
-   */
   vertices(): Vector3[] {
-    const point1 = new Vector3(0, 0, 1);
-    const side12 = SchwarzTriangle.sphericalTriangleSide(this.angle3, this.angle1, this.angle2);
-    const side13 = SchwarzTriangle.sphericalTriangleSide(this.angle2, this.angle1, this.angle3);
-    const point2 = mathUtils.fromSpherical(1, 0, Math.PI / 2 - side12);
-    const point3 = mathUtils.fromSpherical(1, this.angle1, Math.PI / 2 - side13);
-    const result = [point1, point2, point3];
-    return result;
+    return this.sphericalTriangle.vertices();
   }
 
   /**
    * Produce a set of three vectors which are the normals of the three planes that cut the triangle.
    */
   mirrors(): Vector3[] {
-    const points = this.vertices();
-    return [
-      points[1].clone().cross(points[2]).normalize(),
-      points[2].clone().cross(points[0]).normalize(),
-      points[0].clone().cross(points[1]).normalize()
-    ];
+    return this.sphericalTriangle.normals();
   }
 
   static mobiusFromPoints(p2: Vector3, p3: Vector3): SchwarzTriangle {
@@ -120,7 +180,7 @@ export class SchwarzTriangle {
   /**
    * Find a Mobius triangle which is a fundamental triangle of this one. 
    */
-  fundamentalMobiusTriangle(): Vector3[] {
+  fundamentalMobiusTriangle(): SphericalTriangle {
     const mirrors = this.mirrors();
     const group = SymmetryGroup.fromSchwarzTriangle(this);
     let allMirrors = [
@@ -150,7 +210,6 @@ export class SchwarzTriangle {
       throw new Error("Shouldn't happen");
     }
   
-    let mirror3 = null;
     for (let i = 0; i < allMirrors.length; i++) {
       const candidate = allMirrors[i];
       const angle13 = candidate.angleTo(mirror1);
@@ -164,7 +223,7 @@ export class SchwarzTriangle {
           || Math.round(Math.PI / angle13) === 2
         )
       ) {
-        return [mirror1, mirror2, candidate];
+        return SphericalTriangle.fromNormals(mirror1, mirror2, candidate);
       }
     }
 
