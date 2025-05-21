@@ -41,15 +41,15 @@ h1 {
   --color-link: var(--color-sky-200);
 }
 
-input[type=text] {
+input[type="text"] {
   @apply bg-primary rounded-sm h-8 p-1;
 }
 
-input[type=text]:disabled {
+input[type="text"]:disabled {
   @apply text-slate-600;
 }
 
-input[type=text].error {
+input[type="text"].error {
   @apply bg-red-950;
 }
 

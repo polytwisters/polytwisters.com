@@ -1,23 +1,28 @@
 import { Matrix3, Vector3 } from "three";
 import * as _ from "lodash";
 import * as mathUtils from "./mathUtils";
-import { type Fraction, type FractionLike, asFraction, fractionToString } from "./fraction";
+import {
+  type Fraction,
+  type FractionLike,
+  asFraction,
+  fractionToString,
+} from "./fraction";
 import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
 
 export interface Polyhedron {
-  vertices: Vector3[],
-  edges: [number, number][]
-  faces: Face[]
+  vertices: Vector3[];
+  edges: [number, number][];
+  faces: Face[];
 }
 
 interface Face {
-  vertexIndices: number[],
-  center: Vector3
+  vertexIndices: number[];
+  center: Vector3;
 }
 
 interface Vertex {
-  position: Vector3,
-  matrix: Matrix3
+  position: Vector3;
+  matrix: Matrix3;
 }
 
 function schwarzAngle(fraction: Fraction): number {
@@ -34,9 +39,9 @@ const GENERATOR_POINT = new Vector3(0, 0, 1);
  * A spherical triangle given by three vertices which are unit vectors.
  */
 export class SphericalTriangle {
-  v1: Vector3;  
-  v2: Vector3;  
-  v3: Vector3;  
+  v1: Vector3;
+  v2: Vector3;
+  v3: Vector3;
 
   constructor(v1: Vector3, v2: Vector3, v3: Vector3) {
     this.v1 = v1.clone();
@@ -48,7 +53,7 @@ export class SphericalTriangle {
     return new SphericalTriangle(
       n2.clone().cross(n3).normalize(),
       n3.clone().cross(n1).normalize(),
-      n1.clone().cross(n2).normalize()
+      n1.clone().cross(n2).normalize(),
     ).minify();
   }
 
@@ -60,7 +65,7 @@ export class SphericalTriangle {
     return [
       this.v2.clone().cross(this.v3).normalize(),
       this.v3.clone().cross(this.v1).normalize(),
-      this.v1.clone().cross(this.v2).normalize()
+      this.v1.clone().cross(this.v2).normalize(),
     ];
   }
 
@@ -90,10 +95,14 @@ export class SphericalTriangle {
    * Given three interior angles of a spherical triangle, return the side length
    * of the side opposite the FIRST angle.
    */
-  static sphericalTriangleSide(angle1: number, angle2: number, angle3: number): number {
+  static sphericalTriangleSide(
+    angle1: number,
+    angle2: number,
+    angle3: number,
+  ): number {
     return Math.acos(
       (Math.cos(angle1) + Math.cos(angle2) * Math.cos(angle3)) /
-      (Math.sin(angle2) * Math.sin(angle3))
+        (Math.sin(angle2) * Math.sin(angle3)),
     );
   }
 
@@ -103,10 +112,22 @@ export class SphericalTriangle {
    * guaranteed to be (0, 0, 1), and the second is guaranteed to be of the form
    * (x, 0, z).
    */
-  static fromInteriorAngles(angle1: number, angle2: number, angle3: number): SphericalTriangle {
+  static fromInteriorAngles(
+    angle1: number,
+    angle2: number,
+    angle3: number,
+  ): SphericalTriangle {
     const point1 = new Vector3(0, 0, 1);
-    const side12 = SphericalTriangle.sphericalTriangleSide(angle3, angle1, angle2);
-    const side13 = SphericalTriangle.sphericalTriangleSide(angle2, angle1, angle3);
+    const side12 = SphericalTriangle.sphericalTriangleSide(
+      angle3,
+      angle1,
+      angle2,
+    );
+    const side13 = SphericalTriangle.sphericalTriangleSide(
+      angle2,
+      angle1,
+      angle3,
+    );
     const point2 = mathUtils.fromSpherical(1, 0, Math.PI / 2 - side12);
     const point3 = mathUtils.fromSpherical(1, angle1, Math.PI / 2 - side13);
     return new SphericalTriangle(point1, point2, point3);
@@ -129,17 +150,29 @@ export class SchwarzTriangle {
     this.n3 = asFraction(n3);
     this.check();
     this.sphericalTriangle = SphericalTriangle.fromInteriorAngles(
-      this.angle1, this.angle2, this.angle3
+      this.angle1,
+      this.angle2,
+      this.angle3,
     );
   }
 
-  get angle1() { return schwarzAngle(this.n1); }
-  get angle2() { return schwarzAngle(this.n2); }
-  get angle3() { return schwarzAngle(this.n3); }
+  get angle1() {
+    return schwarzAngle(this.n1);
+  }
+  get angle2() {
+    return schwarzAngle(this.n2);
+  }
+  get angle3() {
+    return schwarzAngle(this.n3);
+  }
 
   static fromSymbol(symbol: PolytwisterSymbolLike) {
     const symbol2 = PolytwisterSymbol.from(symbol);
-    return new SchwarzTriangle(symbol2.ring, symbol2.twister1, symbol2.twister2);
+    return new SchwarzTriangle(
+      symbol2.ring,
+      symbol2.twister1,
+      symbol2.twister2,
+    );
   }
 
   asString() {
@@ -148,7 +181,9 @@ export class SchwarzTriangle {
 
   private check() {
     if (this.angle1 + this.angle2 + this.angle3 <= Math.PI) {
-      throw new Error(`Invalid spherical triangle ${this.asString()}: angles must sum to more than 180 degrees`);
+      throw new Error(
+        `Invalid spherical triangle ${this.asString()}: angles must sum to more than 180 degrees`,
+      );
     }
   }
 
@@ -178,7 +213,7 @@ export class SchwarzTriangle {
   }
 
   /**
-   * Find a Mobius triangle which is a fundamental triangle of this one. 
+   * Find a Mobius triangle which is a fundamental triangle of this one.
    */
   fundamentalMobiusTriangle(): SphericalTriangle {
     const mirrors = this.mirrors();
@@ -209,19 +244,18 @@ export class SchwarzTriangle {
     if (mirror2 === null) {
       throw new Error("Shouldn't happen");
     }
-  
+
     for (let i = 0; i < allMirrors.length; i++) {
       const candidate = allMirrors[i];
       const angle13 = candidate.angleTo(mirror1);
       const angle12 = candidate.angleTo(mirror2);
       if (
-        angle12 > 1e-3 && angle13 > 1e-3
-        && isNearInteger(Math.PI / angle13)
-        && isNearInteger(Math.PI / angle12)
-        && (
-          Math.round(Math.PI / angle12) === 2
-          || Math.round(Math.PI / angle13) === 2
-        )
+        angle12 > 1e-3 &&
+        angle13 > 1e-3 &&
+        isNearInteger(Math.PI / angle13) &&
+        isNearInteger(Math.PI / angle12) &&
+        (Math.round(Math.PI / angle12) === 2 ||
+          Math.round(Math.PI / angle13) === 2)
       ) {
         return SphericalTriangle.fromNormals(mirror1, mirror2, candidate);
       }
@@ -246,8 +280,8 @@ function realizeCoxeterWord(word: number[], operators: Matrix3[]): Matrix3 {
 }
 
 interface Symmetry {
-  matrix: Matrix3,
-  coxeterWord: number[],
+  matrix: Matrix3;
+  coxeterWord: number[];
 }
 
 function dedupePoints(points: Vector3[]): Vector3[] {
@@ -273,10 +307,10 @@ function dedupeMirrors(mirrors: Vector3[]): Vector3[] {
 /**
  * A symmetry group, or more accurately a representation of a finite subgroup of O(3). The group is
  * encoded as a set of 3x3 orthogonal matrices ("symmetries") with the following properties:
- * 
+ *
  * 1. If matrices A and B are symmetries, AB is also a symmetry.
  * 2. If A is a symmetry, A^-1 is also a symmetry.
- * 
+ *
  * In this software point groups are produced algorithmically and generated from a set of three
  * mirrors, and all point groups are achiral.
  */
@@ -287,7 +321,11 @@ export class SymmetryGroup {
   symmetries: Symmetry[];
   schwarzTriangle: SchwarzTriangle;
 
-  constructor(schwarzTriangle: SchwarzTriangle, operators: Matrix3[], symmetries: Symmetry[]) {
+  constructor(
+    schwarzTriangle: SchwarzTriangle,
+    operators: Matrix3[],
+    symmetries: Symmetry[],
+  ) {
     this.operators = operators;
     this.symmetries = symmetries;
     this.schwarzTriangle = schwarzTriangle;
@@ -306,12 +344,10 @@ export class SymmetryGroup {
     // comments.
     const mirrors = schwarzTriangle.mirrors();
     const operators: Matrix3[] = mirrors.map((mirror) =>
-      mathUtils.householder(mirror)
+      mathUtils.householder(mirror),
     );
     // Stack for depth-first search is initialized with the identity operator.
-    const stack: Symmetry[] = [
-      { matrix: new Matrix3(), coxeterWord: [] }
-    ];
+    const stack: Symmetry[] = [{ matrix: new Matrix3(), coxeterWord: [] }];
     const elements: Symmetry[] = [];
 
     while (true) {
@@ -322,14 +358,20 @@ export class SymmetryGroup {
       }
       // If any existing element in the point group has a matrix which is identical (with a
       // floating-point fudge factor) then ignore it.
-      if (elements.some((x) => mathUtils.matrixMaxError(x.matrix, candidate.matrix) < 1e-3)) {
+      if (
+        elements.some(
+          (x) => mathUtils.matrixMaxError(x.matrix, candidate.matrix) < 1e-3,
+        )
+      ) {
         continue;
       }
       // This is now officially a new element E of the point group.
       elements.push(candidate);
 
       if (elements.length > 120) {
-        throw new Error("Maximum group order exceeded. Infinite Coxeter group?");
+        throw new Error(
+          "Maximum group order exceeded. Infinite Coxeter group?",
+        );
       }
 
       // For the three operators, add R1*E, R2*E, R3*E to the stack. Record their matrices and their
@@ -346,18 +388,16 @@ export class SymmetryGroup {
 
   orbit(point: Vector3): Vector3[] {
     let result = this.symmetries.map((element) =>
-      point.clone().applyMatrix3(element.matrix)
+      point.clone().applyMatrix3(element.matrix),
     );
     result = dedupePoints(result);
     return result;
   }
 
   chiralOrbit(point: Vector3): Vector3[] {
-    let result = this.symmetries.filter((x) =>
-      x.coxeterWord.length % 2 === 0
-    ).map((element) =>
-      point.clone().applyMatrix3(element.matrix)
-    );
+    let result = this.symmetries
+      .filter((x) => x.coxeterWord.length % 2 === 0)
+      .map((element) => point.clone().applyMatrix3(element.matrix));
     result = dedupePoints(result);
     return result;
   }
@@ -365,17 +405,19 @@ export class SymmetryGroup {
   makePolyhedron(quasiregular: boolean): Polyhedron {
     // Apply all elements in the group to the vertex, keeping track of the matrices used to produce
     // them.
-    let vertexCandidates = this.symmetries.map((element) =>
-      ({
-        position: GENERATOR_POINT.clone().applyMatrix3(element.matrix),
-        matrix: element.matrix
-      })
-    );
+    let vertexCandidates = this.symmetries.map((element) => ({
+      position: GENERATOR_POINT.clone().applyMatrix3(element.matrix),
+      matrix: element.matrix,
+    }));
 
     // Deduplicate the vertices.
     const vertices: Vertex[] = [];
     for (let vertex of vertexCandidates) {
-      if (!vertices.some((vertex2) => vertex.position.distanceTo(vertex2.position) <= 1e-3)) {
+      if (
+        !vertices.some(
+          (vertex2) => vertex.position.distanceTo(vertex2.position) <= 1e-3,
+        )
+      ) {
         vertices.push(vertex);
       }
     }
@@ -389,11 +431,13 @@ export class SymmetryGroup {
     // 2. All other edges are formed by taking all elements of the group and transforming that edge.
     for (let element of this.symmetries) {
       const vertex1 = GENERATOR_POINT.clone().applyMatrix3(element.matrix);
-      const vertex2 = GENERATOR_POINT.clone().applyMatrix3(this.operators[0]).applyMatrix3(element.matrix);
+      const vertex2 = GENERATOR_POINT.clone()
+        .applyMatrix3(this.operators[0])
+        .applyMatrix3(element.matrix);
       const i = findVertex(vertex1, vertices);
       const j = findVertex(vertex2, vertices);
       if (i === null || j === null) {
-        throw new Error("Can't find edge ending")
+        throw new Error("Can't find edge ending");
       }
       edges.push([i, j]);
     }
@@ -404,7 +448,11 @@ export class SymmetryGroup {
      * An edge walker is a matrix M that, given any vertex v, Mv is an adjacent
      * vertex. Thus v, Mv, M^2 v, M^3 v, etc. produces all vertices of the face.
      */
-    function makeFace(edgeWalker: Matrix3, count: number, center: Vector3): Face {
+    function makeFace(
+      edgeWalker: Matrix3,
+      count: number,
+      center: Vector3,
+    ): Face {
       let vertex = GENERATOR_POINT;
       let face = [];
       for (let i = 0; i < count; i++) {
@@ -417,19 +465,23 @@ export class SymmetryGroup {
       }
       return {
         vertexIndices: face,
-        center
+        center,
       };
     }
-  
+
     /**
      * Given a Face, produce all possible transformations of it using the point
      * group. The results are not deduplicated.
      */
     function symmetrizeFace(face: Face, elements: Matrix3[]): Face[] {
-      const vertexLocations = face.vertexIndices.map((x) => vertices[x].position);
+      const vertexLocations = face.vertexIndices.map(
+        (x) => vertices[x].position,
+      );
       const result = [];
       for (let element of elements) {
-        const vertexLocations2 = vertexLocations.map((x) => x.clone().applyMatrix3(element));
+        const vertexLocations2 = vertexLocations.map((x) =>
+          x.clone().applyMatrix3(element),
+        );
         const vertexIndices = vertexLocations2.map((x) => {
           let result = findVertex(x, vertices);
           if (result === null) {
@@ -468,7 +520,7 @@ export class SymmetryGroup {
     return {
       vertices: vertices.map((x) => x.position),
       edges,
-      faces
+      faces,
     };
   }
 }
@@ -550,6 +602,6 @@ function dedupeFaces(faces: Face[]): Face[] {
 
 export function symbolToPolyhedron(symbol: PolytwisterSymbol): Polyhedron {
   return SymmetryGroup.fromSchwarzTriangle(
-    SchwarzTriangle.fromSymbol(symbol)
+    SchwarzTriangle.fromSymbol(symbol),
   ).makePolyhedron(symbol.quasiregular);
 }

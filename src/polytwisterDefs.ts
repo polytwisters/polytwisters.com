@@ -23,7 +23,7 @@ export function normalizePoints(points: Vector3[]): Vector3[] {
 
 export interface PolytwisterDef {
   name: string;
-  symbol: PolytwisterSymbolLike
+  symbol: PolytwisterSymbolLike;
 }
 
 function dyadicTwister(n: number): PolytwisterDef {

@@ -1,4 +1,9 @@
-import { asFraction, type Fraction, type FractionLike, fractionToString } from "./fraction";
+import {
+  asFraction,
+  type Fraction,
+  type FractionLike,
+  fractionToString,
+} from "./fraction";
 import * as fraction from "./fraction";
 
 export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
@@ -15,8 +20,13 @@ export class PolytwisterSymbol {
   twister1: Fraction;
   twister2: Fraction;
   quasiregular: boolean;
-  
-  constructor(ring: Fraction, twister1: Fraction, twister2: Fraction, quasiregular: boolean) {
+
+  constructor(
+    ring: Fraction,
+    twister1: Fraction,
+    twister2: Fraction,
+    quasiregular: boolean,
+  ) {
     this.ring = ring;
     this.twister1 = twister1;
     this.twister2 = twister2;
@@ -42,10 +52,12 @@ export class PolytwisterSymbol {
         fraction.parse(matchSchlafli[3]),
         asFraction(2),
         fraction.parse(matchSchlafli[1]),
-        false
+        false,
       );
     }
-    const matchQuasiregular = tmp.match(/^\((\d+(\/\d+)?),(\d+(\/\d+)?)\)(\d+(\/\d+)?)$/);
+    const matchQuasiregular = tmp.match(
+      /^\((\d+(\/\d+)?),(\d+(\/\d+)?)\)(\d+(\/\d+)?)$/,
+    );
     if (!matchQuasiregular) {
       throw new Error("Can't parse symbol");
     }
@@ -53,7 +65,7 @@ export class PolytwisterSymbol {
       fraction.parse(matchQuasiregular[5]),
       fraction.parse(matchQuasiregular[1]),
       fraction.parse(matchQuasiregular[3]),
-      true
+      true,
     );
   }
 
@@ -63,7 +75,7 @@ export class PolytwisterSymbol {
         thing.ring,
         thing.twister1,
         thing.twister2,
-        thing.quasiregular
+        thing.quasiregular,
       );
     }
     if (thing.length === 2) {
@@ -71,7 +83,7 @@ export class PolytwisterSymbol {
         asFraction(thing[1]),
         asFraction(2),
         asFraction(thing[0]),
-        false
+        false,
       );
     }
     if (thing.length === 3) {
@@ -79,7 +91,7 @@ export class PolytwisterSymbol {
         asFraction(thing[2]),
         asFraction(thing[0]),
         asFraction(thing[1]),
-        true
+        true,
       );
     }
     throw new Error("Invalid polytwister symbol");

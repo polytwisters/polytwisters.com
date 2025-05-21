@@ -285,7 +285,7 @@ export class C2 {
       this.a.real * scale,
       this.a.imag * scale,
       this.b.real * scale,
-      this.b.imag * scale
+      this.b.imag * scale,
     );
   }
 
@@ -498,14 +498,12 @@ export class Polytwister {
     return new Polytwister(
       points.map((point) => C2.inverseHopfMapNested(point)),
       csgDef || csg.convex(points.length),
-      null
+      null,
     );
   }
 
   static fromDef2(def: PolytwisterDef): Polytwister {
-    const polyhedron = symbolToPolyhedron(
-      PolytwisterSymbol.from(def.symbol)
-    );
+    const polyhedron = symbolToPolyhedron(PolytwisterSymbol.from(def.symbol));
     const faces = polyhedron.faces;
     const rings = polyhedron.vertices;
     const logs: C2[] = [];
@@ -513,7 +511,9 @@ export class Polytwister {
       let ring = C2.inverseHopfMapNormalized(rings[face.vertexIndices[0]]);
       let unscaledLogPoint = C2.inverseHopfMapNormalized(face.center);
       // Find k so that the inner product <ring, unscaledLogPoint * k> = 1.
-      let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
+      let logPoint = unscaledLogPoint.mulReal(
+        1 / ring.inner(unscaledLogPoint).abs(),
+      );
       logs.push(logPoint);
     }
     return new Polytwister(logs, csg.convex(logs.length), polyhedron);
@@ -556,7 +556,7 @@ export class Polytwister {
     return new Polytwister(
       this.logs.map((x) => x.mulReal(1 / k)),
       this.csg,
-      this.polyhedron
+      this.polyhedron,
     );
   }
 
