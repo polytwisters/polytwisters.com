@@ -1,5 +1,9 @@
 import { Vector3, Matrix3 } from "three";
 
+export function square(x: number): number {
+  return x * x;
+};
+
 export function clamp(x: number, min: number, max: number): number {
   return Math.min(Math.max(x, min), max);
 }
