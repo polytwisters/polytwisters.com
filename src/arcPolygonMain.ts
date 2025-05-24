@@ -1,6 +1,6 @@
 import { createApp } from "vue";
-import TwisterViewer from "./TwisterViewer.vue";
+import TwisterViewerApp from "./TwisterViewerApp.vue";
 
 import "./style.css";
 
-createApp(TwisterViewer).mount("#app");
+createApp(TwisterViewerApp).mount("#app");

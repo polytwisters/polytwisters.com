@@ -1,10 +1,10 @@
-import { Quaternion, Vector3 } from "three";
+import { Vector3 } from "three";
 import { PolytwisterDef } from "./polytwisterDefs";
 import { type CSG } from "./csg";
 import * as csg from "./csg";
 import { Polyhedron, symbolToPolyhedron } from "./wythoff";
 import { PolytwisterSymbol } from "./symbol";
-import { Complex, C2 } from "./complex";
+import { C2 } from "./complex";
 import { square } from "./mathUtils";
 
 const EPSILON = 1e-5;

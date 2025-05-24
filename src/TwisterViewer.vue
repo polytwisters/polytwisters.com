@@ -3,6 +3,9 @@ import { useTemplateRef, onMounted } from "vue";
 import * as THREE from "three";
 import { Complex } from "./complex";
 
+const canvasWidth = 300;
+const canvasHeight = 300;
+
 interface Point {
   x: number,
   y: number
@@ -36,19 +39,28 @@ function intersectCircles(circle1: Circle, circle2: Circle): Complex[] {
     return [solution1, solution2];
 }
 
-const n = 5;
-const d = 2;
-const quasi = false;
+const props = defineProps<{
+  n: number,
+  d: number,
+  bloated: boolean
+}>();
+
+const n = props.n;
+const d = props.d;
+const bloated = props.bloated;
+const quasi = (d > n / 2) !== bloated;
 
 const circles: Circle[] = [];
 
-const distance = 0.4;
+const distance = 0.3;
+const circleRadius = 0.5;
+
 for (let i = 0; i < n; i++) {
   const angle = i * d / n * 2 * Math.PI;
   circles.push({
-    x: distance * Math.cos(angle),
-    y: distance * Math.sin(angle),
-    radius: 0.5,
+    x: distance * Math.sin(angle),
+    y: distance * Math.cos(angle),
+    radius: circleRadius,
   });
 }
 
@@ -58,6 +70,10 @@ for (let i = 0; i < n; i++) {
   const circle1 = circles[i];
   const circle2 = circles[(i + 1) % n];
   const points = intersectCircles(circle1, circle2);
+  if (points.length === 0) {
+    dots.push({ x: 10000, y: 10000 });
+    continue;
+  }
   let usePoint1 = points[0].abs() < points[1].abs();
   if (quasi) {
     usePoint1 = !usePoint1;
@@ -84,6 +100,7 @@ uniform vec2 iResolution;
 uniform vec2 circlePositions[NUM_CIRCLES];
 uniform float circleRadii[NUM_CIRCLES];
 uniform vec2 dots[NUM_CIRCLES];
+uniform bool bloated;
 
 float angle(vec2 x) {
   return atan(x.y, x.x);
@@ -99,7 +116,7 @@ void main() {
   );
 
   bool onCircle = false;
-  float strokeWidth = 0.003;
+  float strokeWidth = 0.005;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     vec2 center = circlePositions[i];
     float radius = circleRadii[i];
@@ -118,34 +135,34 @@ void main() {
     }
   }
   
+  bool onArc = false;
+  float strokeWidth2 = 0.006;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     vec2 center = circlePositions[i];
     float radius = circleRadii[i];
     vec2 displacement = position - center;
-    float angle2 = angle(displacement);
-    float angleMin = angle(dots[i] - center);
-    float angleMax = angle(dots[(i + 1) % NUM_CIRCLES] - center);
-    if (angleMax < angleMin) {
-      angleMax += TAU;
-    }
     if (
-      abs(length(position - center) - radius) <= dotRadius
-      && angleMin < angle2
-      && angle2 < angleMax
+      abs(length(position - center) - radius) <= strokeWidth2
     ) {
-      onDot = true;
-      break;
+      bool onSmallArc = length(position) < length(dots[i]);
+      if ((onSmallArc && !bloated) || (!onSmallArc && bloated)) {
+        onArc = true;
+        break;
+      }
     }
   }
  
-  vec3 color = onDot ? vec3(1.0) : onCircle ? vec3(0.5) : vec3(0.0);
+  vec3 color = onDot ?
+    vec3(1.0, 0.0, 0.5)
+    : onArc ?
+      vec3(1.0)
+      : onCircle ?
+        vec3(0.2)
+        : vec3(0.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
 `;
-
-const canvasWidth = 800;
-const canvasHeight = 500;
 
 onMounted(() => {
   const threeCamera = new THREE.Camera();
@@ -160,6 +177,7 @@ onMounted(() => {
       circlePositions: { value: circles.map((circle) => new THREE.Vector2(circle.x, circle.y)) },
       circleRadii: { value: circles.map((circle) => circle.radius) },
       dots: { value: dots.map((dot) => new THREE.Vector2(dot.x, dot.y)) },
+      bloated: { value: bloated },
     },
     vertexShader,
     fragmentShader
@@ -174,5 +192,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <canvas ref="canvas" width="800" height="500"></canvas>
+  <div class="w-fit-content flex flex-col items-center">
+    <span class="text-3xl">{{ n }}/{{ d }} {{ bloated ? "bloated" : "" }}</span>
+    <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
+  </div>
 </template>
