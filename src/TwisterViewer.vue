@@ -41,19 +41,22 @@ function intersectCircles(circle1: Circle, circle2: Circle): Complex[] {
 
 const props = defineProps<{
   n: number,
-  d: number,
-  bloated: boolean
+  d?: number,
+  bloated?: boolean,
+  distance: number,
+  circleRadius: number,
+  comment?: string,
 }>();
 
 const n = props.n;
-const d = props.d;
-const bloated = props.bloated;
+const d = props.d ?? 1;
+const bloated = props.bloated ?? false;
 const quasi = (d > n / 2) !== bloated;
+const distance = props.distance;
+const circleRadius = props.circleRadius;
+const comment = props.comment;
 
 const circles: Circle[] = [];
-
-const distance = 0.3;
-const circleRadius = 0.5;
 
 for (let i = 0; i < n; i++) {
   const angle = i * d / n * 2 * Math.PI;
@@ -101,6 +104,8 @@ uniform vec2 circlePositions[NUM_CIRCLES];
 uniform float circleRadii[NUM_CIRCLES];
 uniform vec2 dots[NUM_CIRCLES];
 uniform bool bloated;
+uniform int n;
+uniform int d;
 
 float angle(vec2 x) {
   return atan(x.y, x.x);
@@ -114,6 +119,38 @@ void main() {
     max(aspectRatio, 1.0),
     max(1.0 / aspectRatio, 1.0)
   );
+
+  bool inAnywhere = length(position) < length(dots[0]);
+  bool inCircles[NUM_CIRCLES];
+  int circles = 0;
+  for (int i = 0; i < NUM_CIRCLES; i++) {
+    vec2 center = circlePositions[i];
+    float radius = circleRadii[i];
+    inCircles[i] = length(position - center) < radius;
+    inAnywhere = inAnywhere || inCircles[i];
+    if (inCircles[i]) {
+      circles++;
+    }
+  }
+  
+  // normal & quasi
+  bool interior =
+    bloated
+      ? (
+        (
+          d % 2 == 0
+            ? circles < d && circles % 2 == 1
+            : circles > d || circles % 2 == 1
+        ) || circles == 0
+      )
+      && inAnywhere
+      : (
+        (
+          (NUM_CIRCLES + 1 - d - circles) % 2 == 0
+          && circles >= NUM_CIRCLES + 1 - d
+        ) || circles == 0
+      )
+      && inAnywhere;
 
   bool onCircle = false;
   float strokeWidth = 0.005;
@@ -158,7 +195,9 @@ void main() {
       vec3(1.0)
       : onCircle ?
         vec3(0.2)
-        : vec3(0.0);
+        : interior ?
+          vec3(0.5, 0.0, 0.3)
+          : vec3(0.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
@@ -178,6 +217,8 @@ onMounted(() => {
       circleRadii: { value: circles.map((circle) => circle.radius) },
       dots: { value: dots.map((dot) => new THREE.Vector2(dot.x, dot.y)) },
       bloated: { value: bloated },
+      n: { value: n },
+      d: { value: d },
     },
     vertexShader,
     fragmentShader
@@ -193,7 +234,7 @@ onMounted(() => {
 
 <template>
   <div class="w-fit-content flex flex-col items-center">
-    <span class="text-3xl">{{ n }}/{{ d }} {{ bloated ? "bloated" : "" }}</span>
+    <span class="text-2xl">{{ n }}/{{ d }} {{ bloated ? "bloated" : "" }} {{ comment ?? "" }}</span>
     <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
   </div>
 </template>
