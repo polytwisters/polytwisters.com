@@ -1,7 +1,5 @@
 import { Vector3 } from "three";
 import { PolytwisterDef } from "./polytwisterDefs";
-import { type CSG } from "./csg";
-import * as csg from "./csg";
 import { Polyhedron, symbolToPolyhedron } from "./wythoff";
 import { PolytwisterSymbol } from "./symbol";
 import { C2 } from "./complex";
@@ -150,50 +148,33 @@ export class ConvexPolytwister {
 
 export class Polytwister {
   logs: C2[];
-  csg: CSG;
-  polyhedron: Polyhedron | null;
+  rings: C2[];
+  polyhedron: Polyhedron;
 
-  convexComponents: ConvexPolytwister[];
-
-  constructor(logs: C2[], csg: CSG, polyhedron: Polyhedron | null) {
+  constructor(logs: C2[], rings: C2[], polyhedron: Polyhedron) {
     this.logs = logs;
-    this.csg = csg;
+    this.rings = rings;
     this.polyhedron = polyhedron;
-
-    this.convexComponents = [];
-    for (let intersection of this.csg.operands) {
-      // Deliberately ignoring antilogs here.
-      let convexComponentLogs = intersection.logs.map(
-        (logIndex) => this.logs[logIndex],
-      );
-      let convexComponent = new ConvexPolytwister(convexComponentLogs);
-      this.convexComponents.push(convexComponent);
-    }
   }
 
-  static fromR3(points: Vector3[], csgDef?: CSG): Polytwister {
-    return new Polytwister(
-      points.map((point) => C2.inverseHopfMapNested(point)),
-      csgDef || csg.convex(points.length),
-      null
-    );
-  }
-
+  /**
+   * Convert a PolytwisterDef to a Polytwister using the Wythoff construction.
+   */
   static fromDef2(def: PolytwisterDef): Polytwister {
     const polyhedron = symbolToPolyhedron(
       PolytwisterSymbol.from(def.symbol)
     );
     const faces = polyhedron.faces;
-    const rings = polyhedron.vertices;
+    const rings = polyhedron.vertices.map((vertex) => C2.inverseHopfMapNormalized(vertex));
     const logs: C2[] = [];
     for (let face of faces) {
-      let ring = C2.inverseHopfMapNormalized(rings[face.vertexIndices[0]]);
+      let ring = rings[face.vertexIndices[0]];
       let unscaledLogPoint = C2.inverseHopfMapNormalized(face.center);
       // Find k so that the inner product <ring, unscaledLogPoint * k> = 1.
       let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
       logs.push(logPoint);
     }
-    return new Polytwister(logs, csg.convex(logs.length), polyhedron);
+    return new Polytwister(logs, rings, polyhedron);
   }
 
   get numLogs(): number {
@@ -209,20 +190,8 @@ export class Polytwister {
     return this.logs.map((c2) => c2.toVector3W0());
   }
 
-  findRings(): C2[] {
-    const rings: C2[] = [];
-    for (let component of this.convexComponents) {
-      rings.push(...component.findRings());
-    }
-    return deduplicateRings(rings);
-  }
-
   radius(): number {
-    const radii: number[] = [];
-    for (let component of this.convexComponents) {
-      radii.push(component.radius());
-    }
-    return Math.max(...radii);
+    return 1;
   }
 
   /**
@@ -232,7 +201,7 @@ export class Polytwister {
   scale(k: number): Polytwister {
     return new Polytwister(
       this.logs.map((x) => x.mulReal(1 / k)),
-      this.csg,
+      this.rings.map((x) => x.mulReal(k)),
       this.polyhedron
     );
   }
@@ -240,5 +209,52 @@ export class Polytwister {
   normalized(): Polytwister {
     const radius = this.radius();
     return this.scale(1 / radius);
+  }
+
+  twisterCode(): string {
+    const parts = [];
+    for (const [twisterIndex, face] of this.polyhedron.faces.entries()) {
+      const n = face.vertexIndices.length;
+
+      const tmp = [];
+      for (let adjacentTwisterIndex of this.polyhedron.getAdjacentFaceIndices(twisterIndex)) {
+        tmp.push(`
+          if (Pipe_contains(Pipe(pipes[${adjacentTwisterIndex}], crossSectionW), point)) { count++; }
+        `);
+      }
+
+      parts.push(`
+      {
+        int pipeIndex = ${twisterIndex};
+        // Test the min point of the interval.
+        float t = intervals[pipeIndex].x;
+        vec3 point = Ray_at(ray, t);
+
+        int count = 0;
+        ${tmp.join("\n")}
+
+        if (count == ${n}) {
+          tmin = min(tmin, t);
+        }
+      }
+      `);
+
+      parts.push(`
+      {
+        int pipeIndex = ${twisterIndex};
+        // Test the max point of the interval.
+        float t = intervals[pipeIndex].y;
+        vec3 point = Ray_at(ray, t);
+
+        int count = 0;
+        ${tmp.join("\n")}
+
+        if (count == ${n}) {
+          tmin = min(tmin, t);
+        }
+      }
+      `);
+    }
+    return parts.join("\n");
   }
 }

@@ -32,5 +32,8 @@ const radius2 = 0.35;
     <TwisterViewer :n="5" :d="1" :bloated="true" :distance="distance2" :circle-radius="radius2" comment="(alt)" />
     <TwisterViewer :n="5" :d="4" :bloated="false" :distance="distance2" :circle-radius="radius2" comment="(alt)" />
     <TwisterViewer :n="5" :d="4" :bloated="true" :distance="distance2" :circle-radius="radius2" comment="(alt)" />
+
+    <TwisterViewer :n="5" :d="2" :bloated="false" :distance="0.47" :circle-radius="0.46" comment="(alt 2)" :canvas-width="1000" :canvas-height="1000" />
+    <TwisterViewer :n="5" :d="2" :bloated="true" :distance="0.47" :circle-radius="0.46" comment="(alt 2)" :canvas-width="1000" :canvas-height="1000" />
   </div>
 </template>

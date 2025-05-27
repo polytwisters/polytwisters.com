@@ -116,6 +116,18 @@ struct Pipe {
   float w;
 };
 
+bool Pipe_contains(Pipe pipe, vec3 p) {
+  float a = pipe.p.x;
+  float b = pipe.p.y;
+  float c = pipe.p.z;
+  float w = pipe.w;
+  float x = p.x;
+  float y = p.y;
+  float z = p.z;
+  float tmp = square(a * x + b * y + c * z) + square(-b * x + a * y + c * w);
+  return tmp <= 1.0;
+}
+
 vec3 Pipe_normal(Pipe pipe, vec3 p) {
   float a = pipe.p.x;
   float b = pipe.p.y;
@@ -236,35 +248,9 @@ vec4 render(Ray ray) {
     intervals[i] = intersectRayPipe(ray, pipe);
   }
 
-  /*
-  This is where we compute the Boolean operations on the intersection intervals. Formally we have N
-  closed intervals bounded by 2N endpoints P, and the set S is the result of taking some Boolean
-  operation on those intervals. We want to know if S is empty, and if it is not empty find
-  tmin = min(S).
-
-  It is easy to test whether a point is in S: test it against each of the intervals, and run those
-  results through the Boolean ops.
-
-  The 2N endpoints in order divide the real line into 2N + 2 segments. S is a union of those
-  segments. So to fully characterize S, we can just test the 2N endpoints against S. The smallest
-  endpoint in S is tmin.
-  */
   float tmin = FAR;
-  for (int i = 0; i < NUM_PIPES; i++) {
-    // Test the min point of the interval.
-    float t = intervals[i].x;
-    bool p[NUM_PIPES];
-    for (int j = 0; j < NUM_PIPES; j++) {
-      p[j] = Interval_contains(intervals[j], t);
-    }
-    // This expression is generated in TypeScript.
-    bool hit = $csgCode;
-    if (hit) {
-      tmin = min(tmin, t);
-    }
 
-    // Max point untested.
-  }
+  $twisterCode
 
   if (showRings) {
     for (int i = 0; i < MAX_NUM_RING_DOTS; i++) {

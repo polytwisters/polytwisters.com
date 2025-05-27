@@ -9,8 +9,6 @@ import * as polytwisterDefs from "./polytwisterDefs";
 import { type PolytwisterDef } from "./polytwisterDefs";
 import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
-import * as csg from "./csg";
-import { type CSG } from "./csg";
 import { PolytwisterSymbol } from "./symbol";
 
 import Button from "./Button.vue";
@@ -50,7 +48,7 @@ const polytwisterSymbol: Ref<PolytwisterSymbol> = computed(() =>
 
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
-const rings = computed(() => polytwister.value.findRings());
+const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
 );
@@ -113,19 +111,11 @@ let canvasHeight = canvasWidth / canvasAspectRatio;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
 
-const fragmentShaderCSGTree: Ref<CSG> = computed(
-  () => polytwister.value.csg ?? csg.convex(numPipes.value),
-);
-
-const fragmentShaderCSGCode: Ref<string> = computed(() =>
-  csg.csgCodeGen(fragmentShaderCSGTree.value),
-);
-
 const fragmentShader = computed(() =>
   fragmentShaderTemplate
     .replace("$maxNumRingDots", maxNumRingDots.value.toString())
     .replace("$numPipes", numPipes.value.toString())
-    .replace("$csgCode", fragmentShaderCSGCode.value),
+    .replace("$twisterCode", polytwister.value.twisterCode()),
 );
 
 const vertexShader = `

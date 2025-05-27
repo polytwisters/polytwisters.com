@@ -1,4 +1,4 @@
-import { C2 } from "./polytwisters";
+import { C2 } from "./complex";
 import { type Union, type Intersection } from "./csg";
 import { Vector3, Matrix3 } from "three";
 

@@ -3,9 +3,6 @@ import { useTemplateRef, onMounted } from "vue";
 import * as THREE from "three";
 import { Complex } from "./complex";
 
-const canvasWidth = 300;
-const canvasHeight = 300;
-
 interface Point {
   x: number,
   y: number
@@ -46,7 +43,12 @@ const props = defineProps<{
   distance: number,
   circleRadius: number,
   comment?: string,
+  canvasWidth?: number,
+  canvasHeight?: number,
 }>();
+
+const canvasWidth = props.canvasWidth ?? 300;
+const canvasHeight = props.canvasHeight ?? 300;
 
 const n = props.n;
 const d = props.d ?? 1;
@@ -153,7 +155,7 @@ void main() {
       && inAnywhere;
 
   bool onCircle = false;
-  float strokeWidth = 0.005;
+  float strokeWidth = 1.0 / iResolution.x;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     vec2 center = circlePositions[i];
     float radius = circleRadii[i];
@@ -164,7 +166,7 @@ void main() {
   }
 
   bool onDot = false;
-  float dotRadius = 0.02;
+  float dotRadius = 4.0 / iResolution.x;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     if (length(position - dots[i]) <= dotRadius) {
       onDot = true;
@@ -173,7 +175,7 @@ void main() {
   }
   
   bool onArc = false;
-  float strokeWidth2 = 0.006;
+  float strokeWidth2 = 1.5 / iResolution.x;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     vec2 center = circlePositions[i];
     float radius = circleRadii[i];

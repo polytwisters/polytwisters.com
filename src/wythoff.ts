@@ -4,15 +4,62 @@ import * as mathUtils from "./mathUtils";
 import { type Fraction, type FractionLike, asFraction, fractionToString } from "./fraction";
 import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
 
-export interface Polyhedron {
-  vertices: Vector3[],
-  edges: [number, number][]
-  faces: Face[]
+export class Polyhedron {
+  vertices: Vector3[];
+  edges: [number, number][];
+  faces: Face[];
+
+  constructor(vertices: Vector3[], edges: [number, number][], faces: Face[]) {
+    this.vertices = vertices;
+    this.edges = edges;
+    this.faces = faces;
+  }
+
+  getAdjacentFaceIndices(faceIndex: number): number[] {
+    const face = this.faces[faceIndex];
+    const result: number[] = [];
+    for (const [faceIndex2, face2] of this.faces.entries()) {
+      if (faceIndex2 === faceIndex) {
+        continue;
+      }
+      if (facesAdjacent(face, face2)) {
+        result.push(faceIndex2);
+      }
+    }
+    return result;
+  }
 }
 
 interface Face {
   vertexIndices: number[],
   center: Vector3
+}
+
+function facesAdjacent(face1: Face, face2: Face): boolean {
+  const n = face1.vertexIndices.length;
+  for (let i = 0; i < n; i++) {
+    const vertex1 = face1.vertexIndices[i];
+    const vertex2 = face1.vertexIndices[(i + 1) % n];
+    if (faceHasEdge(face2, [vertex1, vertex2])) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function faceHasEdge(face: Face, edge: [number, number]): boolean {
+  const n = face.vertexIndices.length;
+  for (let i = 0; i < n; i++) {
+    const vertex1 = face.vertexIndices[i];
+    const vertex2 = face.vertexIndices[(i + 1) % n];
+    if (vertex1 === edge[0] && vertex2 === edge[1]) {
+      return true;
+    }
+    if (vertex2 === edge[0] && vertex1 === edge[1]) {
+      return true;
+    }
+  }
+  return false;
 }
 
 interface Vertex {
@@ -403,14 +450,13 @@ export class SymmetryGroup {
       );
       faces = faces.concat(symmetrizeFace(face2, elementMatrices));
     }
-    // faces = faces.filter((x) => x.vertexIndices.length > 2);
     faces = dedupeFaces(faces);
 
-    return {
-      vertices: vertices.map((x) => x.position),
+    return new Polyhedron(
+      vertices.map((x) => x.position),
       edges,
       faces
-    };
+    );
   }
 }
 

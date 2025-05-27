@@ -1,3 +1,5 @@
+import { Vector3, Quaternion } from "three";
+
 function square(x: number): number {
   return x * x;
 }
