@@ -165,10 +165,10 @@ export class Polytwister {
       PolytwisterSymbol.from(def.symbol)
     );
     const faces = polyhedron.faces;
-    const rings = polyhedron.vertices.map((vertex) => C2.inverseHopfMapNormalized(vertex));
+    const rings = polyhedron.vertexLocations.map((vertex) => C2.inverseHopfMapNormalized(vertex));
     const logs: C2[] = [];
     for (let face of faces) {
-      let ring = rings[face.vertexIndices[0]];
+      let ring = rings[face.vertices[0]];
       let unscaledLogPoint = C2.inverseHopfMapNormalized(face.center);
       // Find k so that the inner product <ring, unscaledLogPoint * k> = 1.
       let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
@@ -214,7 +214,7 @@ export class Polytwister {
   twisterCode(): string {
     const parts = [];
     for (const [twisterIndex, face] of this.polyhedron.faces.entries()) {
-      const n = face.vertexIndices.length;
+      const n = face.vertices.length;
 
       const tmp = [];
       for (let adjacentTwisterIndex of this.polyhedron.getAdjacentFaceIndices(twisterIndex)) {

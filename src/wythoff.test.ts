@@ -51,7 +51,7 @@ test("Icosahedral group has order 120", () => {
 test("4 | 2 3 (octahedron) has 6 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(4, 2, 3);
   const polyhedron = wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.vertices.length).toBe(6);
+  expect(polyhedron.vertexLocations.length).toBe(6);
   expect(polyhedron.edges.length).toBe(12);
   expect(polyhedron.faces.length).toBe(8);
 });
@@ -59,7 +59,7 @@ test("4 | 2 3 (octahedron) has 6 vertices", () => {
 test("5 | 2 3 (icosahedron) has 12 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(5, 2, 3);
   const polyhedron = wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.vertices.length).toBe(12);
+  expect(polyhedron.vertexLocations.length).toBe(12);
   expect(polyhedron.edges.length).toBe(30);
   expect(polyhedron.faces.length).toBe(20);
 });
@@ -67,7 +67,7 @@ test("5 | 2 3 (icosahedron) has 12 vertices", () => {
 test("3 | 2 5 (dodecahedron) has 20 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(3, 2, 5);
   const polyhedron = wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.vertices.length).toBe(20);
+  expect(polyhedron.vertexLocations.length).toBe(20);
   expect(polyhedron.edges.length).toBe(30);
   expect(polyhedron.faces.length).toBe(12);
 });
@@ -75,7 +75,7 @@ test("3 | 2 5 (dodecahedron) has 20 vertices", () => {
 test("2 | 3 5 (icosidodecahedron) has 30 vertices", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
   const polyhedron = wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(true);
-  expect(polyhedron.vertices.length).toBe(30);
+  expect(polyhedron.vertexLocations.length).toBe(30);
   expect(polyhedron.edges.length).toBe(60);
   expect(polyhedron.faces.length).toBe(32);
 });
