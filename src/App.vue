@@ -88,7 +88,7 @@ const colors = [
 
 const twisterColors: Ref<THREE.Color[]> = computed(
   () => polytwister.value.polyhedron?.faces.map((face) => 
-    new THREE.Color(colors[face.vertexIndices.length])
+    new THREE.Color(colors[face.vertices.length])
   ) || []
 );
 

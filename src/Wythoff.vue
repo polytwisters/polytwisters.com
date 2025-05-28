@@ -144,7 +144,7 @@ onMounted(() => {
     group = new THREE.Group();
     scene.add(group);
 
-    const vertices = polyhedron.vertices;
+    const vertices = polyhedron.vertexLocations;
     for (let point of vertices) {
       let dot = new THREE.Mesh(
         new THREE.SphereGeometry(0.01),
@@ -172,7 +172,7 @@ onMounted(() => {
     }
 
     for (let face of polyhedron.faces) {
-      let vertexIndices = face.vertexIndices;
+      let vertexIndices = face.vertices;
       let geometry = new THREE.BufferGeometry();
       let meshVertices = [];
 
