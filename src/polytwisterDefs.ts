@@ -121,6 +121,10 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
   dyadicTwister(4),
   dyadicTwister(5),
   starDyadicTwister(3, 2),
+  starDyadicTwister(4, 3),
+  starDyadicTwister(5, 2),
+  starDyadicTwister(5, 3),
+  starDyadicTwister(5, 4),
   {
     name: "cuboctatwister",
     symbol: [3, 4, 2],
