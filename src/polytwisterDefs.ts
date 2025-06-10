@@ -47,15 +47,15 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
   },
   {
     name: "quasitetratwister",
-    symbol: [[3 / 2], 3],
+    symbol: [[3, 2], 3],
   },
   {
     name: "bloated tetratwister",
-    symbol: [3, [3 / 2]],
+    symbol: [3, [3, 2]],
   },
   {
     name: "inverted tetratwister",
-    symbol: [[3 / 2], [3 / 2]],
+    symbol: [[3, 2], [3, 2]],
   },
   {
     name: "cubetwister",

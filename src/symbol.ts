@@ -33,6 +33,10 @@ export class PolytwisterSymbol {
     return `{${b}, ${c}}`;
   }
 
+  isBloated(): boolean {
+    return this.ring.d > this.ring.n / 2;
+  }
+
   static parse(string: string): PolytwisterSymbol {
     // Remove whitespace.
     const tmp = string.replace(/\s+/g, "");

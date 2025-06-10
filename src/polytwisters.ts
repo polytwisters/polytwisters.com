@@ -150,20 +150,21 @@ export class Polytwister {
   logs: C2[];
   rings: C2[];
   polyhedron: Polyhedron;
+  bloated: boolean;
 
-  constructor(logs: C2[], rings: C2[], polyhedron: Polyhedron) {
+  constructor(logs: C2[], rings: C2[], polyhedron: Polyhedron, bloated: boolean) {
     this.logs = logs;
     this.rings = rings;
     this.polyhedron = polyhedron;
+    this.bloated = bloated;
   }
 
   /**
    * Convert a PolytwisterDef to a Polytwister using the Wythoff construction.
    */
   static fromDef2(def: PolytwisterDef): Polytwister {
-    const polyhedron = symbolToPolyhedron(
-      PolytwisterSymbol.from(def.symbol)
-    );
+    const symbol = PolytwisterSymbol.from(def.symbol);
+    const polyhedron = symbolToPolyhedron(symbol);
     const faces = polyhedron.faces;
     const rings = polyhedron.vertexPositions().map((vertex) => C2.inverseHopfMapNormalized(vertex));
     const logs: C2[] = [];
@@ -174,7 +175,7 @@ export class Polytwister {
       let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
       logs.push(logPoint);
     }
-    return new Polytwister(logs, rings, polyhedron);
+    return new Polytwister(logs, rings, polyhedron, symbol.isBloated());
   }
 
   get numLogs(): number {
@@ -202,7 +203,8 @@ export class Polytwister {
     return new Polytwister(
       this.logs.map((x) => x.mulReal(1 / k)),
       this.rings.map((x) => x.mulReal(k)),
-      this.polyhedron
+      this.polyhedron,
+      this.bloated,
     );
   }
 
@@ -217,25 +219,60 @@ export class Polytwister {
       const n = face.vertices.length;
 
       const tmp = [];
-      for (let adjacentTwisterIndex of this.polyhedron.getAdjacentFaceIndices(twisterIndex)) {
+      const d = face.symbol.d;
+      const adjacentTwisterIndices = this.polyhedron.getAdjacentFaceIndices(twisterIndex);
+  
+      // FIXME: Ring radius assumed to be 1, not true in general.
+      tmp.push(`
+        vec3 point = Ray_at(ray, t);
+        int n = ${n};
+        int d = ${d};
+        int count = 0;
+        float cutoffRadius = 1.0;
+        bool inAnywhere = Pipe_antipode_contains(
+          Pipe(normalize(pipes[${twisterIndex}]) * cutoffRadius, crossSectionW), point
+        );
+      `);
+      for (let adjacentTwisterIndex of adjacentTwisterIndices) {
         tmp.push(`
-          if (Pipe_contains(Pipe(pipes[${adjacentTwisterIndex}], crossSectionW), point)) { count++; }
+          if (Pipe_contains(Pipe(pipes[${adjacentTwisterIndex}], crossSectionW), point)) {
+            count++;
+            inAnywhere = true;
+          }
         `);
       }
+      if (this.bloated) {
+        tmp.push(`
+          bool inTwister = (
+            (
+              d % 2 == 0
+                ? count < d && count % 2 == 1
+                : count > d || count % 2 == 1
+            ) // || count == 0
+          ) && inAnywhere;
+        `);
+      } else {
+        tmp.push(`
+          bool inTwister = (
+            (
+              (n + 1 - d - count) % 2 == 0
+              && count >= n + 1 - d
+            ) // || count == 0
+          ) && inAnywhere;
+        `);
+      }
+      tmp.push(`
+        if (inTwister) {
+          tmin = min(tmin, t);
+        }
+      `);
 
       parts.push(`
       {
         int pipeIndex = ${twisterIndex};
         // Test the min point of the interval.
         float t = intervals[pipeIndex].x;
-        vec3 point = Ray_at(ray, t);
-
-        int count = 0;
         ${tmp.join("\n")}
-
-        if (count == ${n}) {
-          tmin = min(tmin, t);
-        }
       }
       `);
 
@@ -244,14 +281,7 @@ export class Polytwister {
         int pipeIndex = ${twisterIndex};
         // Test the max point of the interval.
         float t = intervals[pipeIndex].y;
-        vec3 point = Ray_at(ray, t);
-
-        int count = 0;
         ${tmp.join("\n")}
-
-        if (count == ${n}) {
-          tmin = min(tmin, t);
-        }
       }
       `);
     }

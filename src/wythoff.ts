@@ -38,6 +38,7 @@ interface Face {
   // These are the indices of edges, not their locations. (edgeIndices felt too long.)
   edges: number[],
   center: Vector3,
+  symbol: Fraction,
 }
 
 interface Edge {
@@ -266,8 +267,8 @@ function dedupeMirrors(mirrors: Vector3[]): Vector3[] {
 }
 
 /**
- * A representation of a finite subgroup of O(3). The group is encoded as a set of 3x3 orthogonal
- * matrices ("symmetries") with the following properties:
+ * A representation of a finite subgroup of O(3). "Representation" is in the formal, group-theoretic
+ * sense, i.e. a set of 3x3 orthogonal matrices ("symmetries") with the following properties:
  * 
  * 1. The identity matrix I is included.
  * 2. If matrices A and B are symmetries, AB is also a symmetry.
@@ -403,7 +404,8 @@ export class SymmetryGroup {
      * an adjacent vertex.
      * 3. The number of sides.
      */
-    function makeFaces(center: Vector3, cornerRotation: Matrix3, numSides: number): Face[] {
+    function makeFaces(center: Vector3, cornerRotation: Matrix3, symbol: Fraction): Face[] {
+      const numSides = symbol.n;
       // Compute the vertex & edge positions of all the face's vertices by repeatedly applying the
       // corner rotation matrix.
       let vertexPosition = GENERATOR_POINT.clone();
@@ -427,6 +429,7 @@ export class SymmetryGroup {
           vertices: vertexPositions.map((p) => findVertex(vertices, p)),
           edges: edgePositions.map((p) => findEdge(edges, p)),
           center: pm.position,
+          symbol
         };
       });
     }
@@ -436,7 +439,7 @@ export class SymmetryGroup {
     const facesA = makeFaces(
       schwarzTriangleVertices[2],
       realizeCoxeterWord([0, 1], this.operators),
-      this.schwarzTriangle.n3.n
+      this.schwarzTriangle.n3
     );
     let faces = facesA;
 
@@ -447,7 +450,7 @@ export class SymmetryGroup {
       const facesB = makeFaces(
         schwarzTriangleVertices[1],
         realizeCoxeterWord([0, 2], this.operators),
-        this.schwarzTriangle.n2.n
+        this.schwarzTriangle.n2
       );
       faces = facesA.concat(facesB);
     }

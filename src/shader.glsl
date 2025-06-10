@@ -128,6 +128,20 @@ bool Pipe_contains(Pipe pipe, vec3 p) {
   return tmp <= 1.0;
 }
 
+bool Pipe_antipode_contains(Pipe pipe, vec3 p) {
+  // <(a, b) | (-b^*, a^*)> = 0
+  float a = -pipe.p.z;
+  float b = 0.0;
+  float c = pipe.p.x;
+  float d = -pipe.p.y;
+  float w = pipe.w;
+  float x = p.x;
+  float y = p.y;
+  float z = p.z;
+  float tmp = square(a * x + b * y + c * z + d * w) + square(-b * x + a * y + c * w + -d * z);
+  return tmp <= 1.0;
+}
+
 vec3 Pipe_normal(Pipe pipe, vec3 p) {
   float a = pipe.p.x;
   float b = pipe.p.y;
