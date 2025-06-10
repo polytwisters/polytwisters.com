@@ -37,6 +37,30 @@ export class PolytwisterSymbol {
     return this.ring.d > this.ring.n / 2;
   }
 
+  isRegular(): boolean {
+    return !this.quasiregular;
+  }
+
+  isConvex(): boolean {
+    return this.ring.d === 1 && this.twister1.d === 1 && this.twister2.d === 1;
+  }
+
+  /**
+   * Return true if this belongs to the family of th dyadic twisters.
+   */
+  isDyadic(): boolean {
+    return !this.quasiregular && this.twister1.n === 2;
+  }
+
+  /**
+   * Return true if this belongs to the family of the rectified dyadic twisters.
+   */
+  isRectifiedDyadic(): boolean {
+    return this.quasiregular && this.ring.n === 2 && (
+      this.twister1.n === 2 || this.twister2.n === 2
+    );
+  }
+
   static parse(string: string): PolytwisterSymbol {
     // Remove whitespace.
     const tmp = string.replace(/\s+/g, "");

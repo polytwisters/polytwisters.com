@@ -20,6 +20,7 @@ import StellationDiagram from "./StellationDiagram.vue";
 import Wythoff from "./Wythoff.vue";
 
 import fragmentShaderTemplate from "./shader.glsl?raw";
+import PolytwisterTable from "./PolytwisterTable.vue";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -267,6 +268,8 @@ const cameraDirection = camera.direction;
 
       <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
+
+      <PolytwisterTable />
 
       <Article />
     </div>

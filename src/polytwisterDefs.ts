@@ -1,31 +1,56 @@
-import { C2 } from "./complex";
-import { Vector3, Matrix3 } from "three";
-
 import { PolytwisterSymbolLike } from "./symbol";
+import { PolytwisterSymbol } from "./symbol";
 
 /**
- * Rotate all points so the first point becomes (-1,0,0).
- * For some reason doesn't work exactly right, may be a bug.
+ * An object for inputting polytwister definitions.
  */
-export function orientPoints(points: Vector3[]): Vector3[] {
-  const quat = C2.inverseHopfMapNormalized(points[0]).toQuaternion().invert();
-  const mat3 = new Matrix3(0, 0, 1, 0, 1, 0, 1, 0, 0);
-  const result = points.map((point) =>
-    point.clone().applyQuaternion(quat).applyMatrix3(mat3),
-  );
-  return result;
-}
-
-export function normalizePoints(points: Vector3[]): Vector3[] {
-  return points.map((point) => point.clone().normalize());
-}
-
-export interface PolytwisterDef {
+export interface PolytwisterDefSpec {
   name: string;
-  symbol: PolytwisterSymbolLike
+  acronym?: string;
+  symbol: PolytwisterSymbolLike;
 }
 
-function dyadicTwister(n: number): PolytwisterDef {
+/**
+ * A polytwister definition, which is a symbol + name + acronym.
+ */
+export class PolytwisterDef {
+  name: string;
+  acronym?: string;
+  symbol: PolytwisterSymbol;
+
+  constructor(spec: PolytwisterDefSpec) {
+    this.name = spec.name;
+    this.acronym = spec.acronym;
+    this.symbol = PolytwisterSymbol.from(spec.symbol);
+  }
+
+  asFields(): PolytwisterFields {
+    return {
+      name: this.name,
+      acronym: this.acronym,
+      symbol: this.symbol,
+      symbolString: this.symbol.toString_(),
+      regular: this.symbol.isRegular(),
+      convex: this.symbol.isConvex(),
+      dyadic: this.symbol.isDyadic(),
+      rectifiedDyadic: this.symbol.isRectifiedDyadic(),
+    };
+  }
+}
+
+export interface PolytwisterFields {
+  name: string;
+  acronym?: string;
+  symbol: PolytwisterSymbol;
+  symbolString: string;
+  regular: boolean;
+  convex: boolean;
+  dyadic: boolean;
+  rectifiedDyadic: boolean;
+}
+
+
+function dyadicTwister(n: number): PolytwisterDefSpec {
   const result = {
     name: `${n} dyadic twister`,
     symbol: [2, n],
@@ -33,89 +58,193 @@ function dyadicTwister(n: number): PolytwisterDef {
   return result;
 }
 
-function starDyadicTwister(n: number, d: number): PolytwisterDef {
+function starDyadicTwister(n: number, d: number): PolytwisterDefSpec {
   return {
     name: `${n}/${d} dyadic twister`,
     symbol: [2, [n, d]],
   };
 }
 
-export const allPolytwisterDefs: PolytwisterDef[] = [
+const allPolytwisterDefSpecs: PolytwisterDefSpec[] = [
   {
     name: "tetratwister",
+    acronym: "tetter",
     symbol: [3, 3],
   },
   {
     name: "quasitetratwister",
+    acronym: "quitter",
     symbol: [[3, 2], 3],
   },
   {
     name: "bloated tetratwister",
+    acronym: "blitter",
     symbol: [3, [3, 2]],
   },
   {
     name: "inverted tetratwister",
+    acronym: "itter",
     symbol: [[3, 2], [3, 2]],
   },
   {
     name: "cube twister",
+    acronym: "cubiter",
     symbol: [4, 3],
   },
   {
     name: "quasicube twister",
+    acronym: "quicter",
     symbol: [[4, 3], 3],
   },
   {
     name: "bloated cube twister",
+    acronym: "blicter",
     symbol: [4, [3, 2]],
   },
   {
-    name: "inverted cubetwister",
+    name: "inverted cube twister",
+    acronym: "icter",
     symbol: [[4, 3], [3, 2]],
   },
   {
     name: "octatwister",
+    acronym: "octer",
     symbol: [3, 4],
   },
   {
     name: "quasioctatwister",
+    acronym: "quoter",
     symbol: [[3, 2], 4],
   },
   {
     name: "bloated octatwister",
+    acronym: "bloter",
     symbol: [3, [4, 3]],
   },
   {
+    name: "inverted octatwister",
+    acronym: "ioter",
+    symbol: [[3, 2], [4, 3]],
+  },
+  {
     name: "dodecatwister",
+    acronym: "doter",
     symbol: [5, 3],
   },
   {
     name: "quasidodecatwister",
+    acronym: "quadoter",
     symbol: [[5, 4], 3],
   },
   {
     name: "bloated dodecatwister",
+    acronym: "bladoter",
     symbol: [5, [3, 2]],
   },
   {
     name: "inverted dodecatwister",
+    acronym: "idoter",
     symbol: [[5, 4], [3, 2]],
   },
   {
     name: "icosatwister",
+    acronym: "iketer",
     symbol: [3, 5],
   },
   {
     name: "quasicosatwister",
+    acronym: "quiketer",
     symbol: [[3, 2], 5],
   },
   {
     name: "bloated icosatwister",
+    acronym: "bliketer",
     symbol: [3, [5, 4]],
   },
   {
     name: "inverted icosatwister",
+    acronym: "iyiketer",
     symbol: [[3, 2], [5, 4]],
+  },
+  {
+    name: "great dodecatwister",
+    acronym: "gaditer",
+    symbol: [5, [5, 2]],
+  },
+  {
+    name: "great quasidodecatwister",
+    acronym: "gaquiditer",
+    symbol: [[5, 4], [5, 2]],
+  },
+  {
+    name: "great bloated dodecatwister",
+    acronym: "gabliditer",
+    symbol: [5, [5, 3]],
+  },
+  {
+    name: "great inverted dodecatwister",
+    acronym: "gabliditer",
+    symbol: [[5, 4], [5, 3]],
+  },
+  {
+    name: "small stellated dodecatwister",
+    acronym: "sissiditer",
+    symbol: [[5, 2], 5],
+  },
+  {
+    name: "small quasistellated dodecatwister",
+    acronym: "soquissiditer",
+    symbol: [[5, 3], 5],
+  },
+  {
+    name: "small bloatostellated dodecatwister",
+    acronym: "soblessiditer",
+    symbol: [[5, 2], [5, 4]],
+  },
+  {
+    name: "small invertostellated dodecatwister",
+    acronym: "sansiditer",
+    symbol: [[5, 3], [5, 4]],
+  },
+  {
+    name: "great icosatwister",
+    acronym: "giketer",
+    symbol: [3, [5, 2]],
+  },
+  {
+    name: "great quasicosatwister",
+    acronym: "gaquiter",
+    symbol: [[3, 2], [5, 2]],
+  },
+  {
+    name: "great bloated icosatwister",
+    acronym: "gabliter",
+    symbol: [3, [5, 3]],
+  },
+  {
+    name: "great inverted icosatwister",
+    acronym: "giyiter",
+    symbol: [[3, 2], [5, 3]],
+  },
+  {
+    name: "great stellated dodecatwister",
+    acronym: "gissiditer",
+    symbol: [[5, 2], 3],
+  },
+  {
+    name: "great quasistellated dodecatwister",
+    acronym: "gaquassiditer",
+    symbol: [[5, 3], 3],
+  },
+  {
+    name: "great bloatostellated dodecatwister",
+    acronym: "goblessiditer",
+    symbol: [3, [5, 3]],
+  },
+  {
+    name: "great invertostellated dodecatwister",
+    acronym: "gansiditer",
+    symbol: [[5, 3], [3, 2]],
   },
   dyadicTwister(3),
   dyadicTwister(4),
@@ -178,3 +307,5 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
     symbol: [2, 5, 2],
   },
 ];
+
+export const allPolytwisterDefs = allPolytwisterDefSpecs.map((spec) => new PolytwisterDef(spec));

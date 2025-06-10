@@ -53,7 +53,7 @@ export class Polytwister {
    * Convert a PolytwisterDef to a Polytwister using the Wythoff construction.
    */
   static fromDef2(def: PolytwisterDef): Polytwister {
-    const symbol = PolytwisterSymbol.from(def.symbol);
+    const symbol: PolytwisterSymbol = def.symbol;
     const polyhedron = symbolToPolyhedron(symbol);
     const faces = polyhedron.faces;
     const rings = polyhedron.vertexPositions().map((vertex) => C2.inverseHopfMapNormalized(vertex));
