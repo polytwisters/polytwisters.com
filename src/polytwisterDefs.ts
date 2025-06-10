@@ -58,15 +58,15 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
     symbol: [[3, 2], [3, 2]],
   },
   {
-    name: "cubetwister",
+    name: "cube twister",
     symbol: [4, 3],
   },
   {
-    name: "quasicubetwister",
+    name: "quasicube twister",
     symbol: [[4, 3], 3],
   },
   {
-    name: "bloated cubetwister",
+    name: "bloated cube twister",
     symbol: [4, [3, 2]],
   },
   {
@@ -78,12 +78,44 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
     symbol: [3, 4],
   },
   {
+    name: "quasioctatwister",
+    symbol: [[3, 2], 4],
+  },
+  {
+    name: "bloated octatwister",
+    symbol: [3, [4, 3]],
+  },
+  {
     name: "dodecatwister",
     symbol: [5, 3],
   },
   {
+    name: "quasidodecatwister",
+    symbol: [[5, 4], 3],
+  },
+  {
+    name: "bloated dodecatwister",
+    symbol: [5, [3, 2]],
+  },
+  {
+    name: "inverted dodecatwister",
+    symbol: [[5, 4], [3, 2]],
+  },
+  {
     name: "icosatwister",
     symbol: [3, 5],
+  },
+  {
+    name: "quasicosatwister",
+    symbol: [[3, 2], 5],
+  },
+  {
+    name: "bloated icosatwister",
+    symbol: [3, [5, 4]],
+  },
+  {
+    name: "inverted icosatwister",
+    symbol: [[3, 2], [5, 4]],
   },
   dyadicTwister(3),
   dyadicTwister(4),
@@ -102,16 +134,8 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
     symbol: [2, 3, 3],
   },
   {
-    name: "quasisheaved tetratwister",
-    symbol: [2, [3, 2], 3],
-  },
-  {
     name: "sheaved cubetwister",
     symbol: [4, 2, 3],
-  },
-  {
-    name: "quasisheaved cubetwister",
-    symbol: [2, [4, 3], 3],
   },
   {
     name: "sheaved octatwister",
