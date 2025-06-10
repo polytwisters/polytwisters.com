@@ -192,7 +192,12 @@ export class Polytwister {
   }
 
   radius(): number {
-    return 1;
+    if (this.bloated) {
+      const log1Index = 0;
+      const log2Index = this.polyhedron.getAdjacentFaceIndices(0)[0];
+      return getTorusMaxRadius(this.logs[log1Index], this.logs[log2Index]);
+    }
+    return 1.0;
   }
 
   /**
@@ -229,7 +234,7 @@ export class Polytwister {
         int d = ${d};
         int count = 0;
         // FIXME this formula is ad hoc.
-        float cutoffRadius = 1.0 * length(pipes[${twisterIndex}]);
+        float cutoffRadius = ${1.0 / this.rings[0].abs()} * length(pipes[${twisterIndex}]);
         bool inAnywhere = Pipe_antipode_contains(
           Pipe(normalize(pipes[${twisterIndex}]) * cutoffRadius, crossSectionW), point
         );
