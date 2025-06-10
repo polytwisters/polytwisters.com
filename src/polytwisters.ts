@@ -165,7 +165,7 @@ export class Polytwister {
       PolytwisterSymbol.from(def.symbol)
     );
     const faces = polyhedron.faces;
-    const rings = polyhedron.vertexLocations.map((vertex) => C2.inverseHopfMapNormalized(vertex));
+    const rings = polyhedron.vertexPositions().map((vertex) => C2.inverseHopfMapNormalized(vertex));
     const logs: C2[] = [];
     for (let face of faces) {
       let ring = rings[face.vertices[0]];
