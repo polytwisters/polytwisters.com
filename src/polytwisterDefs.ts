@@ -62,6 +62,18 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
     symbol: [4, 3],
   },
   {
+    name: "quasicubetwister",
+    symbol: [[4, 3], 3],
+  },
+  {
+    name: "bloated cubetwister",
+    symbol: [4, [3, 2]],
+  },
+  {
+    name: "inverted cubetwister",
+    symbol: [[4, 3], [3, 2]],
+  },
+  {
     name: "octatwister",
     symbol: [3, 4],
   },
@@ -87,11 +99,19 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
   },
   {
     name: "sheaved tetratwister",
-    symbol: [3, 2, 3],
+    symbol: [2, 3, 3],
+  },
+  {
+    name: "quasisheaved tetratwister",
+    symbol: [2, [3, 2], 3],
   },
   {
     name: "sheaved cubetwister",
     symbol: [4, 2, 3],
+  },
+  {
+    name: "quasisheaved cubetwister",
+    symbol: [2, [4, 3], 3],
   },
   {
     name: "sheaved octatwister",
