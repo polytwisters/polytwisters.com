@@ -1,5 +1,4 @@
 import { C2 } from "./complex";
-import { type Union, type Intersection } from "./csg";
 import { Vector3, Matrix3 } from "three";
 
 import { PolytwisterSymbolLike } from "./symbol";
@@ -35,27 +34,28 @@ function dyadicTwister(n: number): PolytwisterDef {
 }
 
 function starDyadicTwister(n: number, d: number): PolytwisterDef {
-  const operands: Intersection[] = [];
-
-  for (let i = 0; i < n; i++) {
-    const logs: number[] = [];
-    for (let k = 0; k < n - d + 1; k++) {
-      logs.push((i + k) % n);
-    }
-    operands.push({ logs });
-  }
-
-  const result = {
+  return {
     name: `${n}/${d} dyadic twister`,
     symbol: [2, [n, d]],
   };
-  return result;
 }
 
 export const allPolytwisterDefs: PolytwisterDef[] = [
   {
     name: "tetratwister",
     symbol: [3, 3],
+  },
+  {
+    name: "quasitetratwister",
+    symbol: [[3 / 2], 3],
+  },
+  {
+    name: "bloated tetratwister",
+    symbol: [3, [3 / 2]],
+  },
+  {
+    name: "inverted tetratwister",
+    symbol: [[3 / 2], [3 / 2]],
   },
   {
     name: "cubetwister",
@@ -76,6 +76,7 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
   dyadicTwister(3),
   dyadicTwister(4),
   dyadicTwister(5),
+  starDyadicTwister(3, 2),
   {
     name: "cuboctatwister",
     symbol: [3, 4, 2],
