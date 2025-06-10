@@ -23,6 +23,9 @@ const radius2 = 0.35;
       <TwisterViewer :n="spec[0]" :d="spec[1]" :bloated="false" :distance="0.3" :circle-radius="0.5" />
       <TwisterViewer :n="spec[0]" :d="spec[1]" :bloated="true" :distance="0.3" :circle-radius="0.5" />
     </template>
+    <TwisterViewer :n="3" :d="2" :bloated="false" :distance="0.45" :circle-radius="0.4" comment="(alt)" />
+    <TwisterViewer :n="3" :d="2" :bloated="true" :distance="0.45" :circle-radius="0.4" comment="(alt)" />
+
     <TwisterViewer :n="4" :d="1" :bloated="false" :distance="distance2" :circle-radius="radius2" comment="(alt)" />
     <TwisterViewer :n="4" :d="1" :bloated="true" :distance="distance2" :circle-radius="radius2" comment="(alt)" />
     <TwisterViewer :n="4" :d="3" :bloated="false" :distance="distance2" :circle-radius="radius2" comment="(alt)" />

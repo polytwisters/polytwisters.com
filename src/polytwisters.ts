@@ -228,7 +228,8 @@ export class Polytwister {
         int n = ${n};
         int d = ${d};
         int count = 0;
-        float cutoffRadius = 1.0;
+        // FIXME this formula is ad hoc.
+        float cutoffRadius = 1.0 * length(pipes[${twisterIndex}]);
         bool inAnywhere = Pipe_antipode_contains(
           Pipe(normalize(pipes[${twisterIndex}]) * cutoffRadius, crossSectionW), point
         );
@@ -248,7 +249,7 @@ export class Polytwister {
               d % 2 == 0
                 ? count < d && count % 2 == 1
                 : count > d || count % 2 == 1
-            ) // || count == 0
+            ) || count == 0
           ) && inAnywhere;
         `);
       } else {
@@ -257,7 +258,7 @@ export class Polytwister {
             (
               (n + 1 - d - count) % 2 == 0
               && count >= n + 1 - d
-            ) // || count == 0
+            ) || count == 0
           ) && inAnywhere;
         `);
       }

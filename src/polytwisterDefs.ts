@@ -126,8 +126,16 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
   starDyadicTwister(5, 3),
   starDyadicTwister(5, 4),
   {
+    name: "tetratetratwister",
+    symbol: [3, [3, 2], 2],
+  },
+  {
     name: "cuboctatwister",
-    symbol: [3, 4, 2],
+    symbol: [4, 3, 2],
+  },
+  {
+    name: "octaquasicubitwister",
+    symbol: [[4, 3], 3, 2],
   },
   {
     name: "icosidodecatwister",
@@ -136,6 +144,10 @@ export const allPolytwisterDefs: PolytwisterDef[] = [
   {
     name: "sheaved tetratwister",
     symbol: [2, 3, 3],
+  },
+  {
+    name: "invertisheaved tetratwister",
+    symbol: [2, [3, 2], 3],
   },
   {
     name: "sheaved cubetwister",
