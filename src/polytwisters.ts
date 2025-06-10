@@ -81,6 +81,9 @@ export class Polytwister {
     return this.logs.map((c2) => c2.toVector3W0());
   }
 
+  /**
+   * Return the maximum distance of any point on the polytwister from its center.
+   */
   radius(): number {
     if (this.bloated) {
       const log1Index = 0;
@@ -103,6 +106,9 @@ export class Polytwister {
     );
   }
 
+  /**
+   * Uniformly scale the polytwister so that its radius is 1.
+   */
   normalized(): Polytwister {
     const radius = this.radius();
     return this.scale(1 / radius);
