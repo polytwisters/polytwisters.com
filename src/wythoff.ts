@@ -211,7 +211,6 @@ export class SchwarzTriangle {
       throw new Error("Shouldn't happen");
     }
   
-    let mirror3 = null;
     for (let i = 0; i < allMirrors.length; i++) {
       const candidate = allMirrors[i];
       const angle13 = candidate.angleTo(mirror1);
