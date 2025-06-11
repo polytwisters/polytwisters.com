@@ -1,7 +1,8 @@
 <script setup lang="tsx">
-import { allPolytwisterDefs } from './polytwisterDefs';
+import { database } from './polytwisterDefs';
+const defs = database.defs;
 
-const rows = allPolytwisterDefs.map((def) => def.asFields());
+const rows = defs.map((def) => def.asFields());
 </script>
 
 <template>

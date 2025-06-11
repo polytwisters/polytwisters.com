@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, type Ref } from "vue";
-import { Polytwister, C2 } from "./polytwisters";
+import { Polytwister } from "./polytwisters";
+import { C2 } from "./complex";
 
 const props = defineProps<{ polytwister: Polytwister }>();
 

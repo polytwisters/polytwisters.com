@@ -49,6 +49,34 @@ export interface PolytwisterFields {
   rectifiedDyadic: boolean;
 }
 
+export class PolytwisterDatabase {
+  defs: PolytwisterDef[];
+
+  constructor(specs: PolytwisterDefSpec[]) {
+    this.defs = specs.map((spec) => new PolytwisterDef(spec));
+  }
+
+  findByName(name: string): PolytwisterDef | undefined {
+    return this.defs.find((def) => def.name === name)
+  }
+
+  findIndexByName(name: string): number {
+    return this.defs.findIndex((def) => def.name === name)
+  }
+
+  getNextPolytwister(name: string): string {
+    let index = this.findIndexByName(name);
+    const newIndex = (index + 1) % this.defs.length;
+    return this.defs[newIndex].name;
+  }
+
+  getPreviousPolytwister(name: string): string {
+    let index = this.findIndexByName(name);
+    const newIndex = (index - 1 + this.defs.length) % this.defs.length;
+    return this.defs[newIndex].name;
+  }
+}
+
 
 function dyadicTwister(n: number): PolytwisterDefSpec {
   const result = {
@@ -65,7 +93,7 @@ function starDyadicTwister(n: number, d: number): PolytwisterDefSpec {
   };
 }
 
-const allPolytwisterDefSpecs: PolytwisterDefSpec[] = [
+const specs: PolytwisterDefSpec[] = [
   {
     name: "tetratwister",
     acronym: "tetter",
@@ -308,4 +336,4 @@ const allPolytwisterDefSpecs: PolytwisterDefSpec[] = [
   },
 ];
 
-export const allPolytwisterDefs = allPolytwisterDefSpecs.map((spec) => new PolytwisterDef(spec));
+export const database = new PolytwisterDatabase(specs);

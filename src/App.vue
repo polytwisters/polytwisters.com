@@ -5,11 +5,10 @@ import { Vector3 } from "three";
 
 import * as polytwisters from "./polytwisters";
 import { Polytwister } from "./polytwisters";
-import * as polytwisterDefs from "./polytwisterDefs";
-import { type PolytwisterDef } from "./polytwisterDefs";
 import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
 import { PolytwisterSymbol } from "./symbol";
+import * as globalState from "./globalState";
 
 import Button from "./Button.vue";
 import Article from "./Article.vue";
@@ -35,11 +34,7 @@ function toggleExperimentalMode() {
 
 const crossSectionW: Ref<number> = ref(0);
 
-const defs = polytwisterDefs.allPolytwisterDefs;
-const polytwisterIndex = ref(0);
-const polytwisterDef: Ref<PolytwisterDef> = computed(
-  () => defs[polytwisterIndex.value],
-);
+const polytwisterDef = globalState.polytwisterDef;
 const polytwister: Ref<Polytwister> = computed(() =>
   Polytwister.fromDef2(polytwisterDef.value).normalized(),
 );
@@ -234,7 +229,7 @@ const cameraDirection = camera.direction;
           <div class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none">search</div>
           <Button @click="cameraControls.zoomOut" material icon="remove" help="Zoom out" />
         </div>
-        <Selector :defs="defs" v-model="polytwisterIndex" />
+        <Selector />
         <div class="flex-1 flex flex-row justify-end">
           <Button @click="toggleExperimentalMode" material icon="science" help="Experimental features" :active="experimentalMode" />
         </div>

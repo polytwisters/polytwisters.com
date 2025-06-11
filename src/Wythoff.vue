@@ -6,7 +6,6 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import * as wythoff from "./wythoff";
 import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
-import { Schlick_to_F0 } from "three/tsl";
 
 const props = defineProps<{ symbol: PolytwisterSymbolLike }>();
 const symbolFromPolytwister = computed(() => PolytwisterSymbol.from(props.symbol));
