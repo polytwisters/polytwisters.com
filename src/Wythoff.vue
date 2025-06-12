@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, type Ref, onMounted, useTemplateRef } from "vue";
+import { computed, watch, onMounted, useTemplateRef } from "vue";
 import * as THREE from "three";
 import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
@@ -23,42 +23,6 @@ const mirrorColors = [
   "lime",
   "blue"
 ];
-
-
-function makeMirrorDisk(normal: Vector3): THREE.BufferGeometry {
-  const up = new Vector3(1, 1, 0);
-  const x = normal.clone().cross(up);
-  const y = normal.clone().cross(x);
-  const numPoints = 30;
-  const points = [];
-  for (let j = 0; j < numPoints; j++) {
-    const angle = j / numPoints * 2 * Math.PI;
-    const point = (
-      x.clone().multiplyScalar(Math.cos(angle))
-      .add(y.clone().multiplyScalar(Math.sin(angle)))
-    );
-    points.push(
-      point.normalize().multiplyScalar(1.1)
-    );
-  }
-
-  let tmp = [];
-  for (let j = 0; j < numPoints; j++) {
-    const p1 = points[j];
-    const p2 = points[(j + 1) % numPoints];
-    tmp.push(
-      p1.x, p1.y, p1.z,
-      p2.x, p2.y, p2.z,
-      0, 0, 0,
-    );
-  }
-  let meshVertices = new Float32Array(tmp);
-
-  let geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(meshVertices, 3));
-  geometry.computeVertexNormals();
-  return geometry;
-}
 
 /**
  * Circular wedge.
