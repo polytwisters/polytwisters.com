@@ -61,7 +61,7 @@ export class Polytwister {
     for (let face of faces) {
       let ring = rings[face.vertices[0]];
       let unscaledLogPoint = C2.inverseHopfMapNormalized(face.center);
-      // Find k so that the inner product <ring, unscaledLogPoint * k> = 1.
+      // Find k so that the inner product |<ring, unscaledLogPoint * k>| = 1.
       let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
       logs.push(logPoint);
     }
@@ -123,17 +123,24 @@ export class Polytwister {
       const d = face.symbol.d;
       const adjacentTwisterIndices = this.polyhedron.getAdjacentFaceIndices(twisterIndex);
   
-      // FIXME: Ring radius assumed to be 1, not true in general.
+      /**
+       * The formula below defines a pipe antipodal to the containing pipe for
+       * this twister. If the containing pipe is of the form P(a, 0), the
+       * antipodal pipe is P(0, c), and c is set so that the intersection of
+       * P(a, 0) and P(0, c) comprises rings of radius r. This is done by
+       * solving the equation r = sqrt(1 + (1/c)^2) / |a|.
+       */
       tmp.push(`
         vec3 point = Ray_at(ray, t);
         int n = ${n};
         int d = ${d};
         int count = 0;
-        // FIXME this formula is ad hoc.
-        float cutoffRadius = ${1.0 / this.rings[0].abs()} * length(pipes[${twisterIndex}]);
-        bool inAnywhere = Pipe_antipode_contains(
-          Pipe(normalize(pipes[${twisterIndex}]) * cutoffRadius, crossSectionW), point
+        float ringRadius = ${this.rings[0].abs()};
+        float cutoffRadius = 1.0 / sqrt(square(ringRadius * length(pipes[${twisterIndex}])) - 1.0);
+        bool inRing = Pipe_antipode_contains(
+          Pipe(pipes[${twisterIndex}] * cutoffRadius, crossSectionW), point
         );
+        bool inAnywhere = inRing;
       `);
       for (let adjacentTwisterIndex of adjacentTwisterIndices) {
         tmp.push(`
