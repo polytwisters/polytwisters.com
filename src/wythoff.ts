@@ -37,6 +37,9 @@ interface Face {
   vertices: number[],
   // These are the indices of edges, not their locations. (edgeIndices felt too long.)
   edges: number[],
+  // Identifies which type of face as distinguished by the symmetry group. This
+  // is 0 or 1 for quasiregulars, and always 0 for regulars.
+  faceType: number,
   center: Vector3,
   symbol: Fraction,
 }
@@ -404,7 +407,7 @@ export class SymmetryGroup {
      * an adjacent vertex.
      * 3. The number of sides.
      */
-    function makeFaces(center: Vector3, cornerRotation: Matrix3, symbol: Fraction): Face[] {
+    function makeFaces(center: Vector3, cornerRotation: Matrix3, symbol: Fraction, faceType: number): Face[] {
       const numSides = symbol.n;
       // Compute the vertex & edge positions of all the face's vertices by repeatedly applying the
       // corner rotation matrix.
@@ -429,7 +432,8 @@ export class SymmetryGroup {
           vertices: vertexPositions.map((p) => findVertex(vertices, p)),
           edges: edgePositions.map((p) => findEdge(edges, p)),
           center: pm.position,
-          symbol
+          symbol,
+          faceType
         };
       });
     }
@@ -439,7 +443,8 @@ export class SymmetryGroup {
     const facesA = makeFaces(
       schwarzTriangleVertices[2],
       realizeCoxeterWord([0, 1], this.operators),
-      this.schwarzTriangle.n3
+      this.schwarzTriangle.n3,
+      0
     );
     let faces = facesA;
 
@@ -450,7 +455,8 @@ export class SymmetryGroup {
       const facesB = makeFaces(
         schwarzTriangleVertices[1],
         realizeCoxeterWord([0, 2], this.operators),
-        this.schwarzTriangle.n2
+        this.schwarzTriangle.n2,
+        1
       );
       faces = facesA.concat(facesB);
     }
