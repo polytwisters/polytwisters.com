@@ -397,17 +397,17 @@ const specs: PolytwisterDefSpec[] = [
     symbol: [5, [5, 2], 2],
   },
   {
-    name: "icosiquasidodecatwister",
+    name: "great dodecaquasidodecatwister",
     acronym: "gidquiditer",
     symbol: [[5, 4], [5, 2], 2],
   },
   {
-    name: "icosiquasidodecatwister",
+    name: "small dodecaquasidodecatwister",
     acronym: "sidquiditer",
     symbol: [5, [5, 3], 2],
   },
   {
-    name: "dodecaquasiicosatwister",
+    name: "quasidodecadodecatwister",
     acronym: "quadiditer",
     symbol: [[5, 4], [5, 3], 2],
   },
