@@ -290,22 +290,150 @@ const specs: PolytwisterDefSpec[] = [
   starDyadicTwister(5, 2),
   starDyadicTwister(5, 3),
   starDyadicTwister(5, 4),
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Quasiregulars
+
+  // Tetratratwister variants
   {
     name: "tetratetratwister",
+    acronym: "tatetter",
     symbol: [3, [3, 2], 2],
   },
   {
+    name: "bloated tetratetratwister",
+    acronym: "blatatetter",
+    symbol: [3, [3, 2], [2, 3]],
+  },
+
+  // Cuboctatwister variants
+  {
     name: "cuboctatwister",
+    acronym: "coter",
     symbol: [4, 3, 2],
   },
   {
     name: "octaquasicubitwister",
+    acronym: "oquicter",
     symbol: [[4, 3], 3, 2],
   },
   {
-    name: "icosidodecatwister",
-    symbol: [3, 5, 2],
+    name: "cubiquasioctatwister",
+    acronym: "caquoter",
+    symbol: [4, [3, 2], 2],
   },
+  {
+    name: "quasicuboctatwister",
+    acronym: "quicoter",
+    symbol: [[4, 3], [3, 2], 2],
+  },
+  {
+    name: "bloated cuboctatwister",
+    acronym: "blicoter",
+    symbol: [4, 3, [2, 3]],
+  },
+  {
+    name: "octabloated cube twister",
+    acronym: "oblicter",
+    symbol: [[4, 3], 3, [2, 3]],
+  },
+  {
+    name: "cubibloated octatwister",
+    acronym: "cabloter",
+    symbol: [4, [3, 2], [2, 3]],
+  },
+  {
+    name: "inverticuboctatwister",
+    acronym: "icoter",
+    symbol: [[4, 3], [3, 2], [2, 3]],
+  },
+
+  // Icosidodecahedron variants
+  {
+    name: "icosidodecatwister",
+    acronym: "iditer",
+    symbol: [5, 3, 2],
+  },
+  {
+    name: "icosiquasidodecatwister",
+    acronym: "iquiditer",
+    symbol: [[5, 4], 3, 2],
+  },
+  {
+    name: "dodecaquasiicosatwister",
+    acronym: "quiditer",
+    symbol: [5, [3, 2], 2],
+  },
+  {
+    name: "quasicosidodecatwister",
+    acronym: "quiditer",
+    symbol: [[5, 4], [3, 2], 2],
+  },
+  {
+    name: "bloated icosidodecatwister",
+    acronym: "bliditer",
+    symbol: [5, 3, [2, 3]],
+  },
+  {
+    name: "icosibloated dodecatwister",
+    acronym: "ibliditer",
+    symbol: [[5, 4], 3, [2, 3]],
+  },
+  {
+    name: "dodecabloated icosatwister",
+    acronym: "dabliter",
+    symbol: [5, [3, 2], [2, 3]],
+  },
+  {
+    name: "inverticosidodecatwister",
+    acronym: "iyiditer",
+    symbol: [[5, 4], [3, 2], [2, 3]],
+  },
+
+  // Dodecadodecatwister variants
+  {
+    name: "dodecadodecatwister",
+    acronym: "diditer",
+    symbol: [5, [5, 2], 2],
+  },
+  {
+    name: "icosiquasidodecatwister",
+    acronym: "gidquiditer",
+    symbol: [[5, 4], [5, 2], 2],
+  },
+  {
+    name: "icosiquasidodecatwister",
+    acronym: "sidquiditer",
+    symbol: [5, [5, 3], 2],
+  },
+  {
+    name: "dodecaquasiicosatwister",
+    acronym: "quadiditer",
+    symbol: [[5, 4], [5, 3], 2],
+  },
+  {
+    name: "bloated dodecadodecatwister",
+    acronym: "bladiditer",
+    symbol: [5, [5, 2], [2, 3]],
+  },
+  {
+    name: "great dodecabloated dodecatwister",
+    acronym: "gidbliditer",
+    symbol: [[5, 4], [5, 2], [2, 3]],
+  },
+  {
+    name: "small dodecabloated dodecatwister",
+    acronym: "sidbliditer",
+    symbol: [5, [5, 3], [2, 3]],
+  },
+  {
+    name: "invertidodecadodecatwister",
+    acronym: "idoditer",
+    symbol: [[5, 4], [5, 3], [2, 3]],
+  },
+
+  // Sheaved cases
+
   {
     name: "sheaved tetratwister",
     symbol: [2, 3, 3],
