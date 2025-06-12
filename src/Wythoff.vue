@@ -5,37 +5,9 @@ import { Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 import * as wythoff from "./wythoff";
-import { type PolytwisterSymbolLike, PolytwisterSymbol } from "./symbol";
+import * as globalState from "./globalState";
 
-const props = defineProps<{ symbol: PolytwisterSymbolLike }>();
-const symbolFromPolytwister = computed(() => PolytwisterSymbol.from(props.symbol));
-
-const lockToPolytwister = ref(true);
-const userSymbolText = ref("");
-const symbolFromUser: Ref<PolytwisterSymbol> = ref(symbolFromPolytwister.value);
-const symbolError: Ref<boolean> = ref(false);
-
-watch(symbolFromPolytwister, (newValue) => {
-  if (lockToPolytwister.value) {
-    userSymbolText.value = newValue.toString_();
-    symbolFromUser.value = newValue;
-    symbolError.value = false;
-  }
-}, { immediate: true });
-
-watch(userSymbolText, (newValue) => {
-  try {
-    const newSymbol = PolytwisterSymbol.parse(newValue);
-    symbolFromUser.value = newSymbol;
-    symbolError.value = false;
-  } catch (e) {
-    symbolError.value = true;
-  }
-}, { immediate: true });
-
-const symbol = computed(() => 
-  lockToPolytwister.value ? symbolFromPolytwister.value : symbolFromUser.value
-);
+const symbol = computed(() => globalState.polytwisterDef.value.symbol);
 
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas2");
 
@@ -143,7 +115,7 @@ onMounted(() => {
     group = new THREE.Group();
     scene.add(group);
 
-    const vertices = polyhedron.vertexLocations;
+    const vertices = polyhedron.vertexPositions();
     for (let point of vertices) {
       let dot = new THREE.Mesh(
         new THREE.SphereGeometry(0.01),
@@ -155,8 +127,8 @@ onMounted(() => {
 
     for (let edge of polyhedron.edges) {
       let geometry = new THREE.BufferGeometry();
-      const point1 = vertices[edge[0]];
-      const point2 = vertices[edge[1]];
+      const point1 = vertices[edge.vertex1];
+      const point2 = vertices[edge.vertex2];
       let meshVertices = new Float32Array([
         point1.x, point1.y, point1.z,
         point2.x, point2.y, point2.z,
@@ -201,38 +173,15 @@ onMounted(() => {
       group.add(mesh);
     }
 
-    const vertices2 = schwarzTriangle.value.fundamentalMobiusTriangle();
-    for (let point of vertices2) {
-      let dot = new THREE.Mesh(
-        new THREE.SphereGeometry(0.01),
-        new THREE.MeshBasicMaterial()
-      );
-      dot.position.set(point.x, point.y, point.z);
-      group.add(dot);
-    }
-
-    const schwarzTriangleVertices = schwarzTriangle.value.fundamentalMobiusTriangle();
-    for (let i = 0; i < schwarzTriangleVertices.length; i++) {
-      const geometry = makeMirrorDisk(schwarzTriangleVertices[i]);
-      const mesh = new THREE.Mesh(
-        geometry,
-        new THREE.MeshPhongMaterial({ color: mirrorColors[i % 3], side: THREE.DoubleSide })
-      );
-      group.add(mesh);
-    }
-
-    /*
-    const schwarzTriangleNormals = schwarzTriangle.value.mirrors();
+    const schwarzTriangleVertices = schwarzTriangle.value.vertices();
     for (let i = 0; i < 3; i++) {
-      const geometry = makeMirrorDisk(schwarzTriangleNormals[i]);
+      const geometry = wedgeGeometry(schwarzTriangleVertices[i], schwarzTriangleVertices[(i + 1) % 3]);
       const mesh = new THREE.Mesh(
         geometry,
         new THREE.MeshBasicMaterial({ color: mirrorColors[i], side: THREE.DoubleSide })
       );
       group.add(mesh);
     }
-      */
-
   }, { immediate: true });
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
@@ -263,12 +212,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <p class="flex flex-row gap-3">
-    <span>Symbol:</span>
-    <input type="text" v-model="userSymbolText" :disabled="lockToPolytwister" :class="{ error: symbolError }">
-    <input type="checkbox" v-model="lockToPolytwister" id="lock-to-polytwister">
-    <label for="lock-to-polytwister">Lock to polytwister</label>
-  </p>
   <canvas ref="canvas2"></canvas>
 </template>
 

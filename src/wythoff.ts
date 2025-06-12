@@ -378,10 +378,15 @@ export class SymmetryGroup {
     // distinguish edges just by their endpoints, as that fails with digons.
     //
     // In the regular case, the edge's position is vertex 2 (and the face's center is vertex 3).
-    // In the quasiregular case, the "position" is any point in the interior of the edge of the
+    // In the quasiregular case, the "position" is a point in the interior of the edge of the
     // Schwarz triangle opposite vertex 1 (the generator point).
+    //
+    // I originally used the halfway point between the two vertices, but this caused problems for
+    // polyhedra like the dodecadodecahedron. The exact cause of the problems I don't fully
+    // understand, but it resulted in unwanted merging of edges. Changing from 0.5 to 0.3
+    // fixed this bug.
     const baseEdgePosition = quasiregular ? (
-      schwarzTriangleVertices[1].clone().lerp(schwarzTriangleVertices[2], 0.5)
+      schwarzTriangleVertices[1].clone().lerp(schwarzTriangleVertices[2], 0.3)
     ) : schwarzTriangleVertices[1];
     const baseEdgeEndpoint1 = GENERATOR_POINT.clone();
     const baseEdgeEndpoint2 = GENERATOR_POINT.clone().applyMatrix3(this.operators[0]);
