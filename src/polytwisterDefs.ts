@@ -56,12 +56,20 @@ export class PolytwisterDatabase {
     this.defs = specs.map((spec) => new PolytwisterDef(spec));
   }
 
+  has(name: string): boolean {
+    return this.findIndexByName(name) !== -1;
+  }
+
   findByName(name: string): PolytwisterDef | undefined {
     return this.defs.find((def) => def.name === name)
   }
 
   findIndexByName(name: string): number {
     return this.defs.findIndex((def) => def.name === name)
+  }
+
+  indexToName(index: number): string {
+    return this.defs[index].name;
   }
 
   getNextPolytwister(name: string): string {
@@ -211,7 +219,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "great inverted dodecatwister",
-    acronym: "gabliditer",
+    acronym: "giaditer",
     symbol: [[5, 4], [5, 3]],
   },
   {
