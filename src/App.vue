@@ -21,6 +21,7 @@ import Wythoff from "./Wythoff.vue";
 import fragmentShaderTemplate from "./shader.glsl?raw";
 import PolytwisterTable from "./PolytwisterTable.vue";
 import PropertyTags from "./PropertyTags.vue";
+import { fractionToString } from "./fraction";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -72,21 +73,35 @@ enum Shading {
   Debug = 1,
 }
 
-const colors = [
-  "#e64980", // pink
-  "#339af0", // blue
-  "#22b8cf", // cyan
-  "#fcc419", // yellow
-  "#ff922b", // orange
-  "#51cf66", // green
-  "#cc5de8", // purple
-  "#fa5252", // red
-];
+const colors = {
+  pink: "#e64980",
+  blue: "#339af0",
+  white: "#ffffff",
+  lightBlue: "#a5d8ff",
+  yellow: "#ffec99",
+  orange: "#ff922b",
+  green: "#51cf66",
+  purple: "#cc5de8",
+  red: "#fa5252",
+};
+
+const faceTypeToColor: Map<string, string> = new Map();
+faceTypeToColor.set("2", colors.white);
+faceTypeToColor.set("3", colors.lightBlue);
+faceTypeToColor.set("3/2", colors.yellow);
+faceTypeToColor.set("4", colors.red);
+faceTypeToColor.set("4/3", colors.green);
+faceTypeToColor.set("5", colors.orange);
+faceTypeToColor.set("5/2", colors.blue);
+faceTypeToColor.set("5/3", colors.pink);
+faceTypeToColor.set("5/4", colors.purple);
 
 const twisterColors: Ref<THREE.Color[]> = computed(
   () =>
     polytwister.value.polyhedron?.faces.map(
-      (face) => new THREE.Color(colors[(face.symbol.n + face.symbol.d - 1) % colors.length]),
+      (face) => new THREE.Color(
+        faceTypeToColor.get(fractionToString(face.symbol)) ?? "white"
+      ),
     ) || [],
 );
 
