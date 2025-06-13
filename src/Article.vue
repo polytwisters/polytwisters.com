@@ -25,8 +25,7 @@ const vKatex = {
     </p>
 
     <p>
-      This app is in an early stage of development and only a few polytwisters
-      have been implemented.
+      This app is in an early stage of development.
     </p>
 
     <div class="flex flex-row justify-center gap-10 p-3">
