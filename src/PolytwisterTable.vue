@@ -1,20 +1,24 @@
 <script setup lang="tsx">
 import * as globalState from "./globalState";
 import { database } from "./polytwisterDefs";
+import PropertyTags from "./PropertyTags.vue";
+
 const defs = database.defs;
 
 const rows = defs.map((def) => def.asFields());
 </script>
 
 <template>
-  <table>
-    <tbody>
-      <tr class="text-left">
+  <table class="w-full relative">
+    <thead>
+      <tr class="text-left sticky top-0 bg-black">
         <th>Name</th>
         <th>Acronym</th>
         <th>Symbol</th>
         <th>Properties</th>
       </tr>
+    </thead>
+    <tbody>
       <tr
         v-for="row in rows"
         @click="globalState.navigateTo(row.name)"
@@ -23,22 +27,7 @@ const rows = defs.map((def) => def.asFields());
         <td>{{ row.name }}</td>
         <td>{{ row.acronym ?? "" }}</td>
         <td>{{ row.symbolString }}</td>
-        <td class="text-sm">
-          <div class="flex flex-row gap-1">
-            <div
-              v-if="row.regular"
-              class="bg-red-900 text-white p-1 rounded-sm"
-            >
-              regular
-            </div>
-            <div
-              v-if="row.convex"
-              class="bg-blue-900 text-white p-1 rounded-sm"
-            >
-              convex
-            </div>
-          </div>
-        </td>
+        <td><PropertyTags :fields="row" /></td>
       </tr>
     </tbody>
   </table>

@@ -20,6 +20,7 @@ import Wythoff from "./Wythoff.vue";
 
 import fragmentShaderTemplate from "./shader.glsl?raw";
 import PolytwisterTable from "./PolytwisterTable.vue";
+import PropertyTags from "./PropertyTags.vue";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -267,6 +268,23 @@ const cameraDirection = camera.direction;
         </div>
       </div>
 
+      <div class="flex flex-row gap-5 justify-center">
+        <div><strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}</div>
+        <PropertyTags :fields="polytwisterDef.asFields()" />
+        <div v-if="polytwisterDef.acronym">
+          <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
+        </div>
+        <div>
+          <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
+        </div>
+        <div>
+          <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
+        </div>
+        <div>
+          <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
+        </div>
+      </div>
+
       <div class="relative my-3" ref="container" v-if="!shaderError">
         <canvas
           ref="canvas"
@@ -293,10 +311,12 @@ const cameraDirection = camera.direction;
 
       <WSlider v-model="crossSectionW" />
 
+      <div class="h-90 overflow-y-auto">
+        <PolytwisterTable />
+      </div>
+
       <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
-
-      <PolytwisterTable />
 
       <Article />
     </div>
