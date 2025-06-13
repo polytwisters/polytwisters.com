@@ -58,7 +58,7 @@ export class PolytwisterDatabase {
   defs: PolytwisterDef[];
 
   constructor(specs: PolytwisterDefSpec[]) {
-    this.defs = specs.map((spec) => new PolytwisterDef(spec));
+    this.defs = specs.map((spec) => new PolytwisterDef(spec)).filter((spec) => !spec.bug);
   }
 
   has(name: string): boolean {
@@ -104,6 +104,11 @@ function starDyadicTwister(n: number, d: number): PolytwisterDefSpec {
     symbol: [2, [n, d]],
   };
 }
+
+const bugs = {
+  WRONG_POLYTWISTER: "Wrong polytwister",
+  STRANDS: "Weird strands"
+};
 
 const specs: PolytwisterDefSpec[] = [
   {
@@ -334,6 +339,9 @@ const specs: PolytwisterDefSpec[] = [
   //////////////////////////////////////////////////////////////////////////////
   // Quasiregulars
 
+  // Polytwisters with 2 in the numerator of the ring figure
+  // (i.e. tetratetra/cubocta/icosidodecatwister variants).
+
   // Tetratratwister variants
   {
     name: "tetratetratwister",
@@ -539,7 +547,7 @@ const specs: PolytwisterDefSpec[] = [
     ],
   },
 
-  // Sheaved cases
+  // Sheaved cases: at least one digonal twister.
 
   {
     name: "sheaved tetratwister",
@@ -937,6 +945,162 @@ const specs: PolytwisterDefSpec[] = [
     name: "great invertistelliplated dodecatwister",
     acronym: "gise piditer",
     symbol: [2, [5, 3], [3, 5]],
+  },
+
+  // Special cases: polytwisters without 2's in any numerator.
+  {
+    name: "tetraretrotetratwister",
+    acronym: "tritter",
+    symbol: [[3, 2], 3, 3],
+  },
+  {
+    name: "tetrabloated tetratwister",
+    acronym: "tablitter",
+    symbol: [[3, 2], 3, [3, 5]],
+  },
+
+  {
+    name: "small cubiretro-octatwister",
+    acronym: "sacroter",
+    symbol: [[3, 2], 4, 4],
+    bug: "Filling method error creating weird strands",
+  },
+  {
+    name: "small ditetragonary cubioctatwister",
+    acronym: "sadtacoter",
+    symbol: [3, 4, [4, 3]],
+    bug: "Produces wrong polytwister",
+  },
+  {
+    name: "great cubiretro-octatwister",
+    acronym: "sacroter",
+    symbol: [3, [4, 3], 4],
+    bug: "Filling method error creating weird strands",
+  },
+  {
+    name: "great ditetragonary cubioctatwister",
+    acronym: "gadtacoter",
+    symbol: [[3, 2], [4, 3], [4, 3]],
+    bug: "Produces wrong polytwister",
+  },
+  {
+    name: "cubiretrocubitwister",
+    acronym: "cricter",
+    symbol: [4, [4, 3], 3],
+    bug: "Filling method error creating weird strands",
+  },
+
+  {
+    name: "small cubibloated octatwister",
+    acronym: "sacbloter",
+    symbol: [[3, 2], 4, [4, 7]],
+  },
+  {
+    name: "small ditetragonary bloated cubioctatwister",
+    acronym: "satdablicoter",
+    symbol: [3, 4, [4, 5]],
+  },
+  {
+    name: "great cubibloated octatwister",
+    acronym: "gacbloter",
+    symbol: [3, [4, 3], [4, 7]],
+  },
+  {
+    name: "great ditetragonary bloated cubioctatwister",
+    acronym: "gatdablicoter",
+    symbol: [3, 4, [4, 5]],
+    bug: bugs.WRONG_POLYTWISTER
+  },
+  {
+    name: "cubibloated cubitwister",
+    acronym: "cablicter",
+    symbol: [4, [4, 3], [3, 5]],
+  },
+
+  {
+    name: "small ditrigonary icosidodecatwister",
+    acronym: "sidtiditer",
+    symbol: [[5, 2], 3, 3],
+  },
+  {
+    name: "great ditrigonary dodekicosatwister",
+    acronym: "gidditditer",
+    symbol: [[5, 2], [3, 2], [3, 2]],
+    bug: bugs.WRONG_POLYTWISTER
+  },
+  {
+    name: "quasi ditrigonary icosidodecatwister",
+    acronym: "quidtiditer",
+    symbol: [[5, 3], [3, 2], 3],
+  },
+  {
+    name: "grand ditrigonary icosidodecatwister",
+    acronym: "gadtiditer",
+    symbol: [[5, 3], 3, [3, 2]],
+    bug: bugs.WRONG_POLYTWISTER
+  },
+  {
+    name: "great icosicositwister",
+    acronym: "giiter",
+    symbol: [3, [3, 2], [5, 3]],
+    bug: bugs.WRONG_POLYTWISTER
+  },
+
+  {
+    name: "grand ditrigonary bloated icosidodecatwister",
+    acronym: "gadtabliditer",
+    symbol: [[5, 3], [3, 2], [3, 5]],
+  },
+  {
+    name: "small ditrigonary bloatododekicosatwister",
+    acronym: "sidditbladiter",
+    symbol: [[5, 3], 3, [3, 4]],
+  },
+  {
+    name: "great quasiditrigonary bloatoicosidodecatwister",
+    acronym: "gadquidtabliditer",
+    symbol: [[5, 2], 3, [3, 5]],
+  },
+  {
+    name: "small ditrigonary bloated icosidodecatwister",
+    acronym: "sidtabliditer",
+    symbol: [[5, 2], [3, 2], [3, 4]],
+  },
+  {
+    name: "small bloated icosicositwister",
+    acronym: "sabliiter",
+    symbol: [3, [3, 2], [5, 7]],
+  },
+
+  {
+    name: "great quasiditrigonary icosidodecatwister",
+    acronym: "gaquidtiditer",
+    symbol: [[5, 4], [3, 2], [3, 2]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "small ditrigonary dodekicosatwister",
+    acronym: "sidditditer",
+    symbol: [[5, 4], 3, 3],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "great ditrigonary icosidodecatwister",
+    acronym: "gidtiditer",
+    symbol: [5, 3, [3, 2]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "medial ditrigonary icosidodecatwister",
+    acronym: "gidtiditer",
+    symbol: [5, [3, 2], 3],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "small icosicositwister",
+    acronym: "siiter",
+    symbol: [[3, 2], 3, 5],
+    bug: bugs.STRANDS,
   },
 ];
 
