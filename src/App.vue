@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
-import { Vec3 } from "ogl";
+import * as _ from "lodash";
 import * as THREE from "three";
+import { Vector3 } from "three";
 
 import * as polytwisters from "./polytwisters";
 import { Polytwister } from "./polytwisters";
-import * as polytwisterDefs from "./polytwisterDefs";
-import { type PolytwisterDef } from "./polytwisterDefs";
 import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
-import * as csg from "./csg";
-import { type CSG } from "./csg";
+import { PolytwisterSymbol } from "./symbol";
+import * as globalState from "./globalState";
 
 import Button from "./Button.vue";
 import Article from "./Article.vue";
@@ -18,9 +17,20 @@ import Axes from "./Axes.vue";
 import Selector from "./Selector.vue";
 import WSlider from "./WSlider.vue";
 import StellationDiagram from "./StellationDiagram.vue";
+import Wythoff from "./Wythoff.vue";
+
+import fragmentShaderTemplate from "./shader.glsl?raw";
+import PolytwisterTable from "./PolytwisterTable.vue";
+import PropertyTags from "./PropertyTags.vue";
+import { fractionToString } from "./fraction";
+import { database } from "./polytwisterDefs";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
+
+function randomPolytwister() {
+  globalState.polytwisterName.value = _.sample(database.defs)!.name;
+}
 
 const experimentalMode = ref(false);
 function toggleExperimentalMode() {
@@ -32,18 +42,18 @@ function toggleExperimentalMode() {
 
 const crossSectionW: Ref<number> = ref(0);
 
-const defs = polytwisterDefs.allPolytwisterDefs;
-const polytwisterIndex = ref(0);
-const polytwisterDef: Ref<PolytwisterDef> = computed(
-  () => defs[polytwisterIndex.value],
-);
+const polytwisterDef = globalState.polytwisterDef;
 const polytwister: Ref<Polytwister> = computed(() =>
-  Polytwister.fromDef(polytwisterDef.value).normalized(),
+  Polytwister.fromDef2(polytwisterDef.value).normalized(),
 );
+const polytwisterSymbol: Ref<PolytwisterSymbol> = computed(() =>
+  PolytwisterSymbol.from(polytwisterDef.value.symbol),
+);
+
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
-const rings = computed(() => polytwister.value.findRings());
-const ringDots: Ref<Vec3[]> = computed(() =>
+const rings = computed(() => polytwister.value.rings);
+const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
 );
 const numRings = computed(() => Math.max(rings.value.length, 1));
@@ -52,13 +62,17 @@ const maxNumRingDots = computed(() => numRings.value * 2);
 // The fragment shader requires an array of fixed size. ringDotsPadded is a version of ringDots
 // extended to always have exactly maxNumRingDots Vec3's. Dots are made "nonexistent" by setting
 // their location to something large.
-const ringDotsPadded: Ref<Vec3[]> = computed(() => {
+const ringDotsPadded: Ref<Vector3[]> = computed(() => {
   const result = ringDots.value.slice();
   while (result.length <= maxNumRingDots.value) {
-    result.push(new Vec3(10e3, 10e3, 1e3));
+    result.push(new Vector3(10e3, 10e3, 1e3));
   }
   return result;
 });
+
+// Maximum extent of the polytwister. Used in the shader to reject rays that have
+// no chance of hitting the sphere as a shader optimization.
+const radius = 1.0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Color & display options
@@ -69,19 +83,36 @@ enum Shading {
   Debug = 1,
 }
 
-const colors = [
-  "#e64980", // pink
-  "#339af0", // blue
-  "#22b8cf", // cyan
-  "#fcc419", // yellow
-  "#ff922b", // orange
-  "#51cf66", // green
-  "#cc5de8", // purple
-  "#fa5252", // red
-];
+const colors = {
+  pink: "#e64980",
+  blue: "#339af0",
+  white: "#ffffff",
+  lightBlue: "#a5d8ff",
+  yellow: "#ffec99",
+  orange: "#ff922b",
+  green: "#51cf66",
+  purple: "#cc5de8",
+  red: "#fa5252",
+};
 
-const baseColor: Ref<THREE.Color> = computed(
-  () => new THREE.Color(colors[polytwisterIndex.value % colors.length]),
+const faceTypeToColor: Map<string, string> = new Map();
+faceTypeToColor.set("2", colors.white);
+faceTypeToColor.set("3", colors.lightBlue);
+faceTypeToColor.set("3/2", colors.yellow);
+faceTypeToColor.set("4", colors.red);
+faceTypeToColor.set("4/3", colors.green);
+faceTypeToColor.set("5", colors.orange);
+faceTypeToColor.set("5/2", colors.blue);
+faceTypeToColor.set("5/3", colors.pink);
+faceTypeToColor.set("5/4", colors.purple);
+
+const twisterColors: Ref<THREE.Color[]> = computed(
+  () =>
+    polytwister.value.polyhedron?.faces.map(
+      (face) => new THREE.Color(
+        faceTypeToColor.get(fractionToString(face.symbol)) ?? "white"
+      ),
+    ) || [],
 );
 
 const shading: Ref<Shading> = ref(0);
@@ -103,21 +134,11 @@ let canvasHeight = canvasWidth / canvasAspectRatio;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
 
-import fragmentShaderTemplate from "./shader.glsl?raw";
-
-const fragmentShaderCSGTree: Ref<CSG> = computed(
-  () => polytwisterDef.value.csg ?? csg.convex(numPipes.value),
-);
-
-const fragmentShaderCSGCode: Ref<string> = computed(() =>
-  csg.csgCodeGen(fragmentShaderCSGTree.value),
-);
-
 const fragmentShader = computed(() =>
   fragmentShaderTemplate
     .replace("$maxNumRingDots", maxNumRingDots.value.toString())
     .replace("$numPipes", numPipes.value.toString())
-    .replace("$csgCode", fragmentShaderCSGCode.value),
+    .replace("$twisterCode", polytwister.value.twisterCode()),
 );
 
 const vertexShader = `
@@ -136,7 +157,7 @@ watch(polytwister, () => {
   crossSectionW.value = 0;
 });
 
-function getUniforms(): {[key: string]: any} {
+function getUniforms(): { [key: string]: any } {
   return {
     iResolution: { value: [canvasWidth, canvasHeight] },
     crossSectionW: { value: crossSectionW.value },
@@ -148,7 +169,8 @@ function getUniforms(): {[key: string]: any} {
     ringDots: { value: ringDotsPadded.value },
     shading: { value: shading.value },
     showRings: { value: showRings.value },
-    baseColor: { value: baseColor.value },
+    colors: { value: twisterColors.value },
+    radius: { value: radius },
   };
 }
 
@@ -162,12 +184,15 @@ onMounted(() => {
 
   const geometry = new THREE.PlaneGeometry(2, 2);
 
-  let mesh: THREE.Mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-    color: new THREE.Color().setHex(0x000000)
-  }));
+  let mesh: THREE.Mesh = new THREE.Mesh(
+    geometry,
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHex(0x000000),
+    }),
+  );
   scene.add(mesh);
 
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value!  });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
   let material: THREE.ShaderMaterial | null = null;
 
   renderer.setSize(canvasWidth, canvasHeight, false);
@@ -180,7 +205,7 @@ onMounted(() => {
       material = new THREE.ShaderMaterial({
         uniforms: getUniforms(),
         vertexShader: vertexShader,
-        fragmentShader: newValue
+        fragmentShader: newValue,
       });
       mesh.material = material;
       loading.value = false;
@@ -222,7 +247,10 @@ const cameraDirection = camera.direction;
         <div class="flex-1"></div>
         <h1 class="flex-1 text-3xl font-bold text-center">Polytwisters</h1>
         <div class="flex-1 flex flex-row items-center justify-end gap-2">
-          <a target="_blank" href="https://github.com/polytwisters/polytwisters.com/">
+          <a
+            target="_blank"
+            href="https://github.com/polytwisters/polytwisters.com/"
+          >
             source code
           </a>
         </div>
@@ -230,14 +258,66 @@ const cameraDirection = camera.direction;
 
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
-          <Button @click="camera.reset" material icon="home" help="Reset camera" />
-          <Button @click="cameraControls.zoomIn" material icon="add" help="Zoom in" />
-          <div class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none">search</div>
-          <Button @click="cameraControls.zoomOut" material icon="remove" help="Zoom out" />
+          <Button
+            @click="camera.reset"
+            material
+            icon="home"
+            help="Reset camera"
+          />
+          <Button
+            @click="cameraControls.zoomIn"
+            material
+            icon="add"
+            help="Zoom in"
+          />
+          <div
+            class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none"
+          >
+            search
+          </div>
+          <Button
+            @click="cameraControls.zoomOut"
+            material
+            icon="remove"
+            help="Zoom out"
+          />
         </div>
-        <Selector :defs="defs" v-model="polytwisterIndex" />
-        <div class="flex-1 flex flex-row justify-end">
-          <Button @click="toggleExperimentalMode" material icon="science" help="Experimental features" :active="experimentalMode" />
+        <Selector />
+        <div class="flex-1 flex flex-row justify-end gap-2">
+          <Button
+            @click="randomPolytwister"
+            material
+            icon="casino" 
+            help="Random"
+            />
+          <Button
+            @click="toggleExperimentalMode"
+            material
+            icon="science"
+            help="Experimental features"
+            :active="experimentalMode"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-5 justify-begin">
+        <div class="w-40"><strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}</div>
+        <div class="w-40">
+          <PropertyTags :fields="polytwisterDef.asFields()" />
+        </div>
+        <div class="w-40" v-if="polytwisterDef.acronym && false">
+          <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
+        </div>
+        <div class="flex flex-row justify-end flex-1">
+          <div class="w-25">
+            <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
+          </div>
+          <div class="w-25">
+            <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
+          </div>
+          <div class="w-25">
+            <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
+          </div>
         </div>
       </div>
 
@@ -267,7 +347,11 @@ const cameraDirection = camera.direction;
 
       <WSlider v-model="crossSectionW" />
 
+      <PolytwisterTable />
+
+      <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
+
       <Article />
     </div>
   </div>

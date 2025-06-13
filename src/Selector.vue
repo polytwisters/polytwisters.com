@@ -1,32 +1,34 @@
 <script setup lang="ts">
-import { type PolytwisterDef } from "./polytwisterDefs";
+import { database } from "./polytwisterDefs";
+import * as globalState from "./globalState";
 import Button from "./Button.vue";
 
-const props = defineProps<{
-  defs: PolytwisterDef[];
-}>();
-const defs = props.defs;
-
-const index = defineModel<number>({ default: 0 });
-
-function next() {
-  index.value = (index.value + 1) % defs.length;
-}
-
-function previous() {
-  index.value = (index.value - 1 + defs.length) % defs.length;
-}
+const defs = database.defs;
+const polytwisterName = globalState.polytwisterName;
 </script>
 
 <template>
   <div class="flex flex-row gap-2 justify-center flex-1">
-    <Button @click="previous" material icon="chevron_left" help="Previous" />
-    <select v-model="index" class="text-center h-8 bg-primary p-1 rounded-sm">
-      <option v-for="(def, i) in defs" :value="i">
+    <Button
+      @click="globalState.previous"
+      material
+      icon="chevron_left"
+      help="Previous"
+    />
+    <select
+      v-model="polytwisterName"
+      class="text-center h-8 bg-primary p-1 rounded-sm"
+    >
+      <option v-for="def in defs" :value="def.name">
         {{ def.name }}
       </option>
     </select>
-    <Button @click="next" material icon="chevron_right" help="Next" />
+    <Button
+      @click="globalState.next"
+      material
+      icon="chevron_right"
+      help="Next"
+    />
   </div>
 </template>
 

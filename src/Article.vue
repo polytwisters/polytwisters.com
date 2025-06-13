@@ -25,8 +25,7 @@ const vKatex = {
     </p>
 
     <p>
-      This app is in an early stage of development and only a few polytwisters
-      have been implemented.
+      This app is in an early stage of development.
     </p>
 
     <div class="flex flex-row justify-center gap-10 p-3">
@@ -217,6 +216,12 @@ const vKatex = {
     </p>
 
     <h2>Changelog</h2>
+
+    <p>
+      2025-06-13: Added 142 uniform polytwisters, comprising all regulars (apart
+      from dyadic twisters) and all quasiregulars whose ring figure is of the
+      form 2/n.
+    </p>
 
     <p>
       2025-04-09: Total rewrite, migrating from static videos rendered in

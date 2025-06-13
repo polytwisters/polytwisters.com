@@ -21,7 +21,8 @@ uniform float crossSectionW;
 // Geometry parameters.
 uniform vec3 pipes[NUM_PIPES];
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
-uniform vec3 baseColor;
+uniform vec3 colors[NUM_PIPES];
+uniform float radius;
 
 // Display options.
 uniform int shading;
@@ -116,6 +117,32 @@ struct Pipe {
   float w;
 };
 
+bool Pipe_contains(Pipe pipe, vec3 p) {
+  float a = pipe.p.x;
+  float b = pipe.p.y;
+  float c = pipe.p.z;
+  float w = pipe.w;
+  float x = p.x;
+  float y = p.y;
+  float z = p.z;
+  float tmp = square(a * x + b * y + c * z) + square(-b * x + a * y + c * w);
+  return tmp <= 1.0;
+}
+
+bool Pipe_antipode_contains(Pipe pipe, vec3 p) {
+  // <(a, b) | (-b^*, a^*)> = 0
+  float a = -pipe.p.z;
+  float b = 0.0;
+  float c = pipe.p.x;
+  float d = -pipe.p.y;
+  float w = pipe.w;
+  float x = p.x;
+  float y = p.y;
+  float z = p.z;
+  float tmp = square(a * x + b * y + c * z + d * w) + square(-b * x + a * y + c * w + -d * z);
+  return tmp <= 1.0;
+}
+
 vec3 Pipe_normal(Pipe pipe, vec3 p) {
   float a = pipe.p.x;
   float b = pipe.p.y;
@@ -200,7 +227,7 @@ float specular(vec3 normal, vec3 light, vec3 viewer, float exponent) {
   return pow(max(dot(reflectedNormal, viewer), 0.0), exponent);
 }
 
-vec3 shadePhong(vec3 normal, vec3 viewer) {
+vec3 shadePhong(vec3 normal, vec3 viewer, vec3 baseColor) {
   // Assume normal is normalized.
   vec3 light1 = normalize(vec3(3.0, 1.0, 1.0));
   vec3 light2 = normalize(vec3(-1.0, -1.0, -1.0));
@@ -225,9 +252,15 @@ vec3 shadeDebug(vec3 normal, vec3 viewer) {
 }
 
 vec4 render(Ray ray) {
+  Sphere containingSphere = Sphere(vec3(0.0), radius);
+  Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
+  if (Interval_empty(containingSphereInterval)) {
+    return vec4(0.0, 0.0, 0.0, 1.0);
+  }
+
   float pi = radians(180.0);
 
-  float sphereRadius = 0.04;
+  float dotRadius = 0.04;
 
   // Cast a ray onto each pipe and find the intervals of intersection.
   Interval intervals[NUM_PIPES];
@@ -236,39 +269,13 @@ vec4 render(Ray ray) {
     intervals[i] = intersectRayPipe(ray, pipe);
   }
 
-  /*
-  This is where we compute the Boolean operations on the intersection intervals. Formally we have N
-  closed intervals bounded by 2N endpoints P, and the set S is the result of taking some Boolean
-  operation on those intervals. We want to know if S is empty, and if it is not empty find
-  tmin = min(S).
-
-  It is easy to test whether a point is in S: test it against each of the intervals, and run those
-  results through the Boolean ops.
-
-  The 2N endpoints in order divide the real line into 2N + 2 segments. S is a union of those
-  segments. So to fully characterize S, we can just test the 2N endpoints against S. The smallest
-  endpoint in S is tmin.
-  */
   float tmin = FAR;
-  for (int i = 0; i < NUM_PIPES; i++) {
-    // Test the min point of the interval.
-    float t = intervals[i].x;
-    bool p[NUM_PIPES];
-    for (int j = 0; j < NUM_PIPES; j++) {
-      p[j] = Interval_contains(intervals[j], t);
-    }
-    // This expression is generated in TypeScript.
-    bool hit = $csgCode;
-    if (hit) {
-      tmin = min(tmin, t);
-    }
 
-    // Max point untested.
-  }
+  $twisterCode
 
   if (showRings) {
     for (int i = 0; i < MAX_NUM_RING_DOTS; i++) {
-      Sphere sphere1 = Sphere(ringDots[i], sphereRadius);
+      Sphere sphere1 = Sphere(ringDots[i], dotRadius);
       Interval intervalSphere = intersectRaySphere(ray, sphere1);
       if (intervalSphere.x <= tmin && !Interval_empty(intervalSphere)) {
         // Dots have flat shading.
@@ -286,9 +293,11 @@ vec4 render(Ray ray) {
   // determine that by just looking for the pipe whose intersection interval matches that tmin.
   Pipe pipe;
   bool invert = false;
+  vec3 pipeColor;
   for (int i = 0; i < NUM_PIPES; i++) {
     if (tmin == intervals[i].x || tmin == intervals[i].y) {
       pipe = Pipe(pipes[i], crossSectionW);
+      pipeColor = colors[i]; 
       if (tmin == intervals[i].y) {
         invert = true;
       }
@@ -302,7 +311,7 @@ vec4 render(Ray ray) {
   vec3 viewer = ray.direction * -1.0;
   vec3 color = shading == SHADING_DEBUG ?
     shadeDebug(normal, viewer)
-    : shadePhong(normal, viewer);
+    : shadePhong(normal, viewer, pipeColor);
   return vec4(color, 1.0);
 }
 
