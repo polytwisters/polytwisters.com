@@ -780,7 +780,6 @@ const specs: PolytwisterDefSpec[] = [
     name: "quasiplated cube twister",
     acronym: "quipicter",
     symbol: [2, [4, 3], [3, 5]],
-    bug: "Incorrectly produces invertiplated cube twister",
   },
   {
     name: "bloatoplated cube twister",
