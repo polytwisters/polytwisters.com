@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import { PolytwisterFields } from './polytwisterDefs';
 
-const props = defineProps<{ fields: PolytwisterFields }>();
+defineProps<{ fields: PolytwisterFields }>();
 </script>
 
 <template>
