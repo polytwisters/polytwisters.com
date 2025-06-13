@@ -1,7 +1,6 @@
-import { Vector3 } from "three";
 import { test, expect } from "vitest";
 import { C2 } from "./complex";
-import { Polytwister, getTorusMaxRadius } from "./polytwisters";
+import { getTorusMaxRadius } from "./polytwisters";
 
 test("pipe intersection", () => {
   let pipe1 = C2.fromR4(0, 0.3, 1, 0.3);
