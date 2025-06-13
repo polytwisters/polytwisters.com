@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
+import * as _ from "lodash";
 import * as THREE from "three";
 import { Vector3 } from "three";
 
@@ -22,9 +23,14 @@ import fragmentShaderTemplate from "./shader.glsl?raw";
 import PolytwisterTable from "./PolytwisterTable.vue";
 import PropertyTags from "./PropertyTags.vue";
 import { fractionToString } from "./fraction";
+import { database } from "./polytwisterDefs";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
+
+function randomPolytwister() {
+  globalState.polytwisterName.value = _.sample(database.defs)!.name;
+}
 
 const experimentalMode = ref(false);
 function toggleExperimentalMode() {
@@ -272,7 +278,13 @@ const cameraDirection = camera.direction;
           />
         </div>
         <Selector />
-        <div class="flex-1 flex flex-row justify-end">
+        <div class="flex-1 flex flex-row justify-end gap-2">
+          <Button
+            @click="randomPolytwister"
+            material
+            icon="casino" 
+            help="Random"
+            />
           <Button
             @click="toggleExperimentalMode"
             material
@@ -283,20 +295,24 @@ const cameraDirection = camera.direction;
         </div>
       </div>
 
-      <div class="flex flex-row gap-5 justify-center">
-        <div><strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}</div>
-        <PropertyTags :fields="polytwisterDef.asFields()" />
-        <div v-if="polytwisterDef.acronym">
+      <div class="flex flex-row gap-5 justify-begin">
+        <div class="w-40"><strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}</div>
+        <div class="w-40">
+          <PropertyTags :fields="polytwisterDef.asFields()" />
+        </div>
+        <div class="w-40" v-if="polytwisterDef.acronym && false">
           <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
         </div>
-        <div>
-          <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
-        </div>
-        <div>
-          <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
-        </div>
-        <div>
-          <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
+        <div class="flex flex-row justify-end flex-1">
+          <div class="w-25">
+            <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
+          </div>
+          <div class="w-25">
+            <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
+          </div>
+          <div class="w-25">
+            <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
+          </div>
         </div>
       </div>
 
@@ -326,9 +342,7 @@ const cameraDirection = camera.direction;
 
       <WSlider v-model="crossSectionW" />
 
-      <div class="h-90 overflow-y-auto">
-        <PolytwisterTable />
-      </div>
+      <PolytwisterTable />
 
       <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
       <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
