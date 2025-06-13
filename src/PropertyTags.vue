@@ -30,5 +30,11 @@ defineProps<{ fields: PolytwisterFields }>();
     >
       nonconvex
     </div>
+    <div
+      v-if="fields.bug"
+      class="bg-green-900 text-white p-1 rounded-sm"
+    >
+      bug
+    </div>
   </div>
 </template>

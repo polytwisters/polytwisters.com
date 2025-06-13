@@ -8,6 +8,7 @@ export interface PolytwisterDefSpec {
   name: string;
   acronym?: string;
   symbol: PolytwisterSymbolLike;
+  bug?: string;
 }
 
 /**
@@ -16,12 +17,14 @@ export interface PolytwisterDefSpec {
 export class PolytwisterDef {
   name: string;
   acronym?: string;
+  bug?: string;
   symbol: PolytwisterSymbol;
 
   constructor(spec: PolytwisterDefSpec) {
     this.name = spec.name;
     this.acronym = spec.acronym;
     this.symbol = PolytwisterSymbol.from(spec.symbol);
+    this.bug = spec.bug;
   }
 
   asFields(): PolytwisterFields {
@@ -34,6 +37,7 @@ export class PolytwisterDef {
       convex: this.symbol.isConvex(),
       dyadic: this.symbol.isDyadic(),
       rectifiedDyadic: this.symbol.isRectifiedDyadic(),
+      bug: this.bug,
     };
   }
 }
@@ -47,6 +51,7 @@ export interface PolytwisterFields {
   convex: boolean;
   dyadic: boolean;
   rectifiedDyadic: boolean;
+  bug?: string;
 }
 
 export class PolytwisterDatabase {
@@ -448,6 +453,7 @@ const specs: PolytwisterDefSpec[] = [
     name: "small dodecaquasidodecatwister",
     acronym: "sidquiditer",
     symbol: [5, [5, 3], 2],
+    bug: "5/3 twisters have wrong filling method",
   },
   {
     name: "quasidodecadodecatwister",
@@ -557,7 +563,7 @@ const specs: PolytwisterDefSpec[] = [
   },
 
   {
-    name: "sheaved cubetwister",
+    name: "sheaved cube twister",
     acronym: "victer",
     symbol: [2, 4, 3],
   },
@@ -570,11 +576,174 @@ const specs: PolytwisterDefSpec[] = [
     name: "bloatosheaved cube twister",
     acronym: "blivicter",
     symbol: [2, 4, [3, 2]],
+    bug: "Incorrectly produces quasiplated cube twister",
   },
   {
     name: "invertisheaved cube twister",
     acronym: "ivicter",
     symbol: [2, [4, 3], [3, 2]],
+    bug: "Incorrectly produces plated cube twister",
+  },
+
+  {
+    name: "sheaved octatwister",
+    acronym: "voter",
+    symbol: [2, 3, 4],
+  },
+  {
+    name: "quasisheaved octatwister",
+    acronym: "quivicter",
+    symbol: [2, [3, 2], 4],
+  },
+  {
+    name: "bloatosheaved octatwister",
+    acronym: "blivicter",
+    symbol: [2, 3, [4, 3]],
+    bug: "Incorrectly produces quasiplated octatwister",
+  },
+  {
+    name: "invertisheaved octatwister",
+    acronym: "ivicter",
+    symbol: [2, [3, 2], [4, 3]],
+    bug: "Incorrectly produces plated octatwister",
+  },
+
+  {
+    name: "sheaved dodecatwister",
+    acronym: "viditer",
+    symbol: [2, 5, 3],
+  },
+  {
+    name: "quasisheaved dodecatwister",
+    acronym: "quividiter",
+    symbol: [2, [5, 4], 3],
+  },
+  {
+    name: "bloatosheaved dodecatwister",
+    acronym: "blividiter",
+    symbol: [2, 5, [3, 2]],
+    bug: "Incorrectly produces quasiplated dodecatwister",
+  },
+  {
+    name: "invertisheaved dodecatwister",
+    acronym: "ividiter",
+    symbol: [2, [5, 4], [3, 2]],
+    bug: "Incorrectly produces plated dodecatwister",
+  },
+
+  {
+    name: "sheaved icosatwister",
+    acronym: "viketer",
+    symbol: [2, 3, 5],
+  },
+  {
+    name: "quasisheaved icosatwister",
+    acronym: "quiviketer",
+    symbol: [2, [3, 2], 5],
+  },
+  {
+    name: "bloatosheaved icosatwister",
+    acronym: "bliviketer",
+    symbol: [2, 3, [5, 4]],
+    bug: "Incorrectly produces quasiplated icosatwister",
+  },
+  {
+    name: "invertisheaved icosatwister",
+    acronym: "iviketer",
+    symbol: [2, [3, 2], [5, 4]],
+    bug: "Incorrectly produces plated icosatwister",
+  },
+
+  {
+    name: "great sheaved dodecatwister",
+    acronym: "goviditer",
+    symbol: [2, 5, [5, 2]],
+  },
+  {
+    name: "great quasisheaved dodecatwister",
+    acronym: "gaquividiter",
+    symbol: [2, [5, 4], [5, 2]],
+  },
+  {
+    name: "great bloatosheaved dodecatwister",
+    acronym: "gablividiter",
+    symbol: [2, 5, [5, 3]],
+    bug: "Incorrectly produces great quasiplated dodecatwister",
+  },
+  {
+    name: "great invertisheaved dodecatwister",
+    acronym: "gividiter",
+    symbol: [2, [5, 4], [5, 3]],
+    bug: "Incorrectly produces great plated dodecatwister",
+  },
+
+  {
+    name: "stellisheaved dodecatwister",
+    acronym: "sividiter",
+    symbol: [2, [5, 2], 5],
+  },
+  {
+    name: "quasistellisheaved dodecatwister",
+    acronym: "quisviditer",
+    symbol: [2, [5, 3], 5],
+  },
+  {
+    name: "bloatostellisheaved dodecatwister",
+    acronym: "blisviditer",
+    symbol: [2, [5, 2], [5, 4]],
+    bug: "Incorrectly produces quasistelliplated dodecatwister",
+  },
+  {
+    name: "invertistellisheaved dodecatwister",
+    acronym: "isviditer",
+    symbol: [2, [5, 3], [5, 4]],
+    bug: "Incorrectly produces stelliplated dodecatwister",
+  },
+
+  {
+    name: "great sheaved icosatwister",
+    acronym: "goviditer",
+    symbol: [2, 3, [5, 2]],
+  },
+  {
+    name: "great quasisheaved icosatwister",
+    acronym: "gaquividiter",
+    symbol: [2, [3, 2], [5, 2]],
+  },
+  {
+    name: "great bloatosheaved icosatwister",
+    acronym: "gablividiter",
+    symbol: [2, 3, [5, 3]],
+    bug: "Incorrectly produces great quasiplated icosatwister",
+  },
+  {
+    name: "great invertisheaved icosatwister",
+    acronym: "gividiter",
+    symbol: [2, [3, 2], [5, 3]],
+    bug: "Incorrectly produces great plated icosatwister",
+  },
+
+  {
+    name: "great stellisheaved dodecatwister",
+    acronym: "gisviditer",
+    symbol: [2, [5, 2], 3],
+  },
+  {
+    name: "great quasistellisheaved dodecatwister",
+    acronym: "gaqsviditer",
+    symbol: [2, [5, 3], 3],
+  },
+  {
+    name: "great bloatostellisheaved dodecatwister",
+    acronym: "gablisviditer",
+    symbol: [2, [5, 2], [3, 2]],
+    bug: "Incorrectly produces great quasistelliplated dodecatwister",
+  },
+  {
+    name: "great invertistellisheaved dodecatwister",
+    acronym: "gise viditer",
+    symbol: [2, [5, 3], [3, 2]],
+    bug: "Incorrectly produces great stelliplated dodecatwister",
   },
 ];
 
