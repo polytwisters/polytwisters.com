@@ -55,26 +55,26 @@ test("4 | 2 3 (octahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(4, 2, 3);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.faceVector()).toBe([6, 12, 8]);
+  expect(polyhedron.faceVector()).toStrictEqual([6, 12, 8]);
 });
 
 test("5 | 2 3 (icosahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(5, 2, 3);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.faceVector()).toBe([12, 30, 20]);
+  expect(polyhedron.faceVector()).toStrictEqual([12, 30, 20]);
 });
 
 test("3 | 2 5 (dodecahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(3, 2, 5);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.faceVector()).toBe([20, 30, 12]);
+  expect(polyhedron.faceVector()).toStrictEqual([20, 30, 12]);
 });
 
 test("2 | 3 5 (icosidodecahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(true);
-  expect(polyhedron.faceVector()).toBe([30, ]);
+  expect(polyhedron.faceVector()).toStrictEqual([30, 60, 32]);
 });
