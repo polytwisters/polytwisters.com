@@ -432,43 +432,89 @@ const specs: PolytwisterDefSpec[] = [
     symbol: [[5, 4], [5, 3], [2, 3]],
   },
 
+  // Great icosidodecatwister variants
+  {
+    name: "great icosidodecatwister",
+    acronym: "giditer",
+    symbol: [[5, 2], 3, 2],
+  },
+  {
+    name: "great icosiquasidodecatwister",
+    acronym: "geiquiditer",
+    symbol: [[5, 3], 3, 2],
+  },
+  {
+    name: "great dodecaquasiicosatwister",
+    acronym: "gidquiditer",
+    symbol: [[5, 2], [3, 2], 2],
+  },
+  {
+    name: "great quasiicosidodecatwister",
+    acronym: "gequiditer",
+    symbol: [[5, 3], [3, 2], 2],
+  },
+  {
+    name: "great bloated icosidodecatwister",
+    acronym: "gobliditer",
+    symbol: [[5, 2], 3, [2, 3]],
+  },
+  {
+    name: "great icosibloated dodecatwister",
+    acronym: "geibliditer",
+    symbol: [[5, 3], 3, [2, 3]],
+  },
+  {
+    name: "great dodecabloated icosatwister",
+    acronym: "gidbliditer",
+    symbol: [[5, 2], [3, 2], [2, 3]],
+  },
+  {
+    name: "great invertiicosidodecatwister",
+    acronym: "giyiditer",
+    symbol: [[5, 3], [3, 2], [2, 3]],
+  },
+
   // Sheaved cases
 
   {
     name: "sheaved tetratwister",
+    acronym: "vitter",
     symbol: [2, 3, 3],
   },
   {
-    name: "invertisheaved tetratwister",
+    name: "quasisheaved tetratwister",
+    acronym: "quivitter",
     symbol: [2, [3, 2], 3],
   },
   {
+    name: "bloatosheaved tetratwister",
+    symbol: [2, 3, [3, 2]],
+  },
+  {
+    name: "invertisheaved tetratwister",
+    acronym: "ivitter",
+    symbol: [2, [3, 2], [3, 2]],
+  },
+
+  {
     name: "sheaved cubetwister",
-    symbol: [4, 2, 3],
+    acronym: "victer",
+    symbol: [2, 4, 3],
   },
   {
-    name: "sheaved octatwister",
-    symbol: [3, 2, 4],
+    name: "quasisheaved cube twister",
+    acronym: "quivicter",
+    symbol: [2, [4, 3], 3],
   },
   {
-    name: "sheaved dodecatwister",
-    symbol: [5, 2, 3],
+    name: "bloatosheaved cube twister",
+    acronym: "blivicter",
+    symbol: [2, 4, [3, 2]],
   },
   {
-    name: "sheaved icosatwister",
-    symbol: [3, 2, 5],
-  },
-  {
-    name: "rectified 3 dyadic twister",
-    symbol: [2, 3, 2],
-  },
-  {
-    name: "rectified 4 dyadic twister",
-    symbol: [2, 4, 2],
-  },
-  {
-    name: "rectified 5 dyadic twister",
-    symbol: [2, 5, 2],
+    name: "invertisheaved cube twister",
+    acronym: "ivicter",
+    symbol: [2, [4, 3], [3, 2]],
   },
 ];
 
