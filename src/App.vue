@@ -70,6 +70,10 @@ const ringDotsPadded: Ref<Vector3[]> = computed(() => {
   return result;
 });
 
+// Maximum extent of the polytwister. Used in the shader to reject rays that have
+// no chance of hitting the sphere as a shader optimization.
+const radius = 1.0;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Color & display options
 
@@ -166,6 +170,7 @@ function getUniforms(): { [key: string]: any } {
     shading: { value: shading.value },
     showRings: { value: showRings.value },
     colors: { value: twisterColors.value },
+    radius: { value: radius },
   };
 }
 

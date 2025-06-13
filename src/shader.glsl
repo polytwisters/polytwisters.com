@@ -22,6 +22,7 @@ uniform float crossSectionW;
 uniform vec3 pipes[NUM_PIPES];
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform vec3 colors[NUM_PIPES];
+uniform float radius;
 
 // Display options.
 uniform int shading;
@@ -251,9 +252,15 @@ vec3 shadeDebug(vec3 normal, vec3 viewer) {
 }
 
 vec4 render(Ray ray) {
+  Sphere containingSphere = Sphere(vec3(0.0), radius);
+  Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
+  if (Interval_empty(containingSphereInterval)) {
+    return vec4(0.0, 0.0, 0.0, 1.0);
+  }
+
   float pi = radians(180.0);
 
-  float sphereRadius = 0.04;
+  float dotRadius = 0.04;
 
   // Cast a ray onto each pipe and find the intervals of intersection.
   Interval intervals[NUM_PIPES];
@@ -268,7 +275,7 @@ vec4 render(Ray ray) {
 
   if (showRings) {
     for (int i = 0; i < MAX_NUM_RING_DOTS; i++) {
-      Sphere sphere1 = Sphere(ringDots[i], sphereRadius);
+      Sphere sphere1 = Sphere(ringDots[i], dotRadius);
       Interval intervalSphere = intersectRaySphere(ray, sphere1);
       if (intervalSphere.x <= tmin && !Interval_empty(intervalSphere)) {
         // Dots have flat shading.
