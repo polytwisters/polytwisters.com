@@ -8,7 +8,48 @@ test("All names are unique", () => {
 });
 
 test("All acronyms are unique", () => {
-  const acronyms = database.defs.map((x) => x.name).filter((x) => x !== undefined);
-  const uniqueAcronyms = [...new Set(acronyms)];
-  expect(acronyms.length).toBe(uniqueAcronyms.length);
+  const defs = database.defs.filter((x) => x.acronym !== undefined);
+  for (let i = 0; i < defs.length; i++) {
+    for (let j = i + 1; j < defs.length; j++) {
+      if (i !== j) {
+        expect.soft(defs[i].acronym).not.toBe(defs[j].acronym);
+      }
+    }
+  }
+});
+
+test("All symbols unique", () => {
+  const defs = database.defs;
+  for (let i = 0; i < defs.length; i++) {
+    // Although .equals is commutative, good to be safe and check both
+    // directions.
+    for (let j = 0; j < defs.length; j++) {
+      if (i !== j) {
+        expect.soft(defs[i].symbol.equals(defs[j].symbol)).toBeFalsy;
+      }
+    }
+  }
+});
+
+test("All acronyms and names start with the same letter", () => {
+  const defs = database.defs.filter((x) => x.acronym !== undefined);
+  for (let { name, acronym } of defs) {
+    expect(acronym![0]).toBe(
+      name.startsWith("sheaved") ? "v" : name[0]
+    );
+  }
+});
+
+test("All names are lowercase and end with -twister", () => {
+  for (let { name } of database.defs) {
+    expect(name).toMatch(/^[a-z0-9\/\- ]+twister$/);
+  }
+});
+
+test("All acronyms are lowercase and end with -ter", () => {
+  for (let { acronym } of database.defs) {
+    if (acronym !== undefined) {
+      expect(acronym).toMatch(/^[a-z ]+ter$/);
+    }
+  }
 });

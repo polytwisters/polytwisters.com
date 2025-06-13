@@ -5,6 +5,10 @@ export interface Fraction {
 
 export type FractionLike = number | number[] | Fraction;
 
+export function equals(fraction1: Fraction, fraction2: Fraction) {
+  return fraction1.n === fraction2.n && fraction1.d === fraction2.d;
+}
+
 export function parse(string: string): Fraction {
   const match = string.match(/^(?<numerator>\d+)(\/(?<denominator>\d+))?$/);
   if (!match || !match.groups) {

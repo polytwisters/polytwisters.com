@@ -43,6 +43,28 @@ export class PolytwisterSymbol {
     return `{${b}, ${c}}`;
   }
 
+  equals(other: PolytwisterSymbol): boolean {
+    if (!(this.isRegular() === other.isRegular())) {
+      return false;
+    }
+    if (!fraction.equals(this.ring, other.ring)) {
+      return false;
+    }
+    if (this.isRegular()) {
+      return (
+        fraction.equals(this.twister1, other.twister1)
+        && fraction.equals(this.twister2, other.twister2)
+      );
+    }
+    return (
+      fraction.equals(this.twister1, other.twister1)
+      && fraction.equals(this.twister2, other.twister2)
+    ) || (
+      fraction.equals(this.twister1, other.twister2)
+      && fraction.equals(this.twister2, other.twister1)
+    );
+  }
+
   isBloated(): boolean {
     return this.ring.d > this.ring.n / 2;
   }

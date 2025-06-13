@@ -510,7 +510,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "great dodecaquasiicosatwister",
-    acronym: "gidquiditer",
+    acronym: "gidquiter",
     symbol: [[5, 2], [3, 2], 2],
   },
   {
@@ -530,7 +530,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "great dodecabloated icosatwister",
-    acronym: "gidbliditer",
+    acronym: "gidbliter",
     symbol: [
       [5, 2],
       [3, 2],
@@ -602,18 +602,18 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "quasisheaved octatwister",
-    acronym: "quivicter",
+    acronym: "quivoter",
     symbol: [2, [3, 2], 4],
   },
   {
     name: "bloatosheaved octatwister",
-    acronym: "blivicter",
+    acronym: "blivoter",
     symbol: [2, 3, [4, 3]],
     bug: "Incorrectly produces quasiplated octatwister",
   },
   {
     name: "invertisheaved octatwister",
-    acronym: "ivicter",
+    acronym: "ivoter",
     symbol: [2, [3, 2], [4, 3]],
     bug: "Incorrectly produces plated octatwister",
   },
@@ -712,17 +712,17 @@ const specs: PolytwisterDefSpec[] = [
 
   {
     name: "great sheaved icosatwister",
-    acronym: "goviditer",
+    acronym: "goviter",
     symbol: [2, 3, [5, 2]],
   },
   {
     name: "great quasisheaved icosatwister",
-    acronym: "gaquividiter",
+    acronym: "gaquiviter",
     symbol: [2, [3, 2], [5, 2]],
   },
   {
     name: "great bloatosheaved icosatwister",
-    acronym: "gablividiter",
+    acronym: "gabliviter",
     symbol: [2, 3, [5, 3]],
     bug: "Incorrectly produces great quasiplated icosatwister",
   },
@@ -907,17 +907,17 @@ const specs: PolytwisterDefSpec[] = [
 
   {
     name: "great plated icosatwister",
-    acronym: "gopiditer",
+    acronym: "gopiter",
     symbol: [2, 3, [5, 7]],
   },
   {
     name: "great quasiplated icosatwister",
-    acronym: "gaquipiditer",
+    acronym: "gaquipiter",
     symbol: [2, [3, 2], [5, 7]],
   },
   {
     name: "great bloatoplated icosatwister",
-    acronym: "gablipiditer",
+    acronym: "gablipiter",
     symbol: [2, 3, [5, 8]],
   },
   {
@@ -1092,7 +1092,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "medial ditrigonary icosidodecatwister",
-    acronym: "gidtiditer",
+    acronym: "midtiditer",
     symbol: [5, [3, 2], 3],
     bug: bugs.STRANDS,
   },
