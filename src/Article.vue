@@ -33,6 +33,9 @@ const vKatex = {
         <h1>Known issues</h1>
         <ul class="list-disc list-inside">
           <li>
+            Some polytwisters are tagged "bug," meaning that they render incorrectly.
+          </li>
+          <li>
             Browser may freeze briefly when switching polytwisters as the
             shaders are compiled.
           </li>
