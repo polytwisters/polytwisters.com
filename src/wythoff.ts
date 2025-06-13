@@ -20,6 +20,13 @@ export class Polyhedron {
     this.faces = faces;
   }
 
+  /**
+   * Return the array [num vertices, num edges, num faces].
+   */
+  faceVector(): [number, number, number] {
+    return [this.vertices.length, this.edges.length, this.faces.length];
+  }
+
   vertexPositions(): Vector3[] {
     return this.vertices.map((v) => v.position);
   }

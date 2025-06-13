@@ -51,38 +51,30 @@ test("Icosahedral group has order 120", () => {
   expect(wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).order).toBe(120);
 });
 
-test("4 | 2 3 (octahedron) has 6 vertices", () => {
+test("4 | 2 3 (octahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(4, 2, 3);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.vertexLocations.length).toBe(6);
-  expect(polyhedron.edges.length).toBe(12);
-  expect(polyhedron.faces.length).toBe(8);
+  expect(polyhedron.faceVector()).toBe([6, 12, 8]);
 });
 
-test("5 | 2 3 (icosahedron) has 12 vertices", () => {
+test("5 | 2 3 (icosahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(5, 2, 3);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.vertexLocations.length).toBe(12);
-  expect(polyhedron.edges.length).toBe(30);
-  expect(polyhedron.faces.length).toBe(20);
+  expect(polyhedron.faceVector()).toBe([12, 30, 20]);
 });
 
-test("3 | 2 5 (dodecahedron) has 20 vertices", () => {
+test("3 | 2 5 (dodecahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(3, 2, 5);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(false);
-  expect(polyhedron.vertexLocations.length).toBe(20);
-  expect(polyhedron.edges.length).toBe(30);
-  expect(polyhedron.faces.length).toBe(12);
+  expect(polyhedron.faceVector()).toBe([20, 30, 12]);
 });
 
-test("2 | 3 5 (icosidodecahedron) has 30 vertices", () => {
+test("2 | 3 5 (icosidodecahedron) has expected face vector", () => {
   const triangle = new wythoff.SchwarzTriangle(2, 3, 5);
   const polyhedron =
     wythoff.SymmetryGroup.fromSchwarzTriangle(triangle).makePolyhedron(true);
-  expect(polyhedron.vertexLocations.length).toBe(30);
-  expect(polyhedron.edges.length).toBe(60);
-  expect(polyhedron.faces.length).toBe(32);
+  expect(polyhedron.faceVector()).toBe([30, ]);
 });
