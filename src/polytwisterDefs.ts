@@ -555,11 +555,13 @@ const specs: PolytwisterDefSpec[] = [
     name: "bloatosheaved tetratwister",
     acronym: "blivitter",
     symbol: [2, 3, [3, 2]],
+    bug: "Incorrectly produces quasiplated tetratwister",
   },
   {
     name: "invertisheaved tetratwister",
     acronym: "ivitter",
     symbol: [2, [3, 2], [3, 2]],
+    bug: "Incorrectly produces plated tetratwister",
   },
 
   {
