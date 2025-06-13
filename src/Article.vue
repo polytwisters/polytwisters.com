@@ -221,9 +221,7 @@ const vKatex = {
     <h2>Changelog</h2>
 
     <p>
-      2025-06-13: Added 142 uniform polytwisters, comprising all regulars (apart
-      from dyadic twisters) and all quasiregulars whose ring figure is of the
-      form 2/n.
+      2025-06-13: Added 142 uniform polytwisters.
     </p>
 
     <p>
