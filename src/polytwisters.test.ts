@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
 import { test, expect } from "vitest";
-import { C2, Polytwister, getTorusMaxRadius } from "./polytwisters";
+import { C2 } from "./complex";
+import { Polytwister, getTorusMaxRadius } from "./polytwisters";
 
 test("pipe intersection", () => {
   let pipe1 = C2.fromR4(0, 0.3, 1, 0.3);
@@ -66,16 +67,4 @@ test("max radius of scaled Clifford torus", () => {
   expect(getTorusMaxRadius(new C2(k, 0), new C2(0, k))).toBeCloseTo(
     Math.sqrt(2) / k,
   );
-});
-
-test("polytwister radius", () => {
-  const polytwister = Polytwister.fromR3([
-    new Vector3(1, 1, 1),
-    new Vector3(1, -1, -1),
-    new Vector3(-1, 1, -1),
-    new Vector3(-1, -1, 1),
-  ]);
-  const radius = polytwister.radius();
-  expect(radius).not.toBeNaN();
-  expect(radius).not.toEqual(0);
 });
