@@ -83,9 +83,10 @@ const colors = [
 ];
 
 const twisterColors: Ref<THREE.Color[]> = computed(
-  () => polytwister.value.polyhedron?.faces.map((face) => 
-    new THREE.Color(colors[face.vertices.length])
-  ) || []
+  () =>
+    polytwister.value.polyhedron?.faces.map(
+      (face) => new THREE.Color(colors[face.vertices.length]),
+    ) || [],
 );
 
 const shading: Ref<Shading> = ref(0);
@@ -130,7 +131,7 @@ watch(polytwister, () => {
   crossSectionW.value = 0;
 });
 
-function getUniforms(): {[key: string]: any} {
+function getUniforms(): { [key: string]: any } {
   return {
     iResolution: { value: [canvasWidth, canvasHeight] },
     crossSectionW: { value: crossSectionW.value },
@@ -156,12 +157,15 @@ onMounted(() => {
 
   const geometry = new THREE.PlaneGeometry(2, 2);
 
-  let mesh: THREE.Mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-    color: new THREE.Color().setHex(0x000000)
-  }));
+  let mesh: THREE.Mesh = new THREE.Mesh(
+    geometry,
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHex(0x000000),
+    }),
+  );
   scene.add(mesh);
 
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value!  });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
   let material: THREE.ShaderMaterial | null = null;
 
   renderer.setSize(canvasWidth, canvasHeight, false);
@@ -174,7 +178,7 @@ onMounted(() => {
       material = new THREE.ShaderMaterial({
         uniforms: getUniforms(),
         vertexShader: vertexShader,
-        fragmentShader: newValue
+        fragmentShader: newValue,
       });
       mesh.material = material;
       loading.value = false;
@@ -216,7 +220,10 @@ const cameraDirection = camera.direction;
         <div class="flex-1"></div>
         <h1 class="flex-1 text-3xl font-bold text-center">Polytwisters</h1>
         <div class="flex-1 flex flex-row items-center justify-end gap-2">
-          <a target="_blank" href="https://github.com/polytwisters/polytwisters.com/">
+          <a
+            target="_blank"
+            href="https://github.com/polytwisters/polytwisters.com/"
+          >
             source code
           </a>
         </div>
@@ -224,14 +231,39 @@ const cameraDirection = camera.direction;
 
       <div class="flex flex-row">
         <div class="flex flex-row gap-2 flex-1">
-          <Button @click="camera.reset" material icon="home" help="Reset camera" />
-          <Button @click="cameraControls.zoomIn" material icon="add" help="Zoom in" />
-          <div class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none">search</div>
-          <Button @click="cameraControls.zoomOut" material icon="remove" help="Zoom out" />
+          <Button
+            @click="camera.reset"
+            material
+            icon="home"
+            help="Reset camera"
+          />
+          <Button
+            @click="cameraControls.zoomIn"
+            material
+            icon="add"
+            help="Zoom in"
+          />
+          <div
+            class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none"
+          >
+            search
+          </div>
+          <Button
+            @click="cameraControls.zoomOut"
+            material
+            icon="remove"
+            help="Zoom out"
+          />
         </div>
         <Selector />
         <div class="flex-1 flex flex-row justify-end">
-          <Button @click="toggleExperimentalMode" material icon="science" help="Experimental features" :active="experimentalMode" />
+          <Button
+            @click="toggleExperimentalMode"
+            material
+            icon="science"
+            help="Experimental features"
+            :active="experimentalMode"
+          />
         </div>
       </div>
 

@@ -4,47 +4,47 @@ import * as THREE from "three";
 import { Complex } from "./complex";
 
 interface Point {
-  x: number,
-  y: number
+  x: number;
+  y: number;
 }
 
 interface Circle {
-  x: number,
-  y: number,
-  radius: number
+  x: number;
+  y: number;
+  radius: number;
 }
 
 function intersectCircles(circle1: Circle, circle2: Circle): Complex[] {
-    const r1 = circle1.radius;
-    const r2 = circle2.radius;
-    const c1 = new Complex(circle1.x, circle1.y);
-    const c2 = new Complex(circle2.x, circle2.y);
-    const d = c2.sub(c1).abs();
-    const ell = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
-    const discriminant = r1 * r1 - ell * ell;
-    if (discriminant < 0) {
-      return [];
-    }
-    const tmp = new Complex(ell, -Math.sqrt(discriminant));
-    const solution1 = c1.add(tmp.mulReal(1 / d).mul(c2.sub(c1)));
-    const solution2 = c1.add(
-      tmp
-        .conj()
-        .mulReal(1 / d)
-        .mul(c2.sub(c1)),
-    );
-    return [solution1, solution2];
+  const r1 = circle1.radius;
+  const r2 = circle2.radius;
+  const c1 = new Complex(circle1.x, circle1.y);
+  const c2 = new Complex(circle2.x, circle2.y);
+  const d = c2.sub(c1).abs();
+  const ell = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+  const discriminant = r1 * r1 - ell * ell;
+  if (discriminant < 0) {
+    return [];
+  }
+  const tmp = new Complex(ell, -Math.sqrt(discriminant));
+  const solution1 = c1.add(tmp.mulReal(1 / d).mul(c2.sub(c1)));
+  const solution2 = c1.add(
+    tmp
+      .conj()
+      .mulReal(1 / d)
+      .mul(c2.sub(c1)),
+  );
+  return [solution1, solution2];
 }
 
 const props = defineProps<{
-  n: number,
-  d?: number,
-  bloated?: boolean,
-  distance: number,
-  circleRadius: number,
-  comment?: string,
-  canvasWidth?: number,
-  canvasHeight?: number,
+  n: number;
+  d?: number;
+  bloated?: boolean;
+  distance: number;
+  circleRadius: number;
+  comment?: string;
+  canvasWidth?: number;
+  canvasHeight?: number;
 }>();
 
 const canvasWidth = props.canvasWidth ?? 300;
@@ -53,7 +53,7 @@ const canvasHeight = props.canvasHeight ?? 300;
 const n = props.n;
 const d = props.d ?? 1;
 const bloated = props.bloated ?? false;
-const quasi = (d > n / 2) !== bloated;
+const quasi = d > n / 2 !== bloated;
 const distance = props.distance;
 const circleRadius = props.circleRadius;
 const comment = props.comment;
@@ -61,7 +61,7 @@ const comment = props.comment;
 const circles: Circle[] = [];
 
 for (let i = 0; i < n; i++) {
-  const angle = i * d / n * 2 * Math.PI;
+  const angle = ((i * d) / n) * 2 * Math.PI;
   circles.push({
     x: distance * Math.sin(angle),
     y: distance * Math.cos(angle),
@@ -215,7 +215,9 @@ onMounted(() => {
   let material = new THREE.ShaderMaterial({
     uniforms: {
       iResolution: { value: [canvasWidth, canvasHeight] },
-      circlePositions: { value: circles.map((circle) => new THREE.Vector2(circle.x, circle.y)) },
+      circlePositions: {
+        value: circles.map((circle) => new THREE.Vector2(circle.x, circle.y)),
+      },
       circleRadii: { value: circles.map((circle) => circle.radius) },
       dots: { value: dots.map((dot) => new THREE.Vector2(dot.x, dot.y)) },
       bloated: { value: bloated },
@@ -223,12 +225,12 @@ onMounted(() => {
       d: { value: d },
     },
     vertexShader,
-    fragmentShader
+    fragmentShader,
   });
   let mesh: THREE.Mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
 
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value!  });
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
 
   renderer.render(scene, threeCamera);
 });
@@ -236,7 +238,9 @@ onMounted(() => {
 
 <template>
   <div class="w-fit-content flex flex-col items-center">
-    <span class="text-2xl">{{ n }}/{{ d }} {{ bloated ? "bloated" : "" }} {{ comment ?? "" }}</span>
+    <span class="text-2xl"
+      >{{ n }}/{{ d }} {{ bloated ? "bloated" : "" }} {{ comment ?? "" }}</span
+    >
     <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
   </div>
 </template>

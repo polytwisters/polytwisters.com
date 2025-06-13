@@ -2,7 +2,7 @@ import { Vector3, Matrix3 } from "three";
 
 export function square(x: number): number {
   return x * x;
-};
+}
 
 export function clamp(x: number, min: number, max: number): number {
   return Math.min(Math.max(x, min), max);
@@ -41,9 +41,15 @@ function addMatrices(matrix1: Matrix3, matrix2: Matrix3): Matrix3 {
 function outer(v1: Vector3, v2: Vector3): Matrix3 {
   const result = new Matrix3();
   result.set(
-    v1.x * v2.x, v1.x * v2.y, v1.x * v2.z,
-    v1.y * v2.x, v1.y * v2.y, v1.y * v2.z,
-    v1.z * v2.x, v1.z * v2.y, v1.z * v2.z
+    v1.x * v2.x,
+    v1.x * v2.y,
+    v1.x * v2.z,
+    v1.y * v2.x,
+    v1.y * v2.y,
+    v1.y * v2.z,
+    v1.z * v2.x,
+    v1.z * v2.y,
+    v1.z * v2.z,
   );
   return result;
 }
@@ -53,10 +59,7 @@ function outer(v1: Vector3, v2: Vector3): Matrix3 {
  */
 export function householder(vector: Vector3): Matrix3 {
   const identity = new Matrix3();
-  return addMatrices(
-    identity,
-    outer(vector, vector).multiplyScalar(-2)
-  );
+  return addMatrices(identity, outer(vector, vector).multiplyScalar(-2));
 }
 
 /**

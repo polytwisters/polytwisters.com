@@ -61,11 +61,11 @@ export class PolytwisterDatabase {
   }
 
   findByName(name: string): PolytwisterDef | undefined {
-    return this.defs.find((def) => def.name === name)
+    return this.defs.find((def) => def.name === name);
   }
 
   findIndexByName(name: string): number {
-    return this.defs.findIndex((def) => def.name === name)
+    return this.defs.findIndex((def) => def.name === name);
   }
 
   indexToName(index: number): string {
@@ -84,7 +84,6 @@ export class PolytwisterDatabase {
     return this.defs[newIndex].name;
   }
 }
-
 
 function dyadicTwister(n: number): PolytwisterDefSpec {
   const result = {
@@ -120,7 +119,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverted tetratwister",
     acronym: "itter",
-    symbol: [[3, 2], [3, 2]],
+    symbol: [
+      [3, 2],
+      [3, 2],
+    ],
   },
   {
     name: "cube twister",
@@ -140,7 +142,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverted cube twister",
     acronym: "icter",
-    symbol: [[4, 3], [3, 2]],
+    symbol: [
+      [4, 3],
+      [3, 2],
+    ],
   },
   {
     name: "octatwister",
@@ -160,7 +165,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverted octatwister",
     acronym: "ioter",
-    symbol: [[3, 2], [4, 3]],
+    symbol: [
+      [3, 2],
+      [4, 3],
+    ],
   },
   {
     name: "dodecatwister",
@@ -180,7 +188,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverted dodecatwister",
     acronym: "idoter",
-    symbol: [[5, 4], [3, 2]],
+    symbol: [
+      [5, 4],
+      [3, 2],
+    ],
   },
   {
     name: "icosatwister",
@@ -200,7 +211,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverted icosatwister",
     acronym: "iyiketer",
-    symbol: [[3, 2], [5, 4]],
+    symbol: [
+      [3, 2],
+      [5, 4],
+    ],
   },
   {
     name: "great dodecatwister",
@@ -210,7 +224,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great quasidodecatwister",
     acronym: "gaquiditer",
-    symbol: [[5, 4], [5, 2]],
+    symbol: [
+      [5, 4],
+      [5, 2],
+    ],
   },
   {
     name: "great bloated dodecatwister",
@@ -220,7 +237,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great inverted dodecatwister",
     acronym: "giaditer",
-    symbol: [[5, 4], [5, 3]],
+    symbol: [
+      [5, 4],
+      [5, 3],
+    ],
   },
   {
     name: "small stellated dodecatwister",
@@ -235,12 +255,18 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "small bloatostellated dodecatwister",
     acronym: "soblessiditer",
-    symbol: [[5, 2], [5, 4]],
+    symbol: [
+      [5, 2],
+      [5, 4],
+    ],
   },
   {
     name: "small invertostellated dodecatwister",
     acronym: "sansiditer",
-    symbol: [[5, 3], [5, 4]],
+    symbol: [
+      [5, 3],
+      [5, 4],
+    ],
   },
   {
     name: "great icosatwister",
@@ -250,7 +276,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great quasicosatwister",
     acronym: "gaquiter",
-    symbol: [[3, 2], [5, 2]],
+    symbol: [
+      [3, 2],
+      [5, 2],
+    ],
   },
   {
     name: "great bloated icosatwister",
@@ -260,7 +289,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great inverted icosatwister",
     acronym: "giyiter",
-    symbol: [[3, 2], [5, 3]],
+    symbol: [
+      [3, 2],
+      [5, 3],
+    ],
   },
   {
     name: "great stellated dodecatwister",
@@ -280,7 +312,10 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great invertostellated dodecatwister",
     acronym: "gansiditer",
-    symbol: [[5, 3], [3, 2]],
+    symbol: [
+      [5, 3],
+      [3, 2],
+    ],
   },
   dyadicTwister(3),
   dyadicTwister(4),
@@ -345,7 +380,11 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverticuboctatwister",
     acronym: "icoter",
-    symbol: [[4, 3], [3, 2], [2, 3]],
+    symbol: [
+      [4, 3],
+      [3, 2],
+      [2, 3],
+    ],
   },
 
   // Icosidodecahedron variants
@@ -387,7 +426,11 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "inverticosidodecatwister",
     acronym: "iyiditer",
-    symbol: [[5, 4], [3, 2], [2, 3]],
+    symbol: [
+      [5, 4],
+      [3, 2],
+      [2, 3],
+    ],
   },
 
   // Dodecadodecatwister variants
@@ -419,7 +462,11 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great dodecabloated dodecatwister",
     acronym: "gidbliditer",
-    symbol: [[5, 4], [5, 2], [2, 3]],
+    symbol: [
+      [5, 4],
+      [5, 2],
+      [2, 3],
+    ],
   },
   {
     name: "small dodecabloated dodecatwister",
@@ -429,7 +476,11 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "invertidodecadodecatwister",
     acronym: "idoditer",
-    symbol: [[5, 4], [5, 3], [2, 3]],
+    symbol: [
+      [5, 4],
+      [5, 3],
+      [2, 3],
+    ],
   },
 
   // Great icosidodecatwister variants
@@ -466,12 +517,20 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great dodecabloated icosatwister",
     acronym: "gidbliditer",
-    symbol: [[5, 2], [3, 2], [2, 3]],
+    symbol: [
+      [5, 2],
+      [3, 2],
+      [2, 3],
+    ],
   },
   {
     name: "great invertiicosidodecatwister",
     acronym: "giyiditer",
-    symbol: [[5, 3], [3, 2], [2, 3]],
+    symbol: [
+      [5, 3],
+      [3, 2],
+      [2, 3],
+    ],
   },
 
   // Sheaved cases

@@ -34,25 +34,27 @@ const circles: Ref<Circle[]> = computed(() => {
   const u = selectedPipe.normalizingSU2Matrix();
   const k = 1 / selectedPipe.abs();
 
-  return polytwister.logs.map((log: C2) => {
-    const logNormalized = log.multiplyBySU2Matrix(u).mulReal(k);
+  return polytwister.logs
+    .map((log: C2) => {
+      const logNormalized = log.multiplyBySU2Matrix(u).mulReal(k);
 
-    if (logNormalized.b.abs() <= EPSILON) {
-      // This eliminates parallel pipes, including the pipe that we're currently taking the
-      // stellation diagram of.
-      return null;
-    }
+      if (logNormalized.b.abs() <= EPSILON) {
+        // This eliminates parallel pipes, including the pipe that we're currently taking the
+        // stellation diagram of.
+        return null;
+      }
 
-    const tmp = logNormalized.makeBReal();
-    const a = tmp.a;
-    const b = tmp.b.real;
-    const center = a.conj().mulReal(1 / b);
-    const radius = 1 / b;
-    return {
-      center: { x: center.real, y: center.imag },
-      radius,
-    };
-  }).filter((x) => x !== null);
+      const tmp = logNormalized.makeBReal();
+      const a = tmp.a;
+      const b = tmp.b.real;
+      const center = a.conj().mulReal(1 / b);
+      const radius = 1 / b;
+      return {
+        center: { x: center.real, y: center.imag },
+        radius,
+      };
+    })
+    .filter((x) => x !== null);
 });
 
 const opacity = computed(() => 0.3 / circles.value.length);

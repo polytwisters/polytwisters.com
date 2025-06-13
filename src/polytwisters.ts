@@ -42,7 +42,12 @@ export class Polytwister {
   polyhedron: Polyhedron;
   bloated: boolean;
 
-  constructor(logs: C2[], rings: C2[], polyhedron: Polyhedron, bloated: boolean) {
+  constructor(
+    logs: C2[],
+    rings: C2[],
+    polyhedron: Polyhedron,
+    bloated: boolean,
+  ) {
     this.logs = logs;
     this.rings = rings;
     this.polyhedron = polyhedron;
@@ -56,13 +61,17 @@ export class Polytwister {
     const symbol: PolytwisterSymbol = def.symbol;
     const polyhedron = symbolToPolyhedron(symbol);
     const faces = polyhedron.faces;
-    const rings = polyhedron.vertexPositions().map((vertex) => C2.inverseHopfMapNormalized(vertex));
+    const rings = polyhedron
+      .vertexPositions()
+      .map((vertex) => C2.inverseHopfMapNormalized(vertex));
     const logs: C2[] = [];
     for (let face of faces) {
       let ring = rings[face.vertices[0]];
       let unscaledLogPoint = C2.inverseHopfMapNormalized(face.center);
       // Find k so that the inner product |<ring, unscaledLogPoint * k>| = 1.
-      let logPoint = unscaledLogPoint.mulReal(1 / ring.inner(unscaledLogPoint).abs());
+      let logPoint = unscaledLogPoint.mulReal(
+        1 / ring.inner(unscaledLogPoint).abs(),
+      );
       logs.push(logPoint);
     }
     return new Polytwister(logs, rings, polyhedron, symbol.isBloated());
@@ -121,8 +130,9 @@ export class Polytwister {
 
       const tmp = [];
       const d = face.symbol.d;
-      const adjacentTwisterIndices = this.polyhedron.getAdjacentFaceIndices(twisterIndex);
-  
+      const adjacentTwisterIndices =
+        this.polyhedron.getAdjacentFaceIndices(twisterIndex);
+
       /**
        * The formula below defines a pipe antipodal to the containing pipe for
        * this twister. If the containing pipe is of the form P(a, 0), the

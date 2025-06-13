@@ -1,6 +1,6 @@
 export interface Fraction {
-  n: number,
-  d: number
+  n: number;
+  d: number;
 }
 
 export type FractionLike = number | number[] | Fraction;
@@ -13,7 +13,7 @@ export function parse(string: string): Fraction {
   const denominator = match.groups.denominator;
   return {
     n: parseInt(match.groups.numerator, 10),
-    d: denominator === undefined ? 1 : parseInt(denominator, 10)
+    d: denominator === undefined ? 1 : parseInt(denominator, 10),
   };
 }
 
@@ -27,9 +27,11 @@ export function fractionToString(fraction: Fraction) {
 export function asFraction(thing: FractionLike): Fraction {
   if (typeof thing === "number") {
     if (thing !== Math.floor(thing)) {
-      throw new Error("Non-integer used as fraction. Try writing [a, b] instead of a / b.");
+      throw new Error(
+        "Non-integer used as fraction. Try writing [a, b] instead of a / b.",
+      );
     }
-    return { n: thing, d: 1 }
+    return { n: thing, d: 1 };
   }
   if (Array.isArray(thing)) {
     if (thing.length !== 2) {

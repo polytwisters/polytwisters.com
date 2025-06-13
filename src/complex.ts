@@ -278,7 +278,7 @@ export class C2 {
       this.a.real * scale,
       this.a.imag * scale,
       this.b.real * scale,
-      this.b.imag * scale
+      this.b.imag * scale,
     );
   }
 
@@ -324,4 +324,3 @@ export class C2 {
     return C2.inverseHopfMapNormalized(point).mulReal(length);
   }
 }
-

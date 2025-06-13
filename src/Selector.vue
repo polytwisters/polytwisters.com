@@ -9,13 +9,26 @@ const polytwisterName = globalState.polytwisterName;
 
 <template>
   <div class="flex flex-row gap-2 justify-center flex-1">
-    <Button @click="globalState.previous" material icon="chevron_left" help="Previous" />
-    <select v-model="polytwisterName" class="text-center h-8 bg-primary p-1 rounded-sm">
+    <Button
+      @click="globalState.previous"
+      material
+      icon="chevron_left"
+      help="Previous"
+    />
+    <select
+      v-model="polytwisterName"
+      class="text-center h-8 bg-primary p-1 rounded-sm"
+    >
       <option v-for="def in defs" :value="def.name">
         {{ def.name }}
       </option>
     </select>
-    <Button @click="globalState.next" material icon="chevron_right" help="Next" />
+    <Button
+      @click="globalState.next"
+      material
+      icon="chevron_right"
+      help="Next"
+    />
   </div>
 </template>
 

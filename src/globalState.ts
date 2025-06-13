@@ -65,7 +65,9 @@ export function next() {
 }
 
 export function previous() {
-  polytwisterName.value = database.getPreviousPolytwister(polytwisterName.value);
+  polytwisterName.value = database.getPreviousPolytwister(
+    polytwisterName.value,
+  );
 }
 
 export function navigateTo(name: string) {
