@@ -312,7 +312,7 @@ const specs: PolytwisterDefSpec[] = [
   {
     name: "great bloatostellated dodecatwister",
     acronym: "goblessiditer",
-    symbol: [3, [5, 3]],
+    symbol: [[5, 2], [3, 2]],
   },
   {
     name: "great invertostellated dodecatwister",
@@ -718,7 +718,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "great invertisheaved icosatwister",
-    acronym: "gividiter",
+    acronym: "giviter",
     symbol: [2, [3, 2], [5, 3]],
     bug: "Incorrectly produces great plated icosatwister",
   },
@@ -750,191 +750,191 @@ const specs: PolytwisterDefSpec[] = [
 
   {
     name: "plated tetratwister",
-    acronym: "vitter",
+    acronym: "potter",
     symbol: [2, 3, [3, 4]],
   },
   {
     name: "quasiplated tetratwister",
-    acronym: "quivitter",
+    acronym: "quipiter",
     symbol: [2, [3, 2], [3, 4]],
   },
   {
     name: "bloatoplated tetratwister",
-    acronym: "blivitter",
+    acronym: "blipiter",
     symbol: [2, 3, [3, 5]],
   },
   {
     name: "invertiplated tetratwister",
-    acronym: "ivitter",
+    acronym: "ipiter",
     symbol: [2, [3, 2], [3, 5]],
   },
 
   {
     name: "plated cube twister",
-    acronym: "victer",
+    acronym: "picter",
     symbol: [2, 4, [3, 4]],
   },
   {
     name: "quasiplated cube twister",
-    acronym: "quivicter",
+    acronym: "quipicter",
     symbol: [2, [4, 3], [3, 5]],
     bug: "Incorrectly produces invertiplated cube twister",
   },
   {
     name: "bloatoplated cube twister",
-    acronym: "blivicter",
+    acronym: "blipicter",
     symbol: [2, 4, [3, 5]],
   },
   {
     name: "invertiplated cube twister",
-    acronym: "ivicter",
+    acronym: "ipicter",
     symbol: [2, [4, 3], [3, 5]],
   },
 
   {
     name: "plated octatwister",
-    acronym: "voter",
+    acronym: "poter",
     symbol: [2, 3, [4, 5]],
   },
   {
     name: "quasiplated octatwister",
-    acronym: "quivicter",
+    acronym: "quipoter",
     symbol: [2, [3, 2], [4, 5]],
   },
   {
     name: "bloatoplated octatwister",
-    acronym: "blivicter",
+    acronym: "blipoter",
     symbol: [2, 3, [4, 7]],
   },
   {
     name: "invertiplated octatwister",
-    acronym: "ivicter",
+    acronym: "ipoter",
     symbol: [2, [3, 2], [4, 7]],
   },
 
   {
     name: "plated dodecatwister",
-    acronym: "viditer",
+    acronym: "piditer",
     symbol: [2, 5, [3, 4]],
   },
   {
     name: "quasiplated dodecatwister",
-    acronym: "quividiter",
+    acronym: "quipiditer",
     symbol: [2, [5, 4], [3, 4]],
   },
   {
     name: "bloatoplated dodecatwister",
-    acronym: "blividiter",
+    acronym: "blipiditer",
     symbol: [2, 5, [3, 5]],
   },
   {
     name: "invertiplated dodecatwister",
-    acronym: "ividiter",
+    acronym: "ipiditer",
     symbol: [2, [5, 4], [3, 5]],
   },
 
   {
     name: "plated icosatwister",
-    acronym: "viketer",
+    acronym: "piketer",
     symbol: [2, 3, [5, 6]],
   },
   {
     name: "quasiplated icosatwister",
-    acronym: "quiviketer",
+    acronym: "quipiketer",
     symbol: [2, [3, 2], [5, 6]],
   },
   {
     name: "bloatoplated icosatwister",
-    acronym: "bliviketer",
+    acronym: "blipiketer",
     symbol: [2, 3, [5, 9]],
   },
   {
     name: "invertiplated icosatwister",
-    acronym: "iviketer",
+    acronym: "ipiketer",
     symbol: [2, [3, 2], [5, 9]],
   },
 
   {
     name: "great plated dodecatwister",
-    acronym: "goviditer",
+    acronym: "gopiditer",
     symbol: [2, 5, [5, 7]],
   },
   {
     name: "great quasiplated dodecatwister",
-    acronym: "gaquividiter",
+    acronym: "gaquipiditer",
     symbol: [2, [5, 4], [5, 7]],
   },
   {
     name: "great bloatoplated dodecatwister",
-    acronym: "gablividiter",
+    acronym: "gablipiditer",
     symbol: [2, 5, [5, 8]],
   },
   {
     name: "great invertiplated dodecatwister",
-    acronym: "gividiter",
+    acronym: "gipiditer",
     symbol: [2, [5, 4], [5, 8]],
   },
 
   {
     name: "stelliplated dodecatwister",
-    acronym: "sividiter",
+    acronym: "sipiditer",
     symbol: [2, [5, 2], [5, 6]],
   },
   {
     name: "quasistelliplated dodecatwister",
-    acronym: "quisviditer",
+    acronym: "quispiditer",
     symbol: [2, [5, 3], [5, 6]],
   },
   {
     name: "bloatostelliplated dodecatwister",
-    acronym: "blisviditer",
+    acronym: "blispiditer",
     symbol: [2, [5, 2], [5, 9]],
   },
   {
     name: "invertistelliplated dodecatwister",
-    acronym: "isviditer",
+    acronym: "ispiditer",
     symbol: [2, [5, 3], [5, 9]],
   },
 
   {
     name: "great plated icosatwister",
-    acronym: "goviditer",
+    acronym: "gopiditer",
     symbol: [2, 3, [5, 7]],
   },
   {
     name: "great quasiplated icosatwister",
-    acronym: "gaquividiter",
+    acronym: "gaquipiditer",
     symbol: [2, [3, 2], [5, 7]],
   },
   {
     name: "great bloatoplated icosatwister",
-    acronym: "gablividiter",
+    acronym: "gablipiditer",
     symbol: [2, 3, [5, 8]],
   },
   {
     name: "great invertiplated icosatwister",
-    acronym: "gividiter",
+    acronym: "gipiter",
     symbol: [2, [3, 2], [5, 8]],
   },
 
   {
     name: "great stelliplated dodecatwister",
-    acronym: "gisviditer",
+    acronym: "gispiditer",
     symbol: [2, [5, 2], [3, 4]],
   },
   {
     name: "great quasistelliplated dodecatwister",
-    acronym: "gaqsviditer",
+    acronym: "gaqspiditer",
     symbol: [2, [5, 3], [3, 4]],
   },
   {
     name: "great bloatostelliplated dodecatwister",
-    acronym: "gablisviditer",
+    acronym: "gablispiditer",
     symbol: [2, [5, 2], [3, 5]],
   },
   {
     name: "great invertistelliplated dodecatwister",
-    acronym: "gise viditer",
+    acronym: "gise piditer",
     symbol: [2, [5, 3], [3, 5]],
   },
 ];
