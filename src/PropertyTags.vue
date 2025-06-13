@@ -5,7 +5,7 @@ defineProps<{ fields: PolytwisterFields }>();
 </script>
 
 <template>
-  <div class="flex flex-row gap-1 text-sm">
+  <div class="flex flex-row gap-1 text-sm font-normal">
     <div
       v-if="fields.regular"
       class="bg-red-900 text-white p-1 rounded-sm"

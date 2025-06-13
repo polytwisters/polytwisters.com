@@ -22,7 +22,11 @@ const rows = defs.map((def) => def.asFields());
       <tr
         v-for="row in rows"
         @click="globalState.navigateTo(row.name)"
-        class="cursor-pointer hover:bg-primary"
+        :class="{
+          'cursor-pointer': true,
+          'hover:bg-light-primary': true,
+          'active': row.name === globalState.polytwisterName.value
+        }"
       >
         <td>{{ row.name }}</td>
         <td>{{ row.acronym ?? "" }}</td>
@@ -39,5 +43,9 @@ const rows = defs.map((def) => def.asFields());
 td,
 th {
   @apply p-1;
+}
+
+tr.active {
+  @apply bg-primary font-bold;
 }
 </style>
