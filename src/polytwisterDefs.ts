@@ -973,7 +973,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "great cubiretro-octatwister",
-    acronym: "sacroter",
+    acronym: "gacroter",
     symbol: [3, [4, 3], 4],
     bug: "Filling method error creating weird strands",
   },
@@ -1131,7 +1131,7 @@ const specs: PolytwisterDefSpec[] = [
 
   {
     name: "small dodecaretroicosatwister",
-    acronym: "sidritr",
+    acronym: "sidriter",
     symbol: [[3, 2], 5, 5],
     bug: bugs.STRANDS,
   },
@@ -1143,7 +1143,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "compact dodeckicosatwister",
-    acronym: "dipiditer",
+    acronym: "coditer",
     symbol: [3, 5, [5, 4]],
     bug: bugs.WRONG_POLYTWISTER,
   },
@@ -1193,7 +1193,7 @@ const specs: PolytwisterDefSpec[] = [
   },
   {
     name: "small retrododekicositwister",
-    acronym: "sidriter",
+    acronym: "sorditer",
     symbol: [[3, 2], [5, 3], [5, 3]],
     bug: bugs.WRONG_POLYTWISTER,
   },
