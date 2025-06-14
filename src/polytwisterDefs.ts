@@ -58,7 +58,7 @@ export class PolytwisterDatabase {
   defs: PolytwisterDef[];
 
   constructor(specs: PolytwisterDefSpec[]) {
-    this.defs = specs.map((spec) => new PolytwisterDef(spec)).filter((spec) => !spec.bug);
+    this.defs = specs.map((spec) => new PolytwisterDef(spec));
   }
 
   has(name: string): boolean {
@@ -1101,6 +1101,191 @@ const specs: PolytwisterDefSpec[] = [
     acronym: "siiter",
     symbol: [[3, 2], 3, 5],
     bug: bugs.STRANDS,
+  },
+
+  {
+    name: "quasi ditrigonary bloated icosidodecatwister",
+    acronym: "quidtabliditer",
+    symbol: [5, 3, [3, 4]],
+  },
+  {
+    name: "great ditrigonary bloated dodekicosatwister",
+    acronym: "gidditbladiter",
+    symbol: [5, [3, 2], [3, 5]],
+  },
+  {
+    name: "medial ditrigonary bloated icosidodecatwister",
+    acronym: "midtabliditer",
+    symbol: [[5, 4], [3, 2], [3, 4]],
+  },
+  {
+    name: "great ditrigonary bloated icosidodecatwister",
+    acronym: "gidtabliditer",
+    symbol: [[5, 4], 3, [3, 5]],
+  },
+  {
+    name: "great bloated icosicositwister",
+    acronym: "gabliiter",
+    symbol: [3, [3, 2], [5, 9]],
+  },
+
+  {
+    name: "small dodecaretroicosatwister",
+    acronym: "sidritr",
+    symbol: [[3, 2], 5, 5],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "great retrodekicosatwister",
+    acronym: "gorditer",
+    symbol: [[3, 2], [5, 4], [5, 4]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "compact dodeckicosatwister",
+    acronym: "dipiditer",
+    symbol: [3, 5, [5, 4]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "great icosiretrododecatwister",
+    acronym: "giriditer",
+    symbol: [3, [5, 4], 5],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "small dodecaretrododecatwister",
+    acronym: "sidraditer",
+    symbol: [5, [5, 4], 3],
+    bug: bugs.STRANDS,
+  },
+
+  {
+    name: "great icosibloatoretrododecatwister",
+    acronym: "gibriditer",
+    symbol: [3, [5, 4], [5, 9]],
+  },
+  {
+    name: "bloated dodekicosatwister",
+    acronym: "boditer",
+    symbol: [3, 5, [5, 6]],
+  },
+  {
+    name: "small bloatoretrododekicosatwister",
+    acronym: "sabroditer",
+    symbol: [[3, 2], [5, 4], [5, 6]],
+  },
+  {
+    name: "small dodecabloatoretroicosatwister",
+    acronym: "sidbriditer",
+    symbol: [[3, 2], 5, [5, 9]],
+  },
+  {
+    name: "great dodecabloatoretrododecatwister",
+    acronym: "gidbraditer",
+    symbol: [[5, 4], 5, [3, 5]],
+  },
+
+  {
+    name: "great dodecaretroicositwister",
+    acronym: "gidriter",
+    symbol: [[3, 2], [5, 2], [5, 2]],
+  },
+  {
+    name: "small retrododekicositwister",
+    acronym: "sidriter",
+    symbol: [[3, 2], [5, 3], [5, 3]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "small compact dodekicositwister",
+    acronym: "scoditer",
+    symbol: [3, [5, 2], [5, 3]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "small icosiretrododecatwister",
+    acronym: "siriditer",
+    symbol: [3, [5, 3], [5, 2]],
+  },
+  {
+    name: "great dodecaretrododecatwister",
+    acronym: "gidraditer",
+    symbol: [[5, 2], [5, 3], 3],
+  },
+
+  {
+    name: "small icosibloatoretrododecatwister",
+    acronym: "sibriditer",
+    symbol: [3, [5, 3], [5, 8]],
+  },
+  {
+    name: "small bloated dodekicosatwister",
+    acronym: "sibditer",
+    symbol: [3, [5, 2], [5, 7]],
+  },
+  {
+    name: "great bloatoretrododekicosatwister",
+    acronym: "gabroditer",
+    symbol: [[3, 2], [5, 3], [5, 7]],
+  },
+  {
+    name: "great dodecabloatoretroicosatwister",
+    acronym: "gidbriter",
+    symbol: [[3, 2], [5, 2], [5, 8]],
+  },
+  {
+    name: "small dodecabloatoretrododcatwister",
+    acronym: "sidbraditer",
+    symbol: [[5, 2], [5, 3], [3, 5]],
+  },
+
+  {
+    name: "dodecaretrododecatwister",
+    acronym: "driditer",
+    symbol: [[5, 4], 5, 5],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "dipentagonary dodecadodecatwister",
+    acronym: "dipdiditer",
+    symbol: [[5, 2], [5, 3], [5, 3]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "dodecabloatoretrododecatwister",
+    acronym: "dabriditer",
+    symbol: [[5, 4], 5, [5, 9]],
+  },
+  {
+    name: "dipentagonary bloated dodecadodecatwister",
+    acronym: "dipbladiditer",
+    symbol: [[5, 2], [5, 3], [5, 7]],
+  },
+
+  {
+    name: "ditrigonary dodecadodecatwister",
+    acronym: "ditdiditer",
+    symbol: [[5, 3], 5, 3],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "quasiditrigonary dodecadodecatwister",
+    acronym: "quiditdiditer",
+    symbol: [[5, 2], [5, 4], 3],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "great ditrigonary dodecadodecatwister",
+    acronym: "gadtadoditer",
+    symbol: [[5, 3], [5, 4], [3, 2]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "small ditrigonary dodecadodecatwister",
+    acronym: "sadtadoditer",
+    symbol: [[5, 2], 5, [3, 2]],
+    bug: bugs.WRONG_POLYTWISTER,
   },
 ];
 
