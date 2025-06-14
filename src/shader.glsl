@@ -221,24 +221,30 @@ float lambert(vec3 normal, vec3 light) {
   return max(dot(normal, light), 0.0);
 }
 
-float specular(vec3 normal, vec3 light, vec3 viewer, float exponent) {
+float specular(vec3 normal, vec3 light, vec3 viewer) {
   // Light is assumed to be infinitely far away.
   vec3 reflectedNormal = 2.0 * dot(normal, light) * normal - light;
-  return pow(max(dot(reflectedNormal, viewer), 0.0), exponent);
+  float tmp = dot(reflectedNormal, viewer);
+  if (tmp < 0.0) {
+    return 0.0;
+  }
+  // Compute pow(tmp, 32) with repeated multiplication.
+  for (int i = 0; i < 5; i++) {
+    tmp = tmp * tmp;
+  }
+  return tmp;
 }
 
 vec3 shadePhong(vec3 normal, vec3 viewer, vec3 baseColor) {
   // Assume normal is normalized.
   vec3 light1 = normalize(vec3(3.0, 1.0, 1.0));
   vec3 light2 = normalize(vec3(-1.0, -1.0, -1.0));
-  float specularExponent = 30.0;
 
   vec3 color = (
     baseColor * 0.2
     + lambert(normal, light1) * baseColor * 0.9
-    + specular(normal, light1, viewer, specularExponent) * vec3(1.0) * 0.4
+    + specular(normal, light1, viewer) * vec3(1.0) * 0.4
     + lambert(normal, light2) * baseColor * 0.2
-    + specular(normal, light2, viewer, specularExponent) * vec3(1.0) * 0.2
   );
   return color;
 }
