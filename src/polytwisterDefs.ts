@@ -1287,6 +1287,99 @@ const specs: PolytwisterDefSpec[] = [
     symbol: [[5, 2], 5, [3, 2]],
     bug: bugs.WRONG_POLYTWISTER,
   },
+
+  {
+    name: "quasiditrigonary bloated dodecadodecatwister",
+    acronym: "quiditbladiditer",
+    symbol: [[5, 2], [5, 4], [3, 5]],
+  },
+  {
+    name: "ditrigonary bloated dodecadodecatwister",
+    acronym: "ditbladiditer",
+    symbol: [[5, 3], 5, [3, 5]],
+  },
+  {
+    name: "small ditrigonary bloated dodecadodecatwister",
+    acronym: "sidtablidoditer",
+    symbol: [[5, 2], 5, [3, 4]],
+  },
+  {
+    name: "great ditrigonary bloated dodecadodecatwister",
+    acronym: "gidtablidoditer",
+    symbol: [[5, 3], [5, 4], [3, 4]],
+  },
+
+  {
+    name: "small dipentagonary icosidodecatwister",
+    acronym: "sidpiditer",
+    symbol: [[5, 3], 3, 5],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "small dipentagonary dodekicosatwister",
+    acronym: "sidpoditer",
+    symbol: [3, 5, [5, 3]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "great dipentagonary icosidodecatwister",
+    acronym: "gidpiditer",
+    symbol: [3, [5, 4], [5, 2]],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "great dipentagonary dodekicosatwister",
+    acronym: "gidpoditer",
+    symbol: [3, [5, 2], [5, 4]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+
+  {
+    name: "grand dipentagonary bloated icosidodecatwister",
+    acronym: "gadpablidoter",
+    symbol: [[5, 2], [3, 2], [5, 9]],
+  },
+  {
+    name: "grand dipentagonary bloated dodekicosatwister",
+    acronym: "gadpabloditer",
+    symbol: [[3, 2], [5, 4], [5, 7]],
+  },
+  // Why are these reversed in order on Bowers' page?
+  {
+    name: "medial dipentagonary bloated dodekicosatwister",
+    acronym: "midpabloditer",
+    symbol: [[3, 2], 5, [5, 8]],
+  },
+  {
+    name: "medial dipentagonary bloated icosidodecatwister",
+    acronym: "midpabloditer",
+    symbol: [[3, 2], [5, 3], [5, 6]],
+  },
+
+  {
+    name: "grand dipentagonary dodekicosatwister",
+    acronym: "gadpoditer",
+    symbol: [[3, 2], [5, 4], [5, 3]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "grand dipentagonary icosidodecatwister",
+    acronym: "gadpidoter", // possible typo from Bowers?
+    symbol: [[3, 2], [5, 3], [5, 4]],
+    bug: bugs.WRONG_POLYTWISTER,
+  },
+  {
+    name: "medial dipentagonary dodekicosatwister",
+    acronym: "midpoditer",
+    symbol: [[3, 2], 5, [5, 2]],
+    bug: bugs.STRANDS,
+  },
+  {
+    name: "medial dipentagonary icosidodecatwister",
+    acronym: "midpiditer", // possible typo from Bowers?
+    symbol: [[3, 2], [5, 2], 5],
+    bug: bugs.STRANDS,
+  },
 ];
 
 export const database = new PolytwisterDatabase(specs);
