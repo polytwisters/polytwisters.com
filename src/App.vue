@@ -29,7 +29,7 @@ import { database } from "./polytwisterDefs";
 // UI
 
 function randomPolytwister() {
-  globalState.polytwisterName.value = _.sample(database.defs)!.name;
+  globalState.polytwisterID.value = _.sample(database.defs)!.id();
 }
 
 const experimentalMode = ref(false);

@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { database } from "./polytwisterDefs";
 import * as globalState from "./globalState";
 import Button from "./Button.vue";
 
 const defs = database.defs;
-const polytwisterName = globalState.polytwisterName;
+const polytwisterName = computed(() => globalState.polytwisterDef.value.name);
 </script>
 
 <template>

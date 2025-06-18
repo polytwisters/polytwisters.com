@@ -12,10 +12,10 @@ const rowElementsRef = useTemplateRef('row-elements');
 const outerRef = useTemplateRef('outer');
 
 onMounted(() => {
-  watch(globalState.polytwisterName, (name) => {
+  watch(globalState.polytwisterID, (id) => {
     const outer = outerRef.value!;
     for (let element of rowElementsRef.value!) {
-      if (element.dataset.name === name) {
+      if (element.dataset.id === id) {
         outer.scrollTop = element.offsetTop - outer.clientHeight / 2;
       }
     };
@@ -38,13 +38,13 @@ onMounted(() => {
       <tbody>
         <tr
           v-for="row in rows"
-          @click="globalState.navigateTo(row.name)"
+          @click="globalState.navigateTo(row.id)"
           :class="{
             'cursor-pointer': true,
             'hover:bg-light-primary': true,
-            'active': row.name === globalState.polytwisterName.value
+            'active': row.id === globalState.polytwisterID.value
           }"
-          :data-name="row.name"
+          :data-id="row.id"
           ref="row-elements"
         >
           <td class="text-center">{{ row.index ?? "" }}</td>

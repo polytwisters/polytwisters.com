@@ -1,77 +1,62 @@
 import { ref, computed, watch } from "vue";
 import { database } from "./polytwisterDefs";
 
-const DEFAULT_POLYTWISTER_NAME: string = "tetratwister";
-const UNIFORM: string = "uniform";
-
-function deserializeName(name: string): string {
-  return name.toLowerCase().replace(/_/g, " ");
-}
-
-function serializeName(name: string): string {
-  return name.toLowerCase().replace(/\s+/g, "_");
-}
+const DEFAULT_POLYTWISTER_ID: string = "3.3";
+const UNIFORM: string = "uniform=";
 
 function parseHash(hash: string): string | null {
   if (hash[0] !== "#") {
     return null;
   }
   const tmp = hash.substring(1);
-  const parts = tmp.split("/");
-  if (parts[0] !== "") {
-    return null;
-  }
-  if (!parts[1]) {
-    return null;
-  }
-  if (parts[1] === UNIFORM) {
-    const name = parts[2];
-    if (!name) {
+  if (tmp.startsWith(UNIFORM)) {
+    const id = tmp.substring(UNIFORM.length);
+    if (!id) {
       return null;
     }
-    return deserializeName(name);
+    return id;
   }
   return null;
 }
 
-function getInitialPolytwisterName() {
+function getInitialPolytwisterID(): string {
   const hash = location.hash;
   if (hash[0] === "#") {
-    const name = parseHash(hash);
-    if (name) {
-      if (database.has(name)) {
-        return name;
+    const id = parseHash(hash);
+    if (id) {
+      if (database.has(id)) {
+        return id;
       }
     }
   }
-  return DEFAULT_POLYTWISTER_NAME;
+  return DEFAULT_POLYTWISTER_ID;
 }
 
-export const polytwisterName = ref(getInitialPolytwisterName());
+export const polytwisterID = ref(getInitialPolytwisterID());
 export const polytwisterDef = computed(() => {
-  const result = database.findByName(polytwisterName.value);
+  const result = database.findByID(polytwisterID.value);
   if (result === undefined) {
-    return database.findByName(DEFAULT_POLYTWISTER_NAME)!;
+    return database.findByID(DEFAULT_POLYTWISTER_ID)!;
   }
   return result;
 });
 
-watch(polytwisterName, (value) => {
-  location.hash = `#/${UNIFORM}/${serializeName(value)}`;
+watch(polytwisterID, (value) => {
+  location.hash = `#${UNIFORM}${value}`;
 });
 
 export function next() {
-  polytwisterName.value = database.getNextPolytwister(polytwisterName.value);
+  polytwisterID.value = database.getNextPolytwister(polytwisterID.value);
 }
 
 export function previous() {
-  polytwisterName.value = database.getPreviousPolytwister(
-    polytwisterName.value,
+  polytwisterID.value = database.getPreviousPolytwister(
+    polytwisterID.value,
   );
 }
 
-export function navigateTo(name: string) {
-  if (database.has(name)) {
-    polytwisterName.value = name;
+export function navigateTo(id: string) {
+  if (database.has(id)) {
+    polytwisterID.value = id;
   }
 }

@@ -31,6 +31,10 @@ export class PolytwisterDef {
     this.index = spec.index;
   }
 
+  id(): string {
+    return this.symbol.serializeURI(); 
+  }
+
   asFields(): PolytwisterFields {
     return {
       name: this.name,
@@ -43,11 +47,13 @@ export class PolytwisterDef {
       rectifiedDyadic: this.symbol.isRectifiedDyadic(),
       bug: this.bug,
       index: this.index,
+      id: this.id(),
     };
   }
 }
 
 export interface PolytwisterFields {
+  id: string;
   name: string;
   acronym?: string;
   symbol: PolytwisterSymbol;
@@ -67,32 +73,32 @@ export class PolytwisterDatabase {
     this.defs = specs.map((spec) => new PolytwisterDef(spec)).filter((def) => !def.bug);
   }
 
-  has(name: string): boolean {
-    return this.findIndexByName(name) !== -1;
+  has(id: string): boolean {
+    return this.findIndexByID(id) !== -1;
   }
 
-  findByName(name: string): PolytwisterDef | undefined {
-    return this.defs.find((def) => def.name === name);
+  findByID(id: string): PolytwisterDef | undefined {
+    return this.defs.find((def) => def.id() === id);
   }
 
-  findIndexByName(name: string): number {
-    return this.defs.findIndex((def) => def.name === name);
+  findIndexByID(id: string): number {
+    return this.defs.findIndex((def) => def.id() === id);
   }
 
-  indexToName(index: number): string {
-    return this.defs[index].name;
+  indexToID(index: number): string {
+    return this.defs[index].id();
   }
 
-  getNextPolytwister(name: string): string {
-    let index = this.findIndexByName(name);
+  getNextPolytwister(id: string): string {
+    let index = this.findIndexByID(id);
     const newIndex = (index + 1) % this.defs.length;
-    return this.defs[newIndex].name;
+    return this.defs[newIndex].id();
   }
 
-  getPreviousPolytwister(name: string): string {
-    let index = this.findIndexByName(name);
+  getPreviousPolytwister(id: string): string {
+    let index = this.findIndexByID(id);
     const newIndex = (index - 1 + this.defs.length) % this.defs.length;
-    return this.defs[newIndex].name;
+    return this.defs[newIndex].id();
   }
 }
 
