@@ -1,3 +1,4 @@
+import { asFraction, FractionLike, fractionToString } from "./fraction";
 import { PolytwisterSymbolLike } from "./symbol";
 import { PolytwisterSymbol } from "./symbol";
 
@@ -9,6 +10,7 @@ export interface PolytwisterDefSpec {
   acronym?: string;
   symbol: PolytwisterSymbolLike;
   bug?: string;
+  index?: number; // 1-indexed.
 }
 
 /**
@@ -19,12 +21,14 @@ export class PolytwisterDef {
   acronym?: string;
   bug?: string;
   symbol: PolytwisterSymbol;
+  index?: number;
 
   constructor(spec: PolytwisterDefSpec) {
     this.name = spec.name;
     this.acronym = spec.acronym;
     this.symbol = PolytwisterSymbol.from(spec.symbol);
     this.bug = spec.bug;
+    this.index = spec.index;
   }
 
   asFields(): PolytwisterFields {
@@ -38,6 +42,7 @@ export class PolytwisterDef {
       dyadic: this.symbol.isDyadic(),
       rectifiedDyadic: this.symbol.isRectifiedDyadic(),
       bug: this.bug,
+      index: this.index,
     };
   }
 }
@@ -52,6 +57,7 @@ export interface PolytwisterFields {
   dyadic: boolean;
   rectifiedDyadic: boolean;
   bug?: string;
+  index?: number;
 }
 
 export class PolytwisterDatabase {
@@ -90,18 +96,28 @@ export class PolytwisterDatabase {
   }
 }
 
-function dyadicTwister(n: number): PolytwisterDefSpec {
+function dyadicTwister(n: FractionLike, acronym: string): PolytwisterDefSpec {
   const result = {
-    name: `${n} dyadic twister`,
+    name: `${fractionToString(asFraction(n))} dyadic twister`,
     symbol: [2, n],
+    acronym,
   };
   return result;
 }
 
-function starDyadicTwister(n: number, d: number): PolytwisterDefSpec {
+function rectifiedDyadicTwister(n: FractionLike, acronym: string): PolytwisterDefSpec {
   return {
-    name: `${n}/${d} dyadic twister`,
-    symbol: [2, [n, d]],
+    name: `${fractionToString(asFraction(n))} rectified dyadic twister`,
+    symbol: [2, n, 2],
+    acronym,
+  };
+}
+
+function bloatedRectifiedDyadicTwister(n: FractionLike, acronym: string): PolytwisterDefSpec {
+  return {
+    name: `${fractionToString(asFraction(n))} bloated rectified dyadic twister`,
+    symbol: [2, n, [2, 3]],
+    acronym,
   };
 }
 
@@ -110,7 +126,7 @@ const bugs = {
   STRANDS: "Weird strands"
 };
 
-const specs: PolytwisterDefSpec[] = [
+const specsSporadic: PolytwisterDefSpec[] = [
   {
     name: "tetratwister",
     acronym: "tetter",
@@ -327,14 +343,6 @@ const specs: PolytwisterDefSpec[] = [
       [3, 2],
     ],
   },
-  dyadicTwister(3),
-  dyadicTwister(4),
-  dyadicTwister(5),
-  starDyadicTwister(3, 2),
-  starDyadicTwister(4, 3),
-  starDyadicTwister(5, 2),
-  starDyadicTwister(5, 3),
-  starDyadicTwister(5, 4),
 
   //////////////////////////////////////////////////////////////////////////////
   // Quasiregulars
@@ -1380,6 +1388,60 @@ const specs: PolytwisterDefSpec[] = [
     symbol: [[3, 2], [5, 2], 5],
     bug: bugs.STRANDS,
   },
+
+  {
+    name: "small dipentagonary bloated dodekicosatwister",
+    acronym: "sadpabloditer",
+    symbol: [3, 5, [5, 7]],
+  },
+  {
+    name: "small dipentagonary bloated icosidodecatwister",
+    acronym: "sadpablidoter",
+    symbol: [3, [5, 2], [5, 6]],
+  },
+  {
+    name: "great dipentagonary bloated dodekicosatwister",
+    acronym: "gidpabloditer",
+    symbol: [3, [5, 4], [5, 8]],
+  },
+  {
+    name: "great dipentagonary bloated icosidodecatwister",
+    acronym: "gidpablidoter",
+    symbol: [3, [5, 3], [5, 9]],
+  },
 ];
+
+specsSporadic.forEach((spec, i) => {
+  spec.index = i + 1;
+});
+
+const specsInfiniteFamilies = [
+  dyadicTwister(3, "tridyster"),
+  dyadicTwister([3, 2], "blotridyster"),
+  dyadicTwister(4, "tetradyster"),
+  dyadicTwister([4, 3], "blotetradyster"),
+  dyadicTwister(5, "pentadyster"),
+  dyadicTwister([5, 2], "stardyster"),
+  dyadicTwister([5, 3], "blostardyster"),
+  dyadicTwister([5, 4], "blopentadyster"),
+  rectifiedDyadicTwister(3, "retridyster"),
+  rectifiedDyadicTwister([3, 2], "rebtidyster"),
+  rectifiedDyadicTwister(4, "retedyster"),
+  rectifiedDyadicTwister([4, 3], "rebitdyster"),
+  rectifiedDyadicTwister(5, "repdyster"),
+  rectifiedDyadicTwister([5, 2], "restidyster"),
+  rectifiedDyadicTwister([5, 3], "rebstidyster"),
+  rectifiedDyadicTwister([5, 4], "rebipdyster"),
+  bloatedRectifiedDyadicTwister(3, "britdyster"),
+  bloatedRectifiedDyadicTwister([3, 2], "birbitdyster"),
+  bloatedRectifiedDyadicTwister(4, "birtdyster"),
+  bloatedRectifiedDyadicTwister([4, 3], "birbtedyster"),
+  bloatedRectifiedDyadicTwister(5, "birpdyster"),
+  bloatedRectifiedDyadicTwister([5, 2], "birstdyster"),
+  bloatedRectifiedDyadicTwister([5, 3], "barbstdyster"),
+  bloatedRectifiedDyadicTwister([5, 4], "birbipdyster"),
+];
+
+const specs: PolytwisterDefSpec[] = [...specsSporadic, ...specsInfiniteFamilies];
 
 export const database = new PolytwisterDatabase(specs);

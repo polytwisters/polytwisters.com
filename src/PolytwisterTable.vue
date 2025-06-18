@@ -28,6 +28,7 @@ onMounted(() => {
     <table class="w-full relative">
       <thead>
         <tr class="text-left sticky top-0 bg-black">
+          <th class="text-center">#</th>
           <th>Name</th>
           <th>Acronym</th>
           <th>Symbol</th>
@@ -46,6 +47,7 @@ onMounted(() => {
           :data-name="row.name"
           ref="row-elements"
         >
+          <td class="text-center">{{ row.index ?? "" }}</td>
           <td>{{ row.name }}</td>
           <td>{{ row.acronym ?? "" }}</td>
           <td>{{ row.symbolString }}</td>
