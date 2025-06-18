@@ -21,11 +21,9 @@ test("All acronyms are unique", () => {
 test("All symbols unique", () => {
   const defs = database.defs;
   for (let i = 0; i < defs.length; i++) {
-    // Although .equals is commutative, good to be safe and check both
-    // directions.
-    for (let j = 0; j < defs.length; j++) {
+    for (let j = i + 1; j < defs.length; j++) {
       if (i !== j) {
-        expect.soft(defs[i].symbol.equals(defs[j].symbol)).toBeFalsy;
+        expect.soft(defs[i].id()).not.toBe(defs[j].id());
       }
     }
   }

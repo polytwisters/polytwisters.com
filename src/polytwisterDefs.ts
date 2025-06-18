@@ -801,7 +801,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   {
     name: "quasiplated cube twister",
     acronym: "quipicter",
-    symbol: [2, [4, 3], [3, 5]],
+    symbol: [2, [4, 3], [3, 4]],
   },
   {
     name: "bloatoplated cube twister",
