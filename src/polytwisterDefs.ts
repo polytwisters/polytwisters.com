@@ -58,7 +58,7 @@ export class PolytwisterDatabase {
   defs: PolytwisterDef[];
 
   constructor(specs: PolytwisterDefSpec[]) {
-    this.defs = specs.map((spec) => new PolytwisterDef(spec));
+    this.defs = specs.map((spec) => new PolytwisterDef(spec)).filter((def) => !def.bug);
   }
 
   has(name: string): boolean {
