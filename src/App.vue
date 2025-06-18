@@ -174,6 +174,12 @@ function getUniforms(): { [key: string]: any } {
   };
 }
 
+let takingScreenshot = false;
+
+function takeScreenshot() {
+  takingScreenshot = true;
+}
+
 onMounted(() => {
   cameraControls.enablePointerEvents();
 
@@ -231,6 +237,11 @@ onMounted(() => {
     }
 
     renderer.render(scene, threeCamera);
+    if (takingScreenshot) {
+      const screenshot = renderer.domElement.toDataURL();
+      window.open(screenshot);
+      takingScreenshot = false;
+    }
     requestAnimationFrame(update);
   }
   requestAnimationFrame(update);
@@ -292,6 +303,12 @@ const cameraDirection = camera.direction;
             material
             icon="casino" 
             help="Random"
+            />
+          <Button
+            @click="takeScreenshot"
+            material
+            icon="photo_camera"
+            help="Take screenshot"
             />
           <Button
             @click="toggleExperimentalMode"
