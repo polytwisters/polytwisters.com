@@ -32,9 +32,6 @@ function randomPolytwister() {
 }
 
 const experimentalMode = ref(false);
-function toggleExperimentalMode() {
-  experimentalMode.value = !experimentalMode.value;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
