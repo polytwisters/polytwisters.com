@@ -7,7 +7,7 @@ let pointerXLast: number | null = null;
 let pointerYLast: number | null = null;
 
 // Controls the rate at which camera orbit responds to mouse. Tuned by hand.
-const orbitSpeed = 2.0;
+const orbitSpeed = 8.0;
 
 export function pointerUp(_e: MouseEvent) {
   pointerDown = false;
