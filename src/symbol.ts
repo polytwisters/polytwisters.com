@@ -14,6 +14,8 @@ export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
  * placed at the "ring" mirror. If "quasiregular" is false, a generator plane
  * is placed at "twister1" only. If it is true, a generator plane is placed at
  * both types of twisters.
+ * 
+ * In the regular case, twister1 is always the fraction 2/1.
  */
 export class PolytwisterSymbol {
   ring: Fraction;
@@ -159,5 +161,36 @@ export class PolytwisterSymbol {
       );
     }
     throw new Error("Invalid polytwister symbol");
+  }
+
+  serializeURI(): string {
+    const a = fractionToString(this.twister1);
+    const b = fractionToString(this.twister2);
+    const c = fractionToString(this.ring);
+    if (this.quasiregular) {
+      return `${a}.${b}.${c}`;
+    }
+    return `${b}.${c}`;
+  }
+
+  static deserializeURI(string: string): PolytwisterSymbol {
+    const parts = string.split(/\./g);
+    if (parts.length === 2) {
+      return new PolytwisterSymbol(
+        fraction.parse(parts[1]),
+        asFraction(2),
+        fraction.parse(parts[0]),
+        false
+      );
+    }
+    if (parts.length !== 3) {
+      throw new Error("Invalid symbol");
+    }
+    return new PolytwisterSymbol(
+      fraction.parse(parts[2]),
+      fraction.parse(parts[0]),
+      fraction.parse(parts[1]),
+      true
+    );
   }
 }
