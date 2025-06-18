@@ -1378,7 +1378,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "grand dipentagonary icosidodecatwister",
-    acronym: "gadpidoter", // possible typo from Bowers?
+    acronym: "gadpiditer",
     symbol: [[3, 2], [5, 3], [5, 4]],
     bug: bugs.WRONG_POLYTWISTER,
   },
@@ -1390,7 +1390,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "medial dipentagonary icosidodecatwister",
-    acronym: "midpiditer", // possible typo from Bowers?
+    acronym: "midpiditer",
     symbol: [[3, 2], [5, 2], 5],
     bug: bugs.STRANDS,
   },
