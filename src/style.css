@@ -54,11 +54,11 @@ input[type="text"].error {
   @apply bg-red-950;
 }
 
-button {
+button, .button {
   @apply bg-primary rounded-sm h-8 p-1 cursor-pointer active:bg-active;
 }
 
-button.square {
+.square {
   @apply size-8;
 }
 

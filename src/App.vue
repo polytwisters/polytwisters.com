@@ -14,7 +14,6 @@ import * as globalState from "./globalState";
 import Button from "./Button.vue";
 import Article from "./Article.vue";
 import Axes from "./Axes.vue";
-import Selector from "./Selector.vue";
 import WSlider from "./WSlider.vue";
 import StellationDiagram from "./StellationDiagram.vue";
 import Wythoff from "./Wythoff.vue";
@@ -270,29 +269,45 @@ const cameraDirection = camera.direction;
         </div>
       </div>
 
-      <div class="flex flex-row">
-        <div class="flex flex-row gap-2 flex-1">
+      <div class="flex flex-row items-center">
+        <div class="flex-1 flex flex-row items-baseline gap-2">
+          <div v-if="polytwisterDef.index !== undefined">
+            {{ polytwisterDef.index }}.
+          </div>
+          <h2 class="text-xl font-bold">{{ polytwisterDef.name }}</h2>
+          <div>({{ polytwisterDef.acronym }})</div>
         </div>
-        <Selector />
-        <div class="flex-1 flex flex-row justify-end gap-2">
+        <div class="flex flex-row justify-end gap-2">
+          <Button
+            @click="globalState.previous"
+            material
+            icon="chevron_left"
+            help="Previous"
+          />
+          <Button
+            @click="globalState.next"
+            material
+            icon="chevron_right"
+            help="Next"
+          />
           <Button
             @click="randomPolytwister"
             material
             icon="casino" 
             help="Random"
             />
-          <Button
-            @click="toggleExperimentalMode"
-            material
-            icon="science"
-            help="Experimental features"
-            :active="experimentalMode"
-          />
+          <a class="button square material"
+            icon="help" 
+            help="About"
+            href="#article"
+            >question_mark</a>
         </div>
       </div>
 
       <div class="flex flex-row gap-5 justify-begin">
-        <div class="w-40"><strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}</div>
+        <div class="w-40">
+          <strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}
+        </div>
         <div class="w-40">
           <PropertyTags :fields="polytwisterDef.asFields()" />
         </div>

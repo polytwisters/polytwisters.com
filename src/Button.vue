@@ -31,13 +31,13 @@ defineProps<{
     </button>
     <div
       v-if="help"
-      class="not-group-hover:opacity-0 opacity-90 transition-opacity delay-250 select-none pointer-events-none absolute bottom-10 min-w-20 w-fit bg-gray-700 p-1 rounded-sm text-sm text-center"
+      class="not-group-hover:opacity-0 opacity-90 transition-opacity select-none pointer-events-none absolute bottom-10 min-w-20 w-fit bg-gray-700 p-1 rounded-sm text-sm text-center"
     >
       {{ help }}
     </div>
     <div
       v-if="help"
-      class="not-group-hover:opacity-0 opacity-90 transition-opacity delay-250 select-none pointer-events-none absolute bottom-9 box-content size-0 left-2.5 border-transparent border-6 border-b-0 border-t-gray-700 border-solid"
+      class="not-group-hover:opacity-0 opacity-90 transition-opacity select-none pointer-events-none absolute bottom-9 box-content size-0 left-2.5 border-transparent border-6 border-b-0 border-t-gray-700 border-solid"
     ></div>
   </div>
 </template>
