@@ -90,9 +90,21 @@ export class PolytwisterSymbol {
   isRectifiedDyadic(): boolean {
     return (
       this.quasiregular &&
-      this.ring.n === 2 &&
+      (this.ring.n === 2 && this.ring.d === 1) &&
       (this.twister1.n === 2 || this.twister2.n === 2)
     );
+  }
+
+  isBloatedRectifiedDyadic(): boolean {
+    return (
+      this.quasiregular &&
+      (this.ring.n === 2 && this.ring.d === 3) &&
+      (this.twister1.n === 2 || this.twister2.n === 2)
+    );
+  }
+
+  isInInfiniteFamily(): boolean {
+    return this.isDyadic() || this.isRectifiedDyadic() || this.isBloatedRectifiedDyadic();
   }
 
   static parse(string: string): PolytwisterSymbol {

@@ -1360,7 +1360,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "medial dipentagonary bloated icosidodecatwister",
-    acronym: "midpabloditer",
+    acronym: "midpablidoter",
     symbol: [[3, 2], [5, 3], [5, 6]],
   },
 
