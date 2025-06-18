@@ -261,7 +261,7 @@ vec4 render(Ray ray) {
   Sphere containingSphere = Sphere(vec3(0.0), radius);
   Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
   if (Interval_empty(containingSphereInterval)) {
-    return vec4(0.0, 0.0, 0.0, 1.0);
+    return vec4(0.0, 0.0, 0.0, 0.0);
   }
 
   float pi = radians(180.0);
@@ -292,7 +292,7 @@ vec4 render(Ray ray) {
   }
 
   if (tmin == FAR) {
-    return vec4(0.0, 0.0, 0.0, 1.0);
+    return vec4(0.0, 0.0, 0.0, 0.0);
   }
 
   // We only have the distance of intersection, not the actual pipe we hit, but we can easily

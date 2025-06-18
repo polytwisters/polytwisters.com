@@ -192,7 +192,10 @@ onMounted(() => {
   );
   scene.add(mesh);
 
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas.value!,
+    alpha: true,
+  });
   let material: THREE.ShaderMaterial | null = null;
 
   renderer.setSize(canvasWidth, canvasHeight, false);
