@@ -15,10 +15,9 @@ const vKatex = {
 </script>
 
 <template>
-  <article class="my-5" v-katex>
+  <article class="my-5" v-katex id="article">
     <p>
-      This is a real-time interactive viewer for
-      <a :href="twistersLink" target="_blank">polytwisters</a>, a family of
+      <a :href="twistersLink" target="_blank">Polytwisters</a> are a family of
       four-dimensional curved shapes related to polyhedra and Hopf fibration. As
       polytwisters are 4D, the display shows 3D cross sections of the shapes.
       Control the location of the slice using the slider.
@@ -41,7 +40,7 @@ const vKatex = {
       </section>
       <section class="flex-1">
         <h1>Future plans</h1>
-        <ul class="list-disc list-inside">
+        <ul class="">
           <li>All 200+ regular and quasiregular polytwisters</li>
           <li>Custom polytwister construction</li>
           <li>Display of combinatorial structure</li>
@@ -56,8 +55,8 @@ const vKatex = {
     <h2>What are polytwisters?</h2>
 
     <p>
-      Polytwisters are a family of curved four-dimensional shapes. They were
-      discovered by
+      Polytwisters are a family of curved shapes that exist in four spatial
+      dimensions. They were discovered in 2000 by
       <a href="https://www.polytope.net/hedrondude/home.htm" target="_blank"
         >Jonathan Bowers</a
       >, an American mathematician known for his work on polytopes in four
@@ -67,13 +66,24 @@ const vKatex = {
     </p>
 
     <p>
-      The 4D analogy of the sphere is known as the <em>3-sphere</em>. On the
-      ordinary sphere, a <em>great circle</em> is a circle with the same radius
-      as the sphere itself, dividing it into two hemispheres. Any two distinct
-      great circles on a sphere must intersect at exactly two points. On the
-      3-sphere, it is possible for two great circles on the 3-sphere to not
-      intersect each other at all. As the 3-sphere is a dimension "bigger" than
-      the sphere, there is far more room for these circles.
+      If you are entirely new to 4D Euclidean space, I recommend the following
+      resources:
+    </p>
+
+    <ul>
+      <li>Article series by H. S. Teoh: "<a href="https://www.qfbox.info/4d/vis/vis">4D Visualization</a>."</li>
+      <li>Video series from HyperCubist Math: "<a href="https://www.youtube.com/watch?v=SwGbHsBAcZ0">Visualizing 4D</a>."</li>
+    </ul>
+
+    <p>
+      The 4D analogy of the sphere is known as the 
+      <a href="https://en.wikipedia.org/wiki/3-sphere"><em>3-sphere</em></a>. On
+      the ordinary sphere, a <em>great circle</em> is a circle with the same
+      radius as the sphere itself, dividing it into two hemispheres. Any two
+      distinct great circles on a sphere must intersect at exactly two points.
+      On the 3-sphere, it is possible for two great circles on the 3-sphere to
+      not intersect each other at all. As the 3-sphere is a dimension "bigger"
+      than the sphere, there is far more room for these circles.
     </p>
 
     <p>
@@ -100,19 +110,20 @@ const vKatex = {
       is a polytwister's equivalent of a polygonal face.
     </p>
 
-    <h2>Definition of convex polytwisters</h2>
+    <h2>Definition of polytwisters</h2>
 
     <p>
-      This section details a definition of convex polytwisters for readers with
-      a mathematics background. It is intentionally very terse and only covers a
-      fraction of the topic. As of April 2025, I am working on a paper which
-      elaborates greatly on this and addresses nonconvex polytwisters.
+      This section defines convex polytwisters for readers with a
+      mathematics background. It only covers a fraction of the topic, and gets
+      informal near the end. As of April 2025, I am working on a paper which
+      elaborates greatly on this.
     </p>
 
     <p>
       Equate \(\mathbb{R}^4\) and \(\mathbb{C}^2\) with \((a, b, c,
       d)_{\mathbb{R}^4} \equiv (a + bi, c + di)_{\mathbb{C}^2}\). Define the
-      equivalence relation \(x \sim y\) on \(\mathbb{C}^2\) as true iff there
+      equivalence relation \(x \sim y\) on \(\mathbb{C}^2\) as true
+      <abbr title="if and only if">iff</abbr> there
       exists \(k \in \mathbb{C},\, |k| = 1\) such that \(y = kx\), i.e. \(y\) is
       a <em>phase rotation</em> of \(x\). The partition \(\mathbb{C}^2 / \sim\)
       divides the space into <em>fibers</em>. Reinterpreted in \(\mathbb{R}^4\),
@@ -143,21 +154,14 @@ const vKatex = {
       where \(\langle (x_1, x_2), (y_1, y_2) \rangle = x_1 y_1^* + x_2 y_2^*\).
       The pipe \(P(1, 0)\) viewed in \(\mathbb{R}^4\) is the Cartesian product
       of a unit circle and a plane, and the log \(L(1, 0)\) is the Cartesian
-      product of a closed unit disk and a plane. All other pipes (or logs) are
-      formed by transforming this base pipe (or log) by applying a special
-      unitary matrix \(\mathbf{U} \in \text{SU}(2)\) in the \(\mathbb{C}^2\)
-      domain, and a uniform scaling about the origin. Crucially, all logs and
-      pipes are unions of fibers.
+      product of a closed unit disk and a plane. All other pipes and logs are
+      respectively of the form \(k\mathbf{U}P(1, 0)\) and \(k\mathbf{U}L(1, 0)\)
+      where \(\mathbf{U} \in \text{SU}(2)\) and \(k\) is a positive real number.
+      Crucially, all logs and pipes are unions of fibers.
     </p>
 
     <p>
-      The key to the polyhedral analogies are that logs are the equivalent of
-      closed half-spaces and pipes are the equivalent of planes. Even the
-      formulas look similar, as a closed half-space may be defined as a set
-      \(H(y) = \{x \in \mathbb{R}^3 : \langle x, y \rangle \leq 1\}\) for some
-      \(y \in \mathbb{R}^3 \backslash \{0\}\). Knowing that convex polyhedra may
-      be defined as intersections of finitely many closed half-spaces, we are
-      set up for a definition of convex polytwisters:
+      We can now define a convex polytwister:
     </p>
 
     <p class="mx-5 my-8!">
@@ -167,23 +171,51 @@ const vKatex = {
     </p>
 
     <p>
-      From here I will leave things sketchy to limit scope, but I will mention
-      that the minimum of exactly three logs has an important reason: the
-      intersection of three pipes, under certain conditions, is exactly two
-      nontrivial fibers with locations computed by a certain system of
-      polynomial equations. This is what allows polytwisters to have rings,
-      which are designated fibers that are polytwisters' equivalents of
-      vertices. The analogous situation in 3D is that three planes in general
-      position intersect at a single point determined by a system of linear
-      equations, and every vertex of the polyhedron must be located at one such
-      intersection point. As for strips, they are the intersection of two pipes
-      and a log, and a twister is the intersection of one pipe and two or more
-      logs.
+      The key to this is the analogy to the definition of
+      "\(\mathcal{H}\)-polytopes," which may be defined as the bounded
+      intersection of finitely many closed half-spaces. (See Ziegler's
+      <em>Lectures on polytopes</em> for an introduction.) The polytwister
+      equivalent of a closed half-space is a log, and the equivalent of a
+      hyperplane is a pipe.
     </p>
 
     <p>
-      Again, all this will be explained in more detail in an upcoming paper, but
-      I hope this brief description is useful.
+      Just as two planes in general position in 3D space intersect at lines and
+      three planes intersect at a point, the intersection of pipes allows us to
+      produce lower-dimensional shapes. An important fact, although not an
+      obvious one at all, is that three pipes in general position intersect at
+      exactly two fibers (sometimes zero or one, but those cases are not
+      relevant to polytwisters). You can see a visual of this in the order 3
+      dyadic twister, which is the simplest convex polytwister; the solid is the
+      intersection of exactly three logs \(L(y_1) \cap L(y_2) \cap L(y_3)\). The
+      two fibers in the set \(P(y_1) \cap P(y_2) \cap P(y_3)\) appear as
+      "vertices" on the boundary of the figure, which we properly call rings.
+    </p>
+
+    <p>
+      Taking further set operations on pipes and logs gives us the face lattice
+      of the polytwister. A strip can be formed as the intersection of two
+      pipes and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\).
+      Unlike line segments, strips are not uniquely determined by their
+      boundary: there are infinitely many strips between a pair of fibers.
+      Finally, a twister (2-face) is formed by the intersection of one pipe and
+      two or more logs, such as \(L(y_1) \cap L(y_2) \cap P(y_3)\). (I am being
+      informal here and leaving out some degeneracy conditions.)
+    </p>
+
+    <p>
+      Nonconvex polytwisters are defined roughly as
+      <a href="https://en.wikipedia.org/wiki/Abstract_polytope">
+        abstract 3-polytopes
+      </a>
+      with a realization that maps each facet to a pipe, each edge to a strip,
+      and each vertex to a ring (fiber), with constraints that the pipes,
+      strips, and rings respect the poset structure.
+    </p>
+
+    <p>
+      Polytwisters will be explained in more detail in an upcoming paper, but I
+      hope this brief description is useful.
     </p>
 
     <h2>Background</h2>
@@ -251,10 +283,10 @@ p {
 
 a:link,
 a:visited {
-  @apply text-sky-200;
+  @apply text-sky-400 hover:text-sky-300;
 }
 
 ul {
-  @apply ml-7 list-outside;
+  @apply ml-7 list-outside list-disc list-inside;
 }
 </style>
