@@ -27,6 +27,11 @@ import { database } from "./polytwisterDefs";
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
 
+const fullscreen = ref(false);
+function toggleFullscreen() {
+  fullscreen.value = !fullscreen.value;
+}
+
 function randomPolytwister() {
   globalState.polytwisterID.value = _.sample(database.defs)!.id();
 }
@@ -124,8 +129,10 @@ const shaderLog: Ref<string> = ref("");
 
 let canvasAspectRatio = 16 / 9;
 
-let canvasWidth = 1000;
-let canvasHeight = canvasWidth / canvasAspectRatio;
+const canvasHeights = [240, 360, 480, 720, 1080, 2160];
+
+let canvasHeight: Ref<number> = defineModel({ default: 480 });
+let canvasWidth: Ref<number> = computed(() => canvasHeight.value * canvasAspectRatio);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
@@ -155,7 +162,7 @@ watch(polytwister, () => {
 
 function getUniforms(): { [key: string]: any } {
   return {
-    iResolution: { value: [canvasWidth, canvasHeight] },
+    iResolution: { value: [canvasWidth.value, canvasHeight.value] },
     crossSectionW: { value: crossSectionW.value },
     cameraPosition_: { value: camera.position.value },
     cameraDirection: { value: camera.direction.value },
@@ -200,8 +207,24 @@ onMounted(() => {
   });
   let material: THREE.ShaderMaterial | null = null;
 
-  renderer.setSize(canvasWidth, canvasHeight, false);
-  renderer.render(scene, threeCamera);
+  function updateUniforms() {
+    if (material) {
+      const newUniforms = getUniforms();
+      for (let key of Object.keys(newUniforms)) {
+        material.uniforms[key].value = newUniforms[key].value;
+      }
+    }
+  }
+
+  watch(
+    [canvasWidth, canvasHeight],
+    ([newCanvasWidth, newCanvasHeight]) => {
+      renderer.setSize(newCanvasWidth, newCanvasHeight, false);
+      updateUniforms();
+      renderer.render(scene, threeCamera);
+    },
+    { immediate: true },
+  );
 
   watch(
     fragmentShader,
@@ -225,12 +248,7 @@ onMounted(() => {
       t += timestamp - lastTimestamp;
     }
     lastTimestamp = timestamp;
-    if (material) {
-      const newUniforms = getUniforms();
-      for (let key of Object.keys(newUniforms)) {
-        material.uniforms[key].value = newUniforms[key].value;
-      }
-    }
+    updateUniforms();
 
     renderer.render(scene, threeCamera);
     if (takingScreenshot) {
@@ -266,132 +284,169 @@ const cameraDirection = camera.direction;
         </div>
       </div>
 
-      <div class="flex flex-row items-center">
-        <div class="flex-1 flex flex-row items-baseline gap-2">
-          <div v-if="polytwisterDef.index !== undefined">
-            {{ polytwisterDef.index }}.
+      <!-- fullscreen container -->
+      <div :class="[
+        'flex', 'flex-col', 'gap-2',
+        ...fullscreen ? [
+          'fixed', 'left-0', 'top-0', 'z-10', 'bg-black',
+          'w-screen', 'h-screen', 'p-3'
+        ] : []
+      ]">
+
+        <!-- Top bar: name, basic navigation, settings, fullscreen -->
+
+        <div class="toolbar flex flex-row items-center">
+          <div class="flex-1 flex flex-row items-baseline gap-2">
+            <div v-if="polytwisterDef.index !== undefined">
+              {{ polytwisterDef.index }}.
+            </div>
+            <h2 class="text-xl font-bold">{{ polytwisterDef.name }}</h2>
+            <div>({{ polytwisterDef.acronym }})</div>
           </div>
-          <h2 class="text-xl font-bold">{{ polytwisterDef.name }}</h2>
-          <div>({{ polytwisterDef.acronym }})</div>
-        </div>
-        <div class="flex flex-row justify-end gap-2">
-          <Button
-            @click="globalState.previous"
-            material
-            icon="chevron_left"
-            help="Previous"
-          />
-          <Button
-            @click="globalState.next"
-            material
-            icon="chevron_right"
-            help="Next"
-          />
-          <Button
-            @click="randomPolytwister"
-            material
-            icon="casino" 
-            help="Random"
+          <div class="flex flex-row justify-end gap-2">
+            <Button
+              @click="globalState.previous"
+              material
+              icon="chevron_left"
+              help="Previous"
             />
-          <a class="button square material"
-            icon="help" 
-            help="About"
-            href="#article"
-            >question_mark</a>
-        </div>
-      </div>
-
-      <div class="flex flex-row gap-5 justify-begin">
-        <div class="w-40">
-          <strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}
-        </div>
-        <div class="w-40">
-          <PropertyTags :fields="polytwisterDef.asFields()" />
-        </div>
-        <div class="w-40" v-if="polytwisterDef.acronym && false">
-          <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
-        </div>
-        <div class="flex flex-row justify-end flex-1">
-          <div class="w-25">
-            <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
-          </div>
-          <div class="w-25">
-            <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
-          </div>
-          <div class="w-25">
-            <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
-          </div>
-        </div>
-      </div>
-
-      <div class="flex flex-row">
-        <div class="flex flex-row gap-2 flex-1">
-          <Button
-            @click="camera.reset"
-            material
-            icon="home"
-            help="Reset camera"
-          />
-          <Button
-            @click="cameraControls.zoomIn"
-            material
-            icon="add"
-            help="Zoom in"
-          />
-          <div
-            class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none"
-          >
-            search
-          </div>
-          <Button
-            @click="cameraControls.zoomOut"
-            material
-            icon="remove"
-            help="Zoom out"
-          />
-        </div>
-        <div class="flex-1 flex flex-row justify-end gap-2">
-          <Button
-            @click="takeScreenshot"
-            material
-            icon="photo_camera"
-            help="Take screenshot"
+            <Button
+              @click="globalState.next"
+              material
+              icon="chevron_right"
+              help="Next"
             />
-        </div>
-      </div>
-
-      <div class="relative my-3" ref="container" v-if="!shaderError">
-        <canvas
-          ref="canvas"
-          class="block w-full"
-          :style="{ 'aspect-ratio': canvasAspectRatio + ' / 1' }"
-          @pointerdown="cameraControls.canvasPointerDown"
-          @wheel.prevent="cameraControls.canvasWheel"
-        ></canvas>
-        <Axes
-          :cameraX="cameraX"
-          :cameraY="cameraY"
-          :cameraDirection="cameraDirection"
-        />
-        <div
-          class="absolute top-0 left-0 size-full flex items-center justify-center"
-          v-if="false"
-        >
-          <div class="material-symbols-rounded animate-spin">
-            progress_activity
+            <Button
+              @click="randomPolytwister"
+              material
+              icon="casino" 
+              help="Random"
+              />
+            <a class="button square material"
+              icon="help" 
+              help="About"
+              href="#article"
+              >question_mark</a>
+            <Button
+              material
+              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'" 
+              help="Fullscreen" 
+              @click="toggleFullscreen"
+              />
           </div>
         </div>
+
+        <!-- Bar 2: symbol, face vector, etc. -->
+
+        <div class="toolbar flex flex-row gap-5 justify-begin">
+          <div class="w-40">
+            <strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}
+          </div>
+          <div class="w-40">
+            <PropertyTags :fields="polytwisterDef.asFields()" />
+          </div>
+          <div class="w-40" v-if="polytwisterDef.acronym && false">
+            <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
+          </div>
+          <div class="flex flex-row justify-end flex-1">
+            <div class="w-25">
+              <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
+            </div>
+            <div class="w-25">
+              <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
+            </div>
+            <div class="w-25">
+              <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bar 3: View controls. -->
+
+        <div class="toolbar flex flex-row">
+          <div class="flex flex-row gap-2 flex-1">
+            <Button
+              @click="camera.reset"
+              material
+              icon="home"
+              help="Reset camera"
+            />
+            <Button
+              @click="cameraControls.zoomIn"
+              material
+              icon="add"
+              help="Zoom in"
+            />
+            <div
+              class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none"
+            >
+              search
+            </div>
+            <Button
+              @click="cameraControls.zoomOut"
+              material
+              icon="remove"
+              help="Zoom out"
+            />
+          </div>
+          <div class="flex-1 flex flex-row justify-end gap-2">
+            <select v-model="canvasHeight" class="button text-center">
+              <option v-for="height in canvasHeights" :value="height">
+                {{ Math.floor(height * canvasAspectRatio) }}&times;{{ height }}px
+              </option>
+            </select>
+            <Button
+              @click="takeScreenshot"
+              material
+              icon="photo_camera"
+              help="Take screenshot"
+              />
+          </div>
+        </div>
+
+        <!-- Main viewer. -->
+
+        <div :class="[
+          'flex', 'flex-row', 'items-center', 'justify-center',
+          ...fullscreen ? ['fixed', 'left-0', 'top-0', 'w-screen', 'h-screen'] : ['relative']
+        ]" ref="container" v-if="!shaderError">
+          <canvas
+            ref="canvas"
+            :class="[
+              'block',
+              ...fullscreen ? ['h-full'] : ['w-full']
+            ]"
+            :style="{ 'aspect-ratio': canvasAspectRatio + ' / 1' }"
+            @pointerdown="cameraControls.canvasPointerDown"
+            @wheel.prevent="cameraControls.canvasWheel"
+          ></canvas>
+
+          <!--
+          Axes are hidden in fullscreen out of pure laziness. They don't
+          position properly with the position:fixed parent.
+          -->
+          <Axes
+            :cameraX="cameraX"
+            :cameraY="cameraY"
+            :cameraDirection="cameraDirection"
+            v-if="!fullscreen"
+          />
+        </div>
+        <pre v-if="shaderError">{{ shaderLog }}</pre>
+
+        <div :class="fullscreen ? ['absolute', 'bottom-0', 'w-full', 'p-8'] : []">
+          <WSlider v-model="crossSectionW" />
+        </div>
       </div>
-      <pre v-if="shaderError">{{ shaderLog }}</pre>
 
-      <WSlider v-model="crossSectionW" />
+      <template v-if="!fullscreen">
+        <PolytwisterTable />
 
-      <PolytwisterTable />
+        <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
+        <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
 
-      <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
-      <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
-
-      <Article />
+        <Article />
+      </template>
     </div>
   </div>
 </template>
@@ -433,5 +488,9 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.toolbar {
+  @apply z-20;
 }
 </style>
