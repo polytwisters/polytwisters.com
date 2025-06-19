@@ -183,6 +183,28 @@ function takeScreenshot() {
   takingScreenshot = true;
 }
 
+let fpsFrames = 0;
+let fpsTimerLastCheckpoint: DOMHighResTimeStamp | null = null;
+const fps = ref(0.0);
+function resetFPSTimer() {
+  fpsFrames = 0;
+  fpsTimerLastCheckpoint = performance.now();
+}
+function tickFPSTimer() {
+  if (fpsTimerLastCheckpoint === null) {
+    resetFPSTimer();
+    return;
+  }
+  fpsFrames += 1;
+  const time = performance.now();
+  const elapsedMilliseconds = time - fpsTimerLastCheckpoint;
+  const elapsedSeconds = elapsedMilliseconds / 1000;
+  if (elapsedSeconds > 1.0) {
+    fps.value = fpsFrames / elapsedSeconds;
+    resetFPSTimer();
+  }
+}
+
 onMounted(() => {
   cameraControls.enablePointerEvents();
 
@@ -248,6 +270,7 @@ onMounted(() => {
       t += timestamp - lastTimestamp;
     }
     lastTimestamp = timestamp;
+    tickFPSTimer();
     updateUniforms();
 
     renderer.render(scene, threeCamera);
@@ -300,8 +323,14 @@ const cameraDirection = camera.direction;
             <div v-if="polytwisterDef.index !== undefined">
               {{ polytwisterDef.index }}.
             </div>
-            <h2 class="text-xl font-bold">{{ polytwisterDef.name }}</h2>
-            <div>({{ polytwisterDef.acronym }})</div>
+            <h2 :class="[
+              'font-bold',
+              'text-xl',
+              polytwisterDef.name.length > 30 ? 'tracking-tight' : ''
+            ]">{{ polytwisterDef.name }}</h2>
+            <div :class="[
+              polytwisterDef.name.length > 40 ? 'text-sm' : ''
+            ]">({{ polytwisterDef.acronym }})</div>
           </div>
           <div class="flex flex-row justify-end gap-2">
             <Button
@@ -431,6 +460,7 @@ const cameraDirection = camera.direction;
             :cameraDirection="cameraDirection"
             v-if="!fullscreen"
           />
+          <div class="absolute right-0 bottom-0">{{ Math.round(fps) }}FPS</div>
         </div>
         <pre v-if="shaderError">{{ shaderLog }}</pre>
 

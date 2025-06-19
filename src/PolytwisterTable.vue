@@ -47,11 +47,11 @@ onMounted(() => {
           :data-id="row.id"
           ref="row-elements"
         >
-          <td class="text-center">{{ row.index ?? "" }}</td>
-          <td>{{ row.name }}</td>
+          <td class="text-center">{{ row.index ? row.index + "." : "" }}</td>
+          <td :class="[row.name.length > 40 ? 'text-sm' : '']">{{ row.name }}</td>
           <td>{{ row.acronym ?? "" }}</td>
           <td>{{ row.symbolString }}</td>
-          <td><PropertyTags :fields="row" /></td>
+          <td class="text-2sm"><PropertyTags :fields="row" /></td>
         </tr>
       </tbody>
     </table>
