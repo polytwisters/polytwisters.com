@@ -36,6 +36,14 @@ function randomPolytwister() {
   globalState.polytwisterID.value = _.sample(database.defs)!.id();
 }
 
+function openHelp() {
+  fullscreen.value = false;
+  setTimeout(() => {
+    document.getElementById("article")?.scrollIntoView();
+  }, 10);
+}
+
+const devMode = import.meta.env.DEV;
 const experimentalMode = ref(false);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +139,7 @@ let canvasAspectRatio = 16 / 9;
 
 const canvasHeights = [240, 360, 480, 720, 1080, 2160];
 
-let canvasHeight: Ref<number> = defineModel({ default: 480 });
+let canvasHeight: Ref<number> = ref(480);
 let canvasWidth: Ref<number> = computed(() => canvasHeight.value * canvasAspectRatio);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,7 +303,12 @@ const cameraDirection = camera.direction;
   <div class="flex flex-col items-center text-slate-100">
     <div class="flex flex-col gap-2 max-w-200">
       <div class="flex flex-row items-center m-5">
-        <div class="flex-1"></div>
+        <div class="flex-1">
+          <label v-if="devMode">
+            <input type="checkbox" v-model="experimentalMode">
+            dev mode
+          </label>
+        </div>
         <h1 class="flex-1 text-3xl font-bold text-center">Polytwisters</h1>
         <div class="flex-1 flex flex-row items-center justify-end gap-2">
           <a
@@ -351,11 +364,12 @@ const cameraDirection = camera.direction;
               icon="casino" 
               help="Random"
               />
-            <a class="button square material"
-              icon="help" 
+            <Button
+              @click="openHelp"
+              material
+              icon="help"
               help="About"
-              href="#article"
-              >question_mark</a>
+              />
             <Button
               material
               :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'" 
@@ -458,9 +472,11 @@ const cameraDirection = camera.direction;
             :cameraX="cameraX"
             :cameraY="cameraY"
             :cameraDirection="cameraDirection"
-            v-if="!fullscreen"
+            v-if="!fullscreen && experimentalMode"
           />
-          <div class="absolute right-0 bottom-0">{{ Math.round(fps) }}FPS</div>
+          <div
+            class="absolute right-0 bottom-0"
+            v-if="experimentalMode">{{ Math.round(fps) }}FPS</div>
         </div>
         <pre v-if="shaderError">{{ shaderLog }}</pre>
 
