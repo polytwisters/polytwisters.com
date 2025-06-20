@@ -95,8 +95,9 @@ function setLoopMode(newLoopMode: LoopMode) {
     />
   </div>
   <div class="flex flex-row w-full">
-    <div class="flex-1 flex justify-start items-center gap-3">
-      <span>Cross section <em>w</em> =</span>
+    <div class="flex-1 flex justify-start items-center gap-2">
+      <div>Cross section <em>w</em></div>
+      <div>=</div>
       <input
         class="bg-primary p-1 rounded-sm text-center"
         type="number"

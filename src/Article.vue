@@ -210,7 +210,8 @@ const vKatex = {
       </a>
       with a realization that maps each facet to a pipe, each edge to a strip,
       and each vertex to a ring (fiber), with constraints that the pipes,
-      strips, and rings respect the poset structure.
+      strips, and rings respect the
+      <abbr title="partially ordered set">poset</abbr> structure.
     </p>
 
     <p>
