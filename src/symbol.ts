@@ -14,7 +14,7 @@ export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
  * placed at the "ring" mirror. If "quasiregular" is false, a generator plane
  * is placed at "twister1" only. If it is true, a generator plane is placed at
  * both types of twisters.
- * 
+ *
  * In the regular case, twister1 is always the fraction 2/1.
  */
 export class PolytwisterSymbol {
@@ -54,16 +54,15 @@ export class PolytwisterSymbol {
     }
     if (this.isRegular()) {
       return (
-        fraction.equals(this.twister1, other.twister1)
-        && fraction.equals(this.twister2, other.twister2)
+        fraction.equals(this.twister1, other.twister1) &&
+        fraction.equals(this.twister2, other.twister2)
       );
     }
     return (
-      fraction.equals(this.twister1, other.twister1)
-      && fraction.equals(this.twister2, other.twister2)
-    ) || (
-      fraction.equals(this.twister1, other.twister2)
-      && fraction.equals(this.twister2, other.twister1)
+      (fraction.equals(this.twister1, other.twister1) &&
+        fraction.equals(this.twister2, other.twister2)) ||
+      (fraction.equals(this.twister1, other.twister2) &&
+        fraction.equals(this.twister2, other.twister1))
     );
   }
 
@@ -92,7 +91,8 @@ export class PolytwisterSymbol {
   isRectifiedDyadic(): boolean {
     return (
       this.quasiregular &&
-      (this.ring.n === 2 && this.ring.d === 1) &&
+      this.ring.n === 2 &&
+      this.ring.d === 1 &&
       (this.twister1.n === 2 || this.twister2.n === 2)
     );
   }
@@ -100,13 +100,18 @@ export class PolytwisterSymbol {
   isBloatedRectifiedDyadic(): boolean {
     return (
       this.quasiregular &&
-      (this.ring.n === 2 && this.ring.d === 3) &&
+      this.ring.n === 2 &&
+      this.ring.d === 3 &&
       (this.twister1.n === 2 || this.twister2.n === 2)
     );
   }
 
   isInInfiniteFamily(): boolean {
-    return this.isDyadic() || this.isRectifiedDyadic() || this.isBloatedRectifiedDyadic();
+    return (
+      this.isDyadic() ||
+      this.isRectifiedDyadic() ||
+      this.isBloatedRectifiedDyadic()
+    );
   }
 
   static parse(string: string): PolytwisterSymbol {
@@ -180,7 +185,7 @@ export class PolytwisterSymbol {
         fraction.parse(parts[1]),
         asFraction(2),
         fraction.parse(parts[0]),
-        false
+        false,
       );
     }
     if (parts.length !== 3) {
@@ -190,7 +195,7 @@ export class PolytwisterSymbol {
       fraction.parse(parts[2]),
       fraction.parse(parts[0]),
       fraction.parse(parts[1]),
-      true
+      true,
     );
   }
 }

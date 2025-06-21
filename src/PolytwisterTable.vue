@@ -8,8 +8,8 @@ const defs = database.defs;
 
 const rows = defs.map((def) => def.asFields());
 
-const rowElementsRef = useTemplateRef('row-elements');
-const outerRef = useTemplateRef('outer');
+const rowElementsRef = useTemplateRef("row-elements");
+const outerRef = useTemplateRef("outer");
 
 onMounted(() => {
   watch(globalState.polytwisterID, (id) => {
@@ -18,7 +18,7 @@ onMounted(() => {
       if (element.dataset.id === id) {
         outer.scrollTop = element.offsetTop - outer.clientHeight / 2;
       }
-    };
+    }
   });
 });
 </script>
@@ -42,13 +42,15 @@ onMounted(() => {
           :class="{
             'cursor-pointer': true,
             'hover:bg-light-primary': true,
-            'active': row.id === globalState.polytwisterID.value
+            active: row.id === globalState.polytwisterID.value,
           }"
           :data-id="row.id"
           ref="row-elements"
         >
           <td class="text-center">{{ row.index ? row.index + "." : "" }}</td>
-          <td :class="[row.name.length > 40 ? 'text-sm' : '']">{{ row.name }}</td>
+          <td :class="[row.name.length > 40 ? 'text-sm' : '']">
+            {{ row.name }}
+          </td>
           <td>{{ row.acronym ?? "" }}</td>
           <td>{{ row.symbolString }}</td>
           <td class="text-2sm"><PropertyTags :fields="row" /></td>

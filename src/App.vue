@@ -118,9 +118,10 @@ faceTypeToColor.set("5/4", colors.purple);
 const twisterColors: Ref<THREE.Color[]> = computed(
   () =>
     polytwister.value.polyhedron?.faces.map(
-      (face) => new THREE.Color(
-        faceTypeToColor.get(fractionToString(face.symbol)) ?? "white"
-      ),
+      (face) =>
+        new THREE.Color(
+          faceTypeToColor.get(fractionToString(face.symbol)) ?? "white",
+        ),
     ) || [],
 );
 
@@ -140,7 +141,9 @@ let canvasAspectRatio = 16 / 9;
 const canvasHeights = [240, 360, 480, 720, 1080, 2160];
 
 let canvasHeight: Ref<number> = ref(480);
-let canvasWidth: Ref<number> = computed(() => canvasHeight.value * canvasAspectRatio);
+let canvasWidth: Ref<number> = computed(
+  () => canvasHeight.value * canvasAspectRatio,
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader codegen
@@ -305,7 +308,7 @@ const cameraDirection = camera.direction;
       <div class="flex flex-row items-center m-5">
         <div class="flex-1">
           <label v-if="devMode">
-            <input type="checkbox" v-model="experimentalMode">
+            <input type="checkbox" v-model="experimentalMode" />
             dev mode
           </label>
         </div>
@@ -321,14 +324,25 @@ const cameraDirection = camera.direction;
       </div>
 
       <!-- fullscreen container -->
-      <div :class="[
-        'flex', 'flex-col', 'gap-2',
-        ...fullscreen ? [
-          'fixed', 'left-0', 'top-0', 'z-10', 'bg-black',
-          'w-screen', 'h-screen', 'p-3'
-        ] : []
-      ]">
-
+      <div
+        :class="[
+          'flex',
+          'flex-col',
+          'gap-2',
+          ...(fullscreen
+            ? [
+                'fixed',
+                'left-0',
+                'top-0',
+                'z-10',
+                'bg-black',
+                'w-screen',
+                'h-screen',
+                'p-3',
+              ]
+            : []),
+        ]"
+      >
         <!-- Top bar: name, basic navigation, settings, fullscreen -->
 
         <div class="toolbar flex flex-row items-center">
@@ -336,14 +350,18 @@ const cameraDirection = camera.direction;
             <div v-if="polytwisterDef.index !== undefined">
               {{ polytwisterDef.index }}.
             </div>
-            <h2 :class="[
-              'font-bold',
-              'text-xl',
-              polytwisterDef.name.length > 30 ? 'tracking-tight' : ''
-            ]">{{ polytwisterDef.name }}</h2>
-            <div :class="[
-              polytwisterDef.name.length > 40 ? 'text-sm' : ''
-            ]">({{ polytwisterDef.acronym }})</div>
+            <h2
+              :class="[
+                'font-bold',
+                'text-xl',
+                polytwisterDef.name.length > 30 ? 'tracking-tight' : '',
+              ]"
+            >
+              {{ polytwisterDef.name }}
+            </h2>
+            <div :class="[polytwisterDef.name.length > 40 ? 'text-sm' : '']">
+              ({{ polytwisterDef.acronym }})
+            </div>
           </div>
           <div class="flex flex-row justify-end gap-2">
             <Button
@@ -361,21 +379,16 @@ const cameraDirection = camera.direction;
             <Button
               @click="randomPolytwister"
               material
-              icon="casino" 
+              icon="casino"
               help="Random"
-              />
-            <Button
-              @click="openHelp"
-              material
-              icon="help"
-              help="About"
-              />
+            />
+            <Button @click="openHelp" material icon="help" help="About" />
             <Button
               material
-              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'" 
-              help="Fullscreen" 
+              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              help="Fullscreen"
               @click="toggleFullscreen"
-              />
+            />
           </div>
         </div>
 
@@ -393,13 +406,15 @@ const cameraDirection = camera.direction;
           </div>
           <div class="flex flex-row justify-end flex-1">
             <div class="w-25">
-              <strong>Rings:</strong> {{ polytwister.polyhedron.vertices.length }}
+              <strong>Rings:</strong>
+              {{ polytwister.polyhedron.vertices.length }}
             </div>
             <div class="w-25">
               <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
             </div>
             <div class="w-25">
-              <strong>Twisters:</strong> {{ polytwister.polyhedron.faces.length }}
+              <strong>Twisters:</strong>
+              {{ polytwister.polyhedron.faces.length }}
             </div>
           </div>
         </div>
@@ -435,7 +450,9 @@ const cameraDirection = camera.direction;
           <div class="flex-1 flex flex-row justify-end gap-2">
             <select v-model="canvasHeight" class="button text-center">
               <option v-for="height in canvasHeights" :value="height">
-                {{ Math.floor(height * canvasAspectRatio) }}&times;{{ height }}px
+                {{ Math.floor(height * canvasAspectRatio) }}&times;{{
+                  height
+                }}px
               </option>
             </select>
             <Button
@@ -443,22 +460,28 @@ const cameraDirection = camera.direction;
               material
               icon="photo_camera"
               help="Take screenshot"
-              />
+            />
           </div>
         </div>
 
         <!-- Main viewer. -->
 
-        <div :class="[
-          'flex', 'flex-row', 'items-center', 'justify-center',
-          ...fullscreen ? ['fixed', 'left-0', 'top-0', 'w-screen', 'h-screen'] : ['relative']
-        ]" ref="container" v-if="!shaderError">
+        <div
+          :class="[
+            'flex',
+            'flex-row',
+            'items-center',
+            'justify-center',
+            ...(fullscreen
+              ? ['fixed', 'left-0', 'top-0', 'w-screen', 'h-screen']
+              : ['relative']),
+          ]"
+          ref="container"
+          v-if="!shaderError"
+        >
           <canvas
             ref="canvas"
-            :class="[
-              'block',
-              ...fullscreen ? ['h-full'] : ['w-full']
-            ]"
+            :class="['block', ...(fullscreen ? ['h-full'] : ['w-full'])]"
             :style="{ 'aspect-ratio': canvasAspectRatio + ' / 1' }"
             @pointerdown="cameraControls.canvasPointerDown"
             @wheel.prevent="cameraControls.canvasWheel"
@@ -474,13 +497,15 @@ const cameraDirection = camera.direction;
             :cameraDirection="cameraDirection"
             v-if="!fullscreen && experimentalMode"
           />
-          <div
-            class="absolute right-0 bottom-0"
-            v-if="experimentalMode">{{ Math.round(fps) }}FPS</div>
+          <div class="absolute right-0 bottom-0" v-if="experimentalMode">
+            {{ Math.round(fps) }}FPS
+          </div>
         </div>
         <pre v-if="shaderError">{{ shaderLog }}</pre>
 
-        <div :class="fullscreen ? ['absolute', 'bottom-0', 'w-full', 'p-8'] : []">
+        <div
+          :class="fullscreen ? ['absolute', 'bottom-0', 'w-full', 'p-8'] : []"
+        >
           <WSlider v-model="crossSectionW" />
         </div>
       </div>

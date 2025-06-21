@@ -50,9 +50,7 @@ export function next() {
 }
 
 export function previous() {
-  polytwisterID.value = database.getPreviousPolytwister(
-    polytwisterID.value,
-  );
+  polytwisterID.value = database.getPreviousPolytwister(polytwisterID.value);
 }
 
 export function navigateTo(id: string) {

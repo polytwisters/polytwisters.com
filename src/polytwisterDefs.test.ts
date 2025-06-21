@@ -33,9 +33,7 @@ test("All acronyms and names start with the same letter", () => {
   const defs = database.defs.filter((x) => x.acronym !== undefined);
   for (let { name, acronym, symbol } of defs) {
     if (!symbol.isInInfiniteFamily()) {
-      expect(acronym![0]).toBe(
-        name.startsWith("sheaved") ? "v" : name[0]
-      );
+      expect(acronym![0]).toBe(name.startsWith("sheaved") ? "v" : name[0]);
     }
   }
 });

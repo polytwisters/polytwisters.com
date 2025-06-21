@@ -23,9 +23,7 @@ const vKatex = {
       Control the location of the slice using the slider.
     </p>
 
-    <p>
-      This app is in an early stage of development.
-    </p>
+    <p>This app is in an early stage of development.</p>
 
     <div class="flex flex-row justify-center gap-10 p-3">
       <section class="flex-1">
@@ -71,19 +69,30 @@ const vKatex = {
     </p>
 
     <ul>
-      <li>Article series by H. S. Teoh: "<a href="https://www.qfbox.info/4d/vis/vis">4D Visualization</a>."</li>
-      <li>Video series from HyperCubist Math: "<a href="https://www.youtube.com/watch?v=SwGbHsBAcZ0">Visualizing 4D</a>."</li>
+      <li>
+        Article series by H. S. Teoh: "<a
+          href="https://www.qfbox.info/4d/vis/vis"
+          >4D Visualization</a
+        >."
+      </li>
+      <li>
+        Video series from HyperCubist Math: "<a
+          href="https://www.youtube.com/watch?v=SwGbHsBAcZ0"
+          >Visualizing 4D</a
+        >."
+      </li>
     </ul>
 
     <p>
-      The 4D analogy of the sphere is known as the 
-      <a href="https://en.wikipedia.org/wiki/3-sphere"><em>3-sphere</em></a>. On
-      the ordinary sphere, a <em>great circle</em> is a circle with the same
-      radius as the sphere itself, dividing it into two hemispheres. Any two
-      distinct great circles on a sphere must intersect at exactly two points.
-      On the 3-sphere, it is possible for two great circles on the 3-sphere to
-      not intersect each other at all. As the 3-sphere is a dimension "bigger"
-      than the sphere, there is far more room for these circles.
+      The 4D analogy of the sphere is known as the
+      <a href="https://en.wikipedia.org/wiki/3-sphere"><em>3-sphere</em></a
+      >. On the ordinary sphere, a <em>great circle</em> is a circle with the
+      same radius as the sphere itself, dividing it into two hemispheres. Any
+      two distinct great circles on a sphere must intersect at exactly two
+      points. On the 3-sphere, it is possible for two great circles on the
+      3-sphere to not intersect each other at all. As the 3-sphere is a
+      dimension "bigger" than the sphere, there is far more room for these
+      circles.
     </p>
 
     <p>
@@ -113,21 +122,21 @@ const vKatex = {
     <h2>Definition of polytwisters</h2>
 
     <p>
-      This section defines convex polytwisters for readers with a
-      mathematics background. It only covers a fraction of the topic, and gets
-      informal near the end. As of April 2025, I am working on a paper which
-      elaborates greatly on this.
+      This section defines convex polytwisters for readers with a mathematics
+      background. It only covers a fraction of the topic, and gets informal near
+      the end. As of April 2025, I am working on a paper which elaborates
+      greatly on this.
     </p>
 
     <p>
       Equate \(\mathbb{R}^4\) and \(\mathbb{C}^2\) with \((a, b, c,
       d)_{\mathbb{R}^4} \equiv (a + bi, c + di)_{\mathbb{C}^2}\). Define the
       equivalence relation \(x \sim y\) on \(\mathbb{C}^2\) as true
-      <abbr title="if and only if">iff</abbr> there
-      exists \(k \in \mathbb{C},\, |k| = 1\) such that \(y = kx\), i.e. \(y\) is
-      a <em>phase rotation</em> of \(x\). The partition \(\mathbb{C}^2 / \sim\)
-      divides the space into <em>fibers</em>. Reinterpreted in \(\mathbb{R}^4\),
-      fibers are geometric circles centered on the origin, except for one
+      <abbr title="if and only if">iff</abbr> there exists \(k \in \mathbb{C},\,
+      |k| = 1\) such that \(y = kx\), i.e. \(y\) is a <em>phase rotation</em> of
+      \(x\). The partition \(\mathbb{C}^2 / \sim\) divides the space into
+      <em>fibers</em>. Reinterpreted in \(\mathbb{R}^4\), fibers are geometric
+      circles centered on the origin, except for one
       <em>trivial fiber</em> comprising the origin; the rest we refer to as
       <em>nontrivial fibers</em>.
     </p>
@@ -160,9 +169,7 @@ const vKatex = {
       Crucially, all logs and pipes are unions of fibers.
     </p>
 
-    <p>
-      We can now define a convex polytwister:
-    </p>
+    <p>We can now define a convex polytwister:</p>
 
     <p class="mx-5 my-8!">
       <strong>Definition.</strong> A convex polytwister is an intersection of a
@@ -194,13 +201,13 @@ const vKatex = {
 
     <p>
       Taking further set operations on pipes and logs gives us the face lattice
-      of the polytwister. A strip can be formed as the intersection of two
-      pipes and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\).
-      Unlike line segments, strips are not uniquely determined by their
-      boundary: there are infinitely many strips between a pair of fibers.
-      Finally, a twister (2-face) is formed by the intersection of one pipe and
-      two or more logs, such as \(L(y_1) \cap L(y_2) \cap P(y_3)\). (I am being
-      informal here and leaving out some degeneracy conditions.)
+      of the polytwister. A strip can be formed as the intersection of two pipes
+      and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\). Unlike
+      line segments, strips are not uniquely determined by their boundary: there
+      are infinitely many strips between a pair of fibers. Finally, a twister
+      (2-face) is formed by the intersection of one pipe and two or more logs,
+      such as \(L(y_1) \cap L(y_2) \cap P(y_3)\). (I am being informal here and
+      leaving out some degeneracy conditions.)
     </p>
 
     <p>
@@ -247,9 +254,7 @@ const vKatex = {
 
     <h2>Changelog</h2>
 
-    <p>
-      2025-06-13: Added 142 uniform polytwisters.
-    </p>
+    <p>2025-06-13: Added 142 uniform polytwisters.</p>
 
     <p>
       2025-04-09: Total rewrite, migrating from static videos rendered in
