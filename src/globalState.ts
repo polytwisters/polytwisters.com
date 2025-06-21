@@ -1,4 +1,6 @@
-import { ref, computed, watch } from "vue";
+import { ref, type Ref, computed, watch } from "vue";
+import { Polytwister } from "./polytwisters";
+import { PolytwisterSymbol } from "./symbol";
 import { database } from "./polytwisterDefs";
 
 const DEFAULT_POLYTWISTER_ID: string = "3.3";
@@ -40,6 +42,13 @@ export const polytwisterDef = computed(() => {
   }
   return result;
 });
+
+export const polytwister: Ref<Polytwister> = computed(() =>
+  Polytwister.fromDef2(polytwisterDef.value).normalized(),
+);
+export const polytwisterSymbol: Ref<PolytwisterSymbol> = computed(() =>
+  PolytwisterSymbol.from(polytwisterDef.value.symbol),
+);
 
 watch(polytwisterID, (value) => {
   location.hash = `#${UNIFORM}${value}`;

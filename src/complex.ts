@@ -94,6 +94,14 @@ export class C2 {
     );
   }
 
+  makeAReal(): C2 {
+    const result = this.mul(Complex.fromPolar(1.0, -this.a.angle()));
+    return new C2(
+      new Complex(result.a.real, 0.0),
+      new Complex(result.b.real, result.b.imag),
+    );
+  }
+
   abs(): number {
     return Math.sqrt(
       square(this.a.real) +

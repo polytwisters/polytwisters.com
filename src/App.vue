@@ -23,6 +23,7 @@ import PolytwisterTable from "./PolytwisterTable.vue";
 import PropertyTags from "./PropertyTags.vue";
 import { fractionToString } from "./fraction";
 import { database } from "./polytwisterDefs";
+import TwisterCrossSections from "./TwisterCrossSections.vue";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -51,14 +52,9 @@ const experimentalMode = ref(false);
 
 const crossSectionW: Ref<number> = ref(0);
 
+const polytwister = globalState.polytwister;
 const polytwisterDef = globalState.polytwisterDef;
-const polytwister: Ref<Polytwister> = computed(() =>
-  Polytwister.fromDef2(polytwisterDef.value).normalized(),
-);
-const polytwisterSymbol: Ref<PolytwisterSymbol> = computed(() =>
-  PolytwisterSymbol.from(polytwisterDef.value.symbol),
-);
-
+const polytwisterSymbol = globalState.polytwisterSymbol;
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
 const rings = computed(() => polytwister.value.rings);
@@ -512,6 +508,8 @@ const cameraDirection = camera.direction;
 
       <template v-if="!fullscreen">
         <PolytwisterTable />
+
+        <TwisterCrossSections />
 
         <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
         <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />

@@ -42,6 +42,13 @@ export class Polyhedron {
     });
     return adjacentFaces;
   }
+
+  /**
+   * Find a single face in the given orbit. Returns -1 if none are found.
+   */
+  getFaceIndexFromOrbit(orbit: number): number {
+    return this.faces.findIndex((face) => face.orbit === orbit);
+  }
 }
 
 interface Face {
@@ -51,7 +58,7 @@ interface Face {
   edges: number[];
   // Identifies which type of face as distinguished by the symmetry group. This
   // is 0 or 1 for quasiregulars, and always 0 for regulars.
-  faceType: number;
+  orbit: number;
   center: Vector3;
   symbol: Fraction;
 }
@@ -512,7 +519,7 @@ export class SymmetryGroup {
           edges: edgePositions.map((p) => findEdge(edges, p)),
           center: pm.position,
           symbol,
-          faceType,
+          orbit: faceType,
         };
       });
     }
