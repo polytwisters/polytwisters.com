@@ -3,6 +3,7 @@ import { type Ref, ref, useTemplateRef, onMounted, computed, watch, toRef } from
 import * as THREE from "three";
 import { Complex } from "./complex";
 import * as globalState from "./globalState";
+import { faceSymbolToColor } from "./colors";
 
 const polytwister = globalState.polytwister;
 
@@ -14,8 +15,8 @@ interface Circle {
   radius: number;
 }
 
-const canvasWidth = 600;
-const canvasHeight = 600;
+const canvasWidth = 300;
+const canvasHeight = 300;
 
 const { faceIndex } = defineProps<{ faceIndex: number }>();
 const face = computed(() => polytwister.value.polyhedron.faces[faceIndex]);
@@ -144,7 +145,7 @@ void main() {
   }
 
   bool onDot = false;
-  float dotRadius = 10.0 / iResolution.x;
+  float dotRadius = 6.0 / iResolution.x;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     if (length(position - dots[i]) <= dotRadius * scale) {
       onDot = true;
@@ -187,8 +188,13 @@ const fragmentShader = computed(() =>
   fragmentShaderTemplate.replace("$NUM_CIRCLES", `${circles.value.length}`)
 );
 
-const material = computed(() =>
-  new THREE.ShaderMaterial({
+const material = computed(() => {
+  // The color is 20% darker, which emulates the shadows in the polytwister
+  // render and prevents white from being perfectly white.
+  const color = new THREE.Color(
+    faceSymbolToColor(face.value.symbol)
+  ).multiplyScalar(0.8);
+  return new THREE.ShaderMaterial({
     uniforms: {
       iResolution: { value: [canvasWidth, canvasHeight] },
       circlePositions: {
@@ -199,12 +205,12 @@ const material = computed(() =>
       bloated: { value: polytwister.value.bloated },
       d: { value: face.value.symbol.d },
       scale: { value: scale.value },
-      fillColor: { value: new THREE.Color(0.4, 0.0, 0.1) }
+      fillColor: { value: color }
     },
     vertexShader,
     fragmentShader: fragmentShader.value,
-  })
-);
+  });
+});
 
 onMounted(() => {
   const threeCamera = new THREE.Camera();
@@ -227,7 +233,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-fit-content flex flex-col items-center">
-    <canvas ref="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
-  </div>
+  <canvas
+    ref="canvas"
+    :width="canvasWidth"
+    :height="canvasHeight"
+    :style="{ 'aspectRatio': canvasWidth / canvasHeight }"></canvas>
 </template>

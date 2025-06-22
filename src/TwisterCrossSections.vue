@@ -13,6 +13,8 @@ const faceIndexB = computed(() =>
 </script>
 
 <template>
-  <TwisterCrossSection :face-index="faceIndexA" /> 
-  <TwisterCrossSection :face-index="faceIndexB" v-if="isQuasiregular" /> 
+  <div class="w-full flex flex-row justify-center">
+    <TwisterCrossSection :face-index="faceIndexA" /> 
+    <TwisterCrossSection :face-index="faceIndexB" v-if="isQuasiregular" /> 
+  </div>
 </template>

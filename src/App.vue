@@ -24,6 +24,7 @@ import PropertyTags from "./PropertyTags.vue";
 import { fractionToString } from "./fraction";
 import { database } from "./polytwisterDefs";
 import TwisterCrossSections from "./TwisterCrossSections.vue";
+import { faceSymbolToColor } from "./colors";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -88,36 +89,11 @@ enum Shading {
   Debug = 1,
 }
 
-const colors = {
-  pink: "#e64980",
-  blue: "#339af0",
-  white: "#ffffff",
-  lightBlue: "#a5d8ff",
-  yellow: "#ffec99",
-  orange: "#ff922b",
-  green: "#51cf66",
-  purple: "#cc5de8",
-  red: "#fa5252",
-};
-
-const faceTypeToColor: Map<string, string> = new Map();
-faceTypeToColor.set("2", colors.white);
-faceTypeToColor.set("3", colors.lightBlue);
-faceTypeToColor.set("3/2", colors.yellow);
-faceTypeToColor.set("4", colors.red);
-faceTypeToColor.set("4/3", colors.green);
-faceTypeToColor.set("5", colors.orange);
-faceTypeToColor.set("5/2", colors.blue);
-faceTypeToColor.set("5/3", colors.pink);
-faceTypeToColor.set("5/4", colors.purple);
 
 const twisterColors: Ref<THREE.Color[]> = computed(
   () =>
     polytwister.value.polyhedron?.faces.map(
-      (face) =>
-        new THREE.Color(
-          faceTypeToColor.get(fractionToString(face.symbol)) ?? "white",
-        ),
+      (face) => new THREE.Color(faceSymbolToColor(face.symbol)),
     ) || [],
 );
 
@@ -499,6 +475,8 @@ const cameraDirection = camera.direction;
         </div>
         <pre v-if="shaderError">{{ shaderLog }}</pre>
 
+        <TwisterCrossSections v-if="experimentalMode" />
+
         <div
           :class="fullscreen ? ['absolute', 'bottom-0', 'w-full', 'p-8'] : []"
         >
@@ -508,8 +486,6 @@ const cameraDirection = camera.direction;
 
       <template v-if="!fullscreen">
         <PolytwisterTable />
-
-        <TwisterCrossSections />
 
         <Wythoff :symbol="polytwisterSymbol" v-if="experimentalMode" />
         <StellationDiagram :polytwister="polytwister" v-if="experimentalMode" />
