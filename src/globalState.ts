@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { ref, type Ref, computed, watch } from "vue";
 import { Polytwister } from "./polytwisters";
 import { PolytwisterSymbol } from "./symbol";
@@ -65,5 +66,21 @@ export function previous() {
 export function navigateTo(id: string) {
   if (database.has(id)) {
     polytwisterID.value = id;
+  }
+}
+
+const randomHistory: string[] = [];
+
+export function random() {
+  if (randomHistory.length > 10) {
+    randomHistory.shift();
+  }
+  randomHistory.push(polytwisterID.value);
+  const allIDs = database.defs.map((def) => def.id());
+  const validIDs = allIDs.filter((id) => randomHistory.indexOf(id) === -1);
+  if (validIDs.length === 0) {
+    polytwisterID.value = _.sample(allIDs)!;
+  } else {
+    polytwisterID.value = _.sample(validIDs)!;
   }
 }

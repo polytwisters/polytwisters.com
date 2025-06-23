@@ -1,18 +1,21 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import * as mathUtils from "./mathUtils";
+import * as globalState from "./globalState";
 import Button from "./Button.vue";
 
 const model = defineModel<number>({ required: true });
 
-enum LoopMode {
+enum PlayMode {
   Loop,
   Zigzag,
+  Autoplay,
+  Shuffle
 }
 
 const playing = ref(false);
 const reverse = ref(false);
-const loopMode = ref(LoopMode.Loop);
+const playMode = ref(PlayMode.Loop);
 
 let lastTime = 0;
 function play() {
@@ -59,13 +62,23 @@ function tick(timestamp: number) {
   if (playing.value) {
     let newValue =
       model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
-    if (loopMode.value === LoopMode.Loop) {
+    if (playMode.value === PlayMode.Loop) {
       newValue = wrap(newValue);
-    } else {
+    } else if (playMode.value === PlayMode.Zigzag) {
       if (newValue > 1 || newValue < -1.0) {
         reverse.value = !reverse.value;
       }
       newValue = fold(newValue);
+    } else if (playMode.value === PlayMode.Autoplay) {
+      if (newValue >= 1) {
+        newValue = -1;
+        globalState.next();
+      }
+    } else if (playMode.value === PlayMode.Shuffle) {
+      if (newValue >= 1) {
+        newValue = -1;
+        globalState.random();
+      }
     }
     model.value = newValue;
   }
@@ -74,9 +87,9 @@ function tick(timestamp: number) {
 }
 requestAnimationFrame(tick);
 
-function setLoopMode(newLoopMode: LoopMode) {
-  loopMode.value = newLoopMode;
-  if (loopMode.value === LoopMode.Loop) {
+function setPlayMode(newPlayMode: PlayMode) {
+  playMode.value = newPlayMode;
+  if (playMode.value !== PlayMode.Zigzag) {
     reverse.value = false;
   }
 }
@@ -119,19 +132,29 @@ function setLoopMode(newLoopMode: LoopMode) {
     </div>
     <div class="flex-1 flex justify-end items-center gap-2">
       <Button
-        @click="setLoopMode(LoopMode.Loop)"
-        :active="loopMode === LoopMode.Loop"
+        @click="setPlayMode(PlayMode.Loop)"
+        :active="playMode === PlayMode.Loop"
         icon="laps"
-        help="Loop mode: wrap"
+        help="Loop: wrap"
       />
-      <!-- -scale-x-100 -->
       <Button
-        @click="setLoopMode(LoopMode.Zigzag)"
-        :active="loopMode === LoopMode.Zigzag"
+        @click="setPlayMode(PlayMode.Zigzag)"
+        :active="playMode === PlayMode.Zigzag"
         icon="turn_sharp_right"
-        help="Loop mode: bounce"
+        help="Loop: bounce"
       />
-      <!-- rotate-45 -->
+      <Button
+        @click="setPlayMode(PlayMode.Autoplay)"
+        :active="playMode === PlayMode.Autoplay"
+        icon="arrow_circle_right"
+        help="Autoplay"
+      />
+      <Button
+        @click="setPlayMode(PlayMode.Shuffle)"
+        :active="playMode === PlayMode.Shuffle"
+        icon="shuffle"
+        help="Autoplay random"
+      />
     </div>
   </div>
 </template>

@@ -34,10 +34,6 @@ function toggleFullscreen() {
   fullscreen.value = !fullscreen.value;
 }
 
-function randomPolytwister() {
-  globalState.polytwisterID.value = _.sample(database.defs)!.id();
-}
-
 function openHelp() {
   fullscreen.value = false;
   setTimeout(() => {
@@ -137,11 +133,6 @@ void main() {
 // Rendering
 
 const loading = ref(false);
-
-watch(polytwister, () => {
-  camera.reset();
-  crossSectionW.value = 0;
-});
 
 function getUniforms(): { [key: string]: any } {
   return {
@@ -349,7 +340,7 @@ const cameraDirection = camera.direction;
               help="Next"
             />
             <Button
-              @click="randomPolytwister"
+              @click="globalState.random"
               material
               icon="casino"
               help="Random"
