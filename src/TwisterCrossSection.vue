@@ -88,6 +88,11 @@ uniform int d;
 uniform float scale;
 uniform vec3 fillColor;
 
+uniform bool showDots;
+uniform bool showArcs;
+uniform bool showCircles;
+uniform bool showFilling;
+
 float angle(vec2 x) {
   return atan(x.y, x.x);
 }
@@ -170,13 +175,13 @@ void main() {
     }
   }
  
-  vec3 color = onDot ?
+  vec3 color = onDot && showDots ?
     vec3(1.0, 1.0, 1.0)
-    : onArc ?
+    : onArc && showArcs ?
       vec3(1.0)
-      : onCircle ?
+      : onCircle && showCircles ?
         vec3(0.2)
-        : interior ?
+        : interior && showFilling ?
           fillColor
           : vec3(0.0);
 
@@ -205,7 +210,12 @@ const material = computed(() => {
       bloated: { value: polytwister.value.bloated },
       d: { value: face.value.symbol.d },
       scale: { value: scale.value },
-      fillColor: { value: color }
+      fillColor: { value: color },
+    
+      showDots: { value: true },
+      showArcs: { value: true },
+      showCircles: { value: true },
+      showFilling: { value: true },
     },
     vertexShader,
     fragmentShader: fragmentShader.value,
