@@ -6,11 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    tailwindcss(),
-    VitePWA()
-  ],
+  plugins: [vue(), tailwindcss(), VitePWA()],
   build: {
     rollupOptions: {
       input: {

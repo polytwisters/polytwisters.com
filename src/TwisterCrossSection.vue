@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { type Ref, ref, useTemplateRef, onMounted, computed, watch, toRef } from "vue";
+import {
+  type Ref,
+  ref,
+  useTemplateRef,
+  onMounted,
+  computed,
+  watch,
+  toRef,
+} from "vue";
 import * as THREE from "three";
 import { Complex } from "./complex";
 import * as globalState from "./globalState";
@@ -189,21 +197,23 @@ void main() {
 }
 `;
 
-const fragmentShader = computed(() => 
-  fragmentShaderTemplate.replace("$NUM_CIRCLES", `${circles.value.length}`)
+const fragmentShader = computed(() =>
+  fragmentShaderTemplate.replace("$NUM_CIRCLES", `${circles.value.length}`),
 );
 
 const material = computed(() => {
   // The color is 20% darker, which emulates the shadows in the polytwister
   // render and prevents white from being perfectly white.
   const color = new THREE.Color(
-    faceSymbolToColor(face.value.symbol)
+    faceSymbolToColor(face.value.symbol),
   ).multiplyScalar(0.8);
   return new THREE.ShaderMaterial({
     uniforms: {
       iResolution: { value: [canvasWidth, canvasHeight] },
       circlePositions: {
-        value: circles.value.map((circle) => new THREE.Vector2(circle.x, circle.y)),
+        value: circles.value.map(
+          (circle) => new THREE.Vector2(circle.x, circle.y),
+        ),
       },
       circleRadii: { value: circles.value.map((circle) => circle.radius) },
       dots: { value: dots.value.map((dot) => new THREE.Vector2(dot.x, dot.y)) },
@@ -211,7 +221,7 @@ const material = computed(() => {
       d: { value: face.value.symbol.d },
       scale: { value: scale.value },
       fillColor: { value: color },
-    
+
       showDots: { value: true },
       showArcs: { value: true },
       showCircles: { value: true },
@@ -234,11 +244,14 @@ onMounted(() => {
 
   const renderer = new THREE.WebGLRenderer({ canvas: canvas.value! });
 
-  watch(material, () => {
-    mesh.material = material.value;
-    renderer.render(scene, threeCamera);
-  }, { immediate: true });
-
+  watch(
+    material,
+    () => {
+      mesh.material = material.value;
+      renderer.render(scene, threeCamera);
+    },
+    { immediate: true },
+  );
 });
 </script>
 
@@ -247,5 +260,6 @@ onMounted(() => {
     ref="canvas"
     :width="canvasWidth"
     :height="canvasHeight"
-    :style="{ 'aspectRatio': canvasWidth / canvasHeight }"></canvas>
+    :style="{ aspectRatio: canvasWidth / canvasHeight }"
+  ></canvas>
 </template>

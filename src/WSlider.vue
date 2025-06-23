@@ -10,7 +10,7 @@ enum PlayMode {
   Loop,
   Zigzag,
   Autoplay,
-  Shuffle
+  Shuffle,
 }
 
 const playing = ref(false);

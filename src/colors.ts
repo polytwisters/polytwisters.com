@@ -1,6 +1,5 @@
 import { Fraction, fractionToString } from "./fraction";
 
-
 const colors = {
   pink: "#e64980",
   blue: "#339af0",

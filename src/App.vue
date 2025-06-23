@@ -85,7 +85,6 @@ enum Shading {
   Debug = 1,
 }
 
-
 const twisterColors: Ref<THREE.Color[]> = computed(
   () =>
     polytwister.value.polyhedron?.faces.map(

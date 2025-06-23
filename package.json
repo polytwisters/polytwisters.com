@@ -30,6 +30,6 @@
     "vue-tsc": "^2.1.10"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "*.{ts,vue,js,css,md,html}": "prettier --write"
   }
 }
