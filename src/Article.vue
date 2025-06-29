@@ -122,10 +122,11 @@ const vKatex = {
     <h2>Definition of polytwisters</h2>
 
     <p>
-      This section defines convex polytwisters for readers with a mathematics
-      background. It only covers a fraction of the topic, and gets informal near
-      the end. As of April 2025, I am working on a paper which elaborates
-      greatly on this.
+      A major part of this project was establishing a formal definition of
+      polytwisters for the first time. This section defines convex polytwisters,
+      and less formally describes strips, twisters, and nonconvex polytwisters.
+      It is intentionally terse because as of April 2025, I am working on a paper
+      which elaborates greatly on this.
     </p>
 
     <p>
@@ -191,8 +192,8 @@ const vKatex = {
       three planes intersect at a point, the intersection of pipes allows us to
       produce lower-dimensional shapes. An important fact, although not an
       obvious one at all, is that three pipes in general position intersect at
-      exactly two fibers (sometimes zero or one, but those cases are not
-      relevant to polytwisters). You can see a visual of this in the order 3
+      exactly two nontrivial fibers (sometimes zero or one, but those cases are
+      irrelevant to polytwisters). You can see a visual of this in the order 3
       dyadic twister, which is the simplest convex polytwister; the solid is the
       intersection of exactly three logs \(L(y_1) \cap L(y_2) \cap L(y_3)\). The
       two fibers in the set \(P(y_1) \cap P(y_2) \cap P(y_3)\) appear as
@@ -202,12 +203,14 @@ const vKatex = {
     <p>
       Taking further set operations on pipes and logs gives us the face lattice
       of the polytwister. A strip can be formed as the intersection of two pipes
-      and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\). Unlike
-      line segments, strips are not uniquely determined by their boundary: there
-      are infinitely many strips between a pair of fibers. Finally, a twister
-      (2-face) is formed by the intersection of one pipe and two or more logs,
-      such as \(L(y_1) \cap L(y_2) \cap P(y_3)\). (I am being informal here and
-      leaving out some degeneracy conditions.)
+      and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\). In \(\mathbb{R}^4\)
+      it is an embedding of the cylinder, and its topological boundary is two fibers.
+      Unlike line segments, strips are not uniquely determined by their boundary: there
+      are infinitely many strips between a pair of fibers, and they bow out in different
+      amounts depending on the orienation of the pipes.
+      Finally, a twister (2-face) is formed by the intersection of one pipe and two or more logs,
+      such as \(L(y_1) \cap L(y_2) \cap P(y_3)\), and its boundary is a set of two or more strips.
+      (I am being informal here and leaving out some degeneracy conditions.)
     </p>
 
     <p>
@@ -215,10 +218,10 @@ const vKatex = {
       <a href="https://en.wikipedia.org/wiki/Abstract_polytope">
         abstract 3-polytopes
       </a>
-      with a realization that maps each facet to a pipe, each edge to a strip,
-      and each vertex to a ring (fiber), with constraints that the pipes,
-      strips, and rings respect the
-      <abbr title="partially ordered set">poset</abbr> structure.
+      with a realization that maps each facet (twister) to a pipe called its "containing pipe,"
+      each edge to a strip, and each vertex to a ring (fiber), such that each strip's incident rings
+      are precisely its boundary, and each twister's incident strips are subsets of its containing
+      pipe.
     </p>
 
     <p>
