@@ -12,174 +12,37 @@ const specs = [
   [5, 3],
   [5, 4],
 ];
-
-const distance2 = 0.45;
-const radius2 = 0.35;
-
-const distance3 = 0.47;
-const radius3 = 0.46;
 </script>
 
 <template>
   <div
     class="bg-black w-full min-h-screen text-white flex flex-row flex-wrap p-8"
   >
-    <template v-for="spec in specs">
-      <TwisterViewer
-        :n="spec[0]"
-        :d="spec[1]"
-        :bloated="false"
-        :distance="0.3"
-        :circle-radius="0.5"
-      />
-      <TwisterViewer
-        :n="spec[0]"
-        :d="spec[1]"
-        :bloated="true"
-        :distance="0.3"
-        :circle-radius="0.5"
-      />
-    </template>
     <TwisterViewer
-      :n="3"
-      :d="2"
-      :bloated="false"
-      :distance="0.45"
-      :circle-radius="0.4"
-      comment="(alt)"
-    />
-    <TwisterViewer
-      :n="3"
-      :d="2"
-      :bloated="true"
-      :distance="0.45"
-      :circle-radius="0.4"
-      comment="(alt)"
-    />
-
-    <TwisterViewer
-      :n="4"
+      :n="7"
       :d="1"
-      :bloated="false"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
+      :radius-index="1.5"
+      :canvas-width="1000"
+      :canvas-height="1000"
     />
     <TwisterViewer
-      :n="4"
+      :n="7"
       :d="1"
-      :bloated="true"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
+      :radius-index="2.5"
+      :canvas-width="1000"
+      :canvas-height="1000"
     />
     <TwisterViewer
-      :n="4"
-      :d="3"
-      :bloated="false"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
-    />
-    <TwisterViewer
-      :n="4"
-      :d="3"
-      :bloated="true"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
-    />
-
-    <TwisterViewer
-      :n="5"
+      :n="7"
       :d="1"
-      :bloated="false"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
+      :radius-index="3.5"
+      :canvas-width="1000"
+      :canvas-height="1000"
     />
     <TwisterViewer
-      :n="5"
+      :n="7"
       :d="1"
-      :bloated="true"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="4"
-      :bloated="false"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="4"
-      :bloated="true"
-      :distance="distance2"
-      :circle-radius="radius2"
-      comment="(alt)"
-    />
-
-    <TwisterViewer
-      :n="5"
-      :d="2"
-      :bloated="false"
-      :distance="distance3"
-      :circle-radius="radius3"
-      comment="(alt 2)"
-      :canvas-width="1000"
-      :canvas-height="1000"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="2"
-      :bloated="true"
-      :distance="distance3"
-      :circle-radius="radius3"
-      comment="(alt 2)"
-      :canvas-width="1000"
-      :canvas-height="1000"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="3"
-      :bloated="false"
-      :distance="distance3"
-      :circle-radius="radius3"
-      comment="(alt 2)"
-      :canvas-width="1000"
-      :canvas-height="1000"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="3"
-      :bloated="true"
-      :distance="distance3"
-      :circle-radius="radius3"
-      comment="(alt 2)"
-      :canvas-width="1000"
-      :canvas-height="1000"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="4"
-      :bloated="false"
-      :distance="distance3"
-      :circle-radius="radius3"
-      comment="(alt 2)"
-      :canvas-width="1000"
-      :canvas-height="1000"
-    />
-    <TwisterViewer
-      :n="5"
-      :d="4"
-      :bloated="true"
-      :distance="distance3"
-      :circle-radius="radius3"
-      comment="(alt 2)"
+      :radius-index="4.5"
       :canvas-width="1000"
       :canvas-height="1000"
     />

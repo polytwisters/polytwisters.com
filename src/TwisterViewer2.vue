@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, onMounted } from "vue";
+import { useTemplateRef, onMounted, type Ref } from "vue";
 import * as THREE from "three";
 import { Complex } from "./complex";
 
@@ -40,7 +40,8 @@ const props = defineProps<{
   n: number;
   d?: number;
   bloated?: boolean;
-  radiusIndex: number;
+  distance: number;
+  circleRadius: Ref<number>;
   comment?: string;
   canvasWidth?: number;
   canvasHeight?: number;
@@ -53,40 +54,20 @@ const n = props.n;
 const d = props.d ?? 1;
 const bloated = props.bloated ?? false;
 const quasi = d > n / 2 !== bloated;
-const distance = 0.5;
+const distance = props.distance;
+const circleRadius = props.circleRadius;
 const comment = props.comment;
 
-const centers: Point[] = [];
+const circles: Circle[] = [];
+
 for (let i = 0; i < n; i++) {
-  const angle = (i / n) * 2 * Math.PI;
-  centers.push({
+  const angle = ((i * d) / n) * 2 * Math.PI;
+  circles.push({
     x: distance * Math.sin(angle),
     y: distance * Math.cos(angle),
+    radius: circleRadius,
   });
 }
-
-function criticalRadius(radiusIndex: number): number {
-  if (radiusIndex === 0 || radiusIndex === Math.ceil(n / 2)) {
-    return distance;
-  }
-  if (radiusIndex > Math.ceil(n / 2)) {
-    return distance * 2;
-  }
-  return Math.hypot(centers[0].x - centers[radiusIndex].x, centers[0].y - centers[radiusIndex].y) / 2;
-}
-
-const radiusIndex = props.radiusIndex;
-const radiusIndexInt = Math.floor(radiusIndex);
-const frac = radiusIndex -radiusIndexInt; 
-const circleRadius = radiusIndex === 0
-  ? distance
-  : criticalRadius(radiusIndexInt) * (1 - frac) + criticalRadius(radiusIndexInt + 1) * frac;
-
-const circles = centers.map((center) => ({
-  x: center.x,
-  y: center.y,
-  radius: circleRadius
-}));
 
 const dots: Point[] = [];
 
@@ -176,7 +157,7 @@ void main() {
   }
 
   bool onDot = false;
-  float dotRadius = 10.0 / iResolution.x;
+  float dotRadius = 4.0 / iResolution.x;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     if (length(position - dots[i]) <= dotRadius) {
       onDot = true;
@@ -201,12 +182,15 @@ void main() {
     }
   }
  
-  vec3 color = 
-    onDot ?
-    vec3(1.0)
-    : onCircle ?
-      vec3(0.9)
-      : vec3(0.0);
+  vec3 color = onDot ?
+    vec3(1.0, 0.0, 0.5)
+    : onArc ?
+      vec3(1.0)
+      : onCircle ?
+        vec3(0.2)
+        : interior ?
+          vec3(0.5, 0.0, 0.3)
+          : vec3(0.0);
 
   gl_FragColor = vec4(color, 1.0);
 }
