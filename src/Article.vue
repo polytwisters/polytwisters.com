@@ -29,11 +29,11 @@ const vKatex = {
       <section class="flex-1">
         <h1>Known issues</h1>
         <ul class="list-disc list-inside">
+          <li>Not mobile friendly at the moment.</li>
           <li>
-            Browser may freeze briefly when switching polytwisters as the
+            On Windows, browser freezes briefly when switching polytwisters as the
             shaders are compiled.
           </li>
-          <li>Not mobile friendly at the moment.</li>
         </ul>
       </section>
       <section class="flex-1">
