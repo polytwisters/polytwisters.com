@@ -65,16 +65,6 @@ for (let i = 0; i < n; i++) {
   });
 }
 
-function criticalRadius(radiusIndex: number): number {
-  if (radiusIndex === 0 || radiusIndex === Math.ceil(n / 2)) {
-    return distance;
-  }
-  if (radiusIndex > Math.ceil(n / 2)) {
-    return distance * 2;
-  }
-  return Math.hypot(centers[0].x - centers[radiusIndex].x, centers[0].y - centers[radiusIndex].y) / 2;
-}
-
 const radiusIndex = props.radiusIndex;
 const radiusIndexInt = Math.floor(radiusIndex);
 const frac = radiusIndex -radiusIndexInt; 
