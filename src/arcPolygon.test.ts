@@ -24,52 +24,26 @@ test("regions work, monotonic 1", () => {
   ]);
 });
 
-test("regions work, monotonic 2", () => {
-  expect(
-    arcPolygon.regions(5, 3, 2)
-  ).toStrictEqual([
-    { order: 4, mode: RegionMode.Both },
-  ]);
-});
+const cases: Array<[[number, number, number, string], string]> = [
+  // (n, q, d, +-), regions inner to outer
+  [[2, 1, 1, "-"], "[2]"],
+  [[2, 1, 1, "+"], "[1] [2]"],
 
-test("regions work, non-monotonic", () => {
-  expect(
-    arcPolygon.regions(5, 2, 1)
-  ).toStrictEqual([
-    { order: 5, mode: RegionMode.Inner },
-  ]);
-});
+  [[3, 2, 1, "-"], "[3]"],
+  [[3, 2, 1, "+"], "[3] [2] [1]"],
+  [[3, 2, 2, "-"], "[2]"],
+  [[3, 2, 2, "+"], "[3] [1]"],
 
-test("regions work, monotonic 3", () => {
-  expect(
-    arcPolygon.regions(7, 4, 1)
-  ).toStrictEqual([
-    { order: 7, mode: RegionMode.Both },
-  ]);
-});
+  [[3, 1, 1, "-"], "[0-]"],
+  [[3, 1, 1, "+"], "[1]"],
+  [[3, 1, 2, "-"], "[0-] [1]"],
+  [[3, 1, 2, "+"], "[0-] [1] [2]"],
+];
 
-test("regions work, monotonic 4", () => {
-  expect(
-    arcPolygon.regions(7, 4, 3)
-  ).toStrictEqual([
-    { order: 5, mode: RegionMode.Both },
-    { order: 7, mode: RegionMode.Both },
-  ]);
-});
-
-test("regions work", () => {
-  expect(
-    arcPolygon.regions(7, 3, 1)
-  ).toStrictEqual([
-    { order: 0, mode: RegionMode.Inner },
-  ]);
-});
-
-test("regions work", () => {
-  expect(
-    arcPolygon.regions(7, 3, 2)
-  ).toStrictEqual([
-    { order: 1, mode: RegionMode.Outer },
-    { order: 0, mode: RegionMode.Inner },
-  ]);
+test.each(cases)("binary filling", (spec: [number, number, number, string], filling: string) => {
+  const [n, q, d, bloatedString] = spec;
+  const bloated = bloatedString === "+";
+  const regions = arcPolygon.regions(n, q, d, bloated);
+  const regionsString = arcPolygon.regionsToString(regions);
+  expect(regionsString).toBe(filling);
 });
