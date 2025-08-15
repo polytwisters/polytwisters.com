@@ -3,8 +3,8 @@ import { computed } from "vue";
 import TwisterCrossSection from "./TwisterCrossSection.vue";
 import * as globalState from "./globalState";
 
-const isQuasiregular = computed(
-  () => globalState.polytwisterDef.value.symbol.quasiregular,
+const isRegular = computed(
+  () => globalState.polytwisterDef.value.symbol.regular,
 );
 const faceIndexA = computed(() =>
   globalState.polytwister.value.polyhedron.getFaceIndexFromOrbit(0),
@@ -17,6 +17,6 @@ const faceIndexB = computed(() =>
 <template>
   <div class="w-full flex flex-row justify-center">
     <TwisterCrossSection :face-index="faceIndexA" />
-    <TwisterCrossSection :face-index="faceIndexB" v-if="isQuasiregular" />
+    <TwisterCrossSection :face-index="faceIndexB" v-if="!isRegular" />
   </div>
 </template>

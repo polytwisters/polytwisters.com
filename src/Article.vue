@@ -39,7 +39,7 @@ const vKatex = {
       <section class="flex-1">
         <h1>Future plans</h1>
         <ul class="">
-          <li>All 200+ regular and quasiregular polytwisters</li>
+          <li>All 200+ uniform polytwisters</li>
           <li>Custom polytwister construction</li>
           <li>Display of combinatorial structure</li>
           <li>Mesh export for use in other software or 3D printing</li>

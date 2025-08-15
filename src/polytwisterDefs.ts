@@ -362,7 +362,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
 
   //////////////////////////////////////////////////////////////////////////////
-  // Quasiregulars
+  // Non-regular uniforms
 
   // Polytwisters with 2 in the numerator of the ring figure
   // (i.e. tetratetra/cubocta/icosidodecatwister variants).
