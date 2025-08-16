@@ -114,10 +114,6 @@ function schwarzAngle(fraction: Fraction): number {
   return Math.PI / (fraction.n / fraction.d);
 }
 
-function isNearInteger(n: number): boolean {
-  return Math.abs(n - Math.round(n)) <= EPSILON;
-}
-
 const GENERATOR_POINT = new Vector3(0, 0, 1);
 
 /**
