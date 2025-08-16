@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
+import { ref, toRef, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
 import * as _ from "lodash";
 import * as THREE from "three";
 import { Vector3 } from "three";
@@ -10,6 +10,7 @@ import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
 import { PolytwisterSymbol } from "./symbol";
 import * as globalState from "./globalState";
+import SymmetryGroupDisplay from "./SymmetryGroupDisplay.vue";
 
 import Button from "./Button.vue";
 import Article from "./Article.vue";
@@ -61,6 +62,7 @@ const crossSectionW: Ref<number> = ref(0);
 const polytwister = globalState.polytwister;
 const polytwisterDef = globalState.polytwisterDef;
 const polytwisterSymbol = globalState.polytwisterSymbol;
+const symmetrySymbol = computed(() => polytwisterSymbol.value.symmetrySymbol());
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
 const rings = computed(() => polytwister.value.rings);
@@ -371,6 +373,9 @@ const cameraDirection = camera.direction;
           </div>
           <div class="w-40">
             <PropertyTags :fields="polytwisterDef.asFields()" />
+          </div>
+          <div class="w-40 flex flex-row gap-1">
+            <SymmetryGroupDisplay :symmetry-group="symmetrySymbol" />
           </div>
           <div class="w-40" v-if="polytwisterDef.acronym && false">
             <strong>Acronym:</strong> {{ polytwisterDef.acronym }}

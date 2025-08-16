@@ -4,7 +4,7 @@ import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
 
 const twistersLink = "https://www.polytope.net/hedrondude/twisters.htm";
 
-const vKatex = {
+const vAutoKatex = {
   mounted: (el: HTMLElement) => {
     renderMathInElement(el);
   },
@@ -15,7 +15,7 @@ const vKatex = {
 </script>
 
 <template>
-  <article class="my-5" v-katex id="article">
+  <article class="my-5" v-auto-katex id="article">
     <p>
       <a :href="twistersLink" target="_blank">Polytwisters</a> are a family of
       four-dimensional curved shapes related to polyhedra and Hopf fibration. As

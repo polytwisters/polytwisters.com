@@ -8,6 +8,23 @@ import * as fraction from "./fraction";
 
 export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
 
+export enum SymmetryKind {
+  Dihedral,
+  Tetrahedral,
+  Octahedral,
+  Icosahedral,
+}
+
+/**
+ * A type for "symmetry symbols" which are of the form D_2n, T, I, or O. These are used for display
+ * purposes and are not involved in the actual calculation of the Wythoff construction.
+ * "n" is used only in the case of dihedral symmetry.
+ */
+export interface SymmetrySymbol {
+  kind: SymmetryKind,
+  n: number,
+}
+
 /**
  * A Wythoff-style symbol for a polytwister. The fields "ring," "twister1," and
  * "twister2" are the angles between three mirrors. The generator point is
@@ -196,5 +213,32 @@ export class PolytwisterSymbol {
       fraction.parse(parts[1]),
       false,
     );
+  }
+
+  symmetrySymbol(): SymmetrySymbol {
+    /* Coxeter, "Uniform Polyhedra," p. 409:
+    "A given Schwarz triangle (p q r) can be recognized as dihedral if two of p, q, r are equal to
+    2, and otherwise tetrahedral (g = 24), octahedral (g = 48), or icosahedral (g = 120), according
+    as the largest numerator occuring is 3, 4, or 5."
+    */
+
+    // Find the numerators and sort them from smallest to largest.
+    const numerators = [this.twister1.n, this.twister2.n, this.ring.n].sort();
+
+    // Dihedral case: [2, 2, n].
+    if (numerators[0] === 2 && numerators[1] === 2) {
+      return { kind: SymmetryKind.Dihedral, n: numerators[2] };
+    }
+    const maxNumerator = Math.max(...numerators);
+    if (maxNumerator === 3) {
+      return { kind: SymmetryKind.Tetrahedral };
+    }
+    if (maxNumerator === 4) {
+      return { kind: SymmetryKind.Octahedral };
+    }
+    if (maxNumerator === 5) {
+      return { kind: SymmetryKind.Icosahedral };
+    }
+    throw new Error("Invalid Schwarz triangle, cannot find symbol");
   }
 }
