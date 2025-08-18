@@ -16,14 +16,13 @@ export enum SymmetryKind {
 }
 
 /**
- * A type for "symmetry symbols" which are of the form D_2n, T, I, or O. These are used for display
- * purposes and are not involved in the actual calculation of the Wythoff construction.
- * "n" is used only in the case of dihedral symmetry.
+ * A type for "symmetry symbols" which are of the form D_2n, T, I, or O.
  */
-export interface SymmetrySymbol {
-  kind: SymmetryKind,
-  n: number,
-}
+export type SymmetrySymbol =
+  | { kind: SymmetryKind.Tetrahedral }
+  | { kind: SymmetryKind.Octahedral }
+  | { kind: SymmetryKind.Icosahedral }
+  | { kind: SymmetryKind.Dihedral, n: number };
 
 /**
  * A Wythoff-style symbol for a polytwister. The fields "ring," "twister1," and

@@ -365,34 +365,39 @@ const cameraDirection = camera.direction;
           </div>
         </div>
 
-        <!-- Bar 2: symbol, face vector, etc. -->
+        <!-- Bar 2: info table -->
 
-        <div class="toolbar flex flex-row gap-5 justify-begin">
-          <div class="w-40">
-            <strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}
-          </div>
-          <div class="w-40">
-            <PropertyTags :fields="polytwisterDef.asFields()" />
-          </div>
-          <div class="w-40 flex flex-row gap-1">
-            <SymmetryGroupDisplay :symmetry-group="symmetrySymbol" />
-          </div>
-          <div class="w-40" v-if="polytwisterDef.acronym && false">
-            <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
-          </div>
-          <div class="flex flex-row justify-end flex-1">
-            <div class="w-25">
-              <strong>Rings:</strong>
-              {{ polytwister.polyhedron.vertices.length }}
-            </div>
-            <div class="w-25">
-              <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
-            </div>
-            <div class="w-25">
-              <strong>Twisters:</strong>
-              {{ polytwister.polyhedron.faces.length }}
-            </div>
-          </div>
+        <div class="toolbar">
+          <table class="w-full text-center table-fixed">
+            <tbody>
+              <tr class="text-sm">
+                <th>Symbol</th>
+                <th>Regular</th>
+                <th>Convex</th>
+                <th>Symmetry</th>
+                <th>Rings</th>
+                <th>Strips</th>
+                <th>Twisters</th>
+              </tr>
+              <tr>
+                <td>{{ polytwisterDef.symbol.toString_() }}</td>
+                <td>{{ polytwisterDef.asFields().regular ? "Yes" : "No" }}</td>
+                <td>{{ polytwisterDef.asFields().convex ? "Yes" : "No" }}</td>
+                <td>
+                  <SymmetryGroupDisplay :symmetry-group="symmetrySymbol" />
+                </td>
+                <td>
+                  {{ polytwister.polyhedron.vertices.length }}
+                </td>
+                <td>
+                  {{ polytwister.polyhedron.edges.length }}
+                </td>
+                <td>
+                  {{ polytwister.polyhedron.faces.length }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <!-- Bar 3: View controls. -->
