@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
+import { ref, toRef, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
 import * as _ from "lodash";
 import * as THREE from "three";
 import { Vector3 } from "three";
@@ -10,6 +10,7 @@ import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
 import { PolytwisterSymbol } from "./symbol";
 import * as globalState from "./globalState";
+import SymmetryGroupDisplay from "./SymmetryGroupDisplay.vue";
 
 import Button from "./Button.vue";
 import Article from "./Article.vue";
@@ -44,6 +45,15 @@ function openHelp() {
 const devMode = import.meta.env.DEV;
 const experimentalMode = ref(false);
 
+const isWindows = navigator.userAgent.indexOf("Windows") !== -1;
+const dismissedMessage = localStorage.getItem("dismissedWindowsMessage") !== null;
+const showWindowsMessage = ref(isWindows && !dismissedMessage);
+
+function dismissWindowsMessage() {
+  localStorage.setItem("dismissedWindowsMessage", "1");
+  showWindowsMessage.value = false;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
 
@@ -52,6 +62,7 @@ const crossSectionW: Ref<number> = ref(0);
 const polytwister = globalState.polytwister;
 const polytwisterDef = globalState.polytwisterDef;
 const polytwisterSymbol = globalState.polytwisterSymbol;
+const symmetrySymbol = computed(() => polytwisterSymbol.value.symmetrySymbol());
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
 const rings = computed(() => polytwister.value.rings);
@@ -354,31 +365,39 @@ const cameraDirection = camera.direction;
           </div>
         </div>
 
-        <!-- Bar 2: symbol, face vector, etc. -->
+        <!-- Bar 2: info table -->
 
-        <div class="toolbar flex flex-row gap-5 justify-begin">
-          <div class="w-40">
-            <strong>Symbol:</strong> {{ polytwisterDef.symbol.toString_() }}
-          </div>
-          <div class="w-40">
-            <PropertyTags :fields="polytwisterDef.asFields()" />
-          </div>
-          <div class="w-40" v-if="polytwisterDef.acronym && false">
-            <strong>Acronym:</strong> {{ polytwisterDef.acronym }}
-          </div>
-          <div class="flex flex-row justify-end flex-1">
-            <div class="w-25">
-              <strong>Rings:</strong>
-              {{ polytwister.polyhedron.vertices.length }}
-            </div>
-            <div class="w-25">
-              <strong>Strips:</strong> {{ polytwister.polyhedron.edges.length }}
-            </div>
-            <div class="w-25">
-              <strong>Twisters:</strong>
-              {{ polytwister.polyhedron.faces.length }}
-            </div>
-          </div>
+        <div class="toolbar">
+          <table class="w-full text-center table-fixed">
+            <tbody>
+              <tr class="text-sm">
+                <th>Symbol</th>
+                <th>Regular</th>
+                <th>Convex</th>
+                <th>Symmetry</th>
+                <th>Rings</th>
+                <th>Strips</th>
+                <th>Twisters</th>
+              </tr>
+              <tr>
+                <td>{{ polytwisterDef.symbol.toString_() }}</td>
+                <td>{{ polytwisterDef.asFields().regular ? "Yes" : "No" }}</td>
+                <td>{{ polytwisterDef.asFields().convex ? "Yes" : "No" }}</td>
+                <td>
+                  <SymmetryGroupDisplay :symmetry-group="symmetrySymbol" />
+                </td>
+                <td>
+                  {{ polytwister.polyhedron.vertices.length }}
+                </td>
+                <td>
+                  {{ polytwister.polyhedron.edges.length }}
+                </td>
+                <td>
+                  {{ polytwister.polyhedron.faces.length }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <!-- Bar 3: View controls. -->
@@ -448,6 +467,23 @@ const cameraDirection = camera.direction;
             @pointerdown="cameraControls.canvasPointerDown"
             @wheel.prevent="cameraControls.canvasWheel"
           ></canvas>
+
+          <Transition
+            leave-active-class="duration-200"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0">
+            <div
+              v-if="showWindowsMessage"
+              class="absolute text-sm top-8 left-8 w-100 p-2 bg-primary flex flex-row gap-2 rounded-sm shadow-lg/50 cursor-pointer"
+              @click="dismissWindowsMessage">
+              <div class="material">warning</div>
+              <p>
+                Your browser may freeze briefly when loading polytwisters while the shader compiles.
+                To avoid this, use macOS or Linux instead of Windows.
+              </p>
+              <div class="material text-sm!">close</div>
+            </div>
+          </Transition>
 
           <!--
           Axes are hidden in fullscreen out of pure laziness. They don't

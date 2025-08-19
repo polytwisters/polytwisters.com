@@ -1,6 +1,6 @@
 import { asFraction, FractionLike, fractionToString } from "./fraction";
 import { PolytwisterSymbolLike } from "./symbol";
-import { PolytwisterSymbol } from "./symbol";
+import { PolytwisterSymbol, SymmetrySymbol } from "./symbol";
 
 /**
  * An object for inputting polytwister definitions.
@@ -45,6 +45,7 @@ export class PolytwisterDef {
       convex: this.symbol.isConvex(),
       dyadic: this.symbol.isDyadic(),
       rectifiedDyadic: this.symbol.isRectifiedDyadic(),
+      symmetryGroup: this.symbol.symmetrySymbol(),
       bug: this.bug,
       index: this.index,
       id: this.id(),
@@ -62,6 +63,7 @@ export interface PolytwisterFields {
   convex: boolean;
   dyadic: boolean;
   rectifiedDyadic: boolean;
+  symmetryGroup: SymmetrySymbol;
   bug?: string;
   index?: number;
 }
@@ -362,7 +364,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
 
   //////////////////////////////////////////////////////////////////////////////
-  // Quasiregulars
+  // Non-regular uniforms
 
   // Polytwisters with 2 in the numerator of the ring figure
   // (i.e. tetratetra/cubocta/icosidodecatwister variants).

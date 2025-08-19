@@ -8,12 +8,27 @@ import * as fraction from "./fraction";
 
 export type PolytwisterSymbolLike = FractionLike[] | PolytwisterSymbol;
 
+export enum SymmetryKind {
+  Dihedral,
+  Tetrahedral,
+  Octahedral,
+  Icosahedral,
+}
+
+/**
+ * A type for "symmetry symbols" which are of the form D_2n, T, I, or O.
+ */
+export type SymmetrySymbol =
+  | { kind: SymmetryKind.Tetrahedral }
+  | { kind: SymmetryKind.Octahedral }
+  | { kind: SymmetryKind.Icosahedral }
+  | { kind: SymmetryKind.Dihedral, n: number };
+
 /**
  * A Wythoff-style symbol for a polytwister. The fields "ring," "twister1," and
  * "twister2" are the angles between three mirrors. The generator point is
- * placed at the "ring" mirror. If "quasiregular" is false, a generator plane
- * is placed at "twister1" only. If it is true, a generator plane is placed at
- * both types of twisters.
+ * placed at the "ring" mirror. If "regular" is false, a generator plane is placed
+ * at both types of twisters. If it is true, it's placed at "twister1" only.
  *
  * In the regular case, twister1 is always the fraction 2/1.
  */
@@ -21,28 +36,28 @@ export class PolytwisterSymbol {
   ring: Fraction;
   twister1: Fraction;
   twister2: Fraction;
-  quasiregular: boolean;
+  regular: boolean;
 
   constructor(
     ring: Fraction,
     twister1: Fraction,
     twister2: Fraction,
-    quasiregular: boolean,
+    regular: boolean,
   ) {
     this.ring = ring;
     this.twister1 = twister1;
     this.twister2 = twister2;
-    this.quasiregular = quasiregular;
+    this.regular = regular;
   }
 
   toString_(): string {
     const a = fractionToString(this.twister1);
     const b = fractionToString(this.twister2);
     const c = fractionToString(this.ring);
-    if (this.quasiregular) {
-      return `(${a}, ${b}) ${c}`;
+    if (this.regular) {
+      return `{${b}, ${c}}`;
     }
-    return `{${b}, ${c}}`;
+    return `(${a}, ${b}) ${c}`;
   }
 
   equals(other: PolytwisterSymbol): boolean {
@@ -71,7 +86,7 @@ export class PolytwisterSymbol {
   }
 
   isRegular(): boolean {
-    return !this.quasiregular;
+    return this.regular;
   }
 
   isConvex(): boolean {
@@ -82,7 +97,7 @@ export class PolytwisterSymbol {
    * Return true if this belongs to the family of th dyadic twisters.
    */
   isDyadic(): boolean {
-    return !this.quasiregular && this.twister1.n === 2;
+    return this.regular && this.twister1.n === 2;
   }
 
   /**
@@ -90,7 +105,7 @@ export class PolytwisterSymbol {
    */
   isRectifiedDyadic(): boolean {
     return (
-      this.quasiregular &&
+      !this.regular &&
       this.ring.n === 2 &&
       this.ring.d === 1 &&
       (this.twister1.n === 2 || this.twister2.n === 2)
@@ -99,7 +114,7 @@ export class PolytwisterSymbol {
 
   isBloatedRectifiedDyadic(): boolean {
     return (
-      this.quasiregular &&
+      !this.regular &&
       this.ring.n === 2 &&
       this.ring.d === 3 &&
       (this.twister1.n === 2 || this.twister2.n === 2)
@@ -123,20 +138,20 @@ export class PolytwisterSymbol {
         fraction.parse(matchSchlafli[3]),
         asFraction(2),
         fraction.parse(matchSchlafli[1]),
-        false,
+        true,
       );
     }
-    const matchQuasiregular = tmp.match(
+    const matchNonregular = tmp.match(
       /^\((\d+(\/\d+)?),(\d+(\/\d+)?)\)(\d+(\/\d+)?)$/,
     );
-    if (!matchQuasiregular) {
+    if (!matchNonregular) {
       throw new Error("Can't parse symbol");
     }
     return new PolytwisterSymbol(
-      fraction.parse(matchQuasiregular[5]),
-      fraction.parse(matchQuasiregular[1]),
-      fraction.parse(matchQuasiregular[3]),
-      true,
+      fraction.parse(matchNonregular[5]),
+      fraction.parse(matchNonregular[1]),
+      fraction.parse(matchNonregular[3]),
+      false,
     );
   }
 
@@ -146,7 +161,7 @@ export class PolytwisterSymbol {
         thing.ring,
         thing.twister1,
         thing.twister2,
-        thing.quasiregular,
+        thing.regular,
       );
     }
     if (thing.length === 2) {
@@ -154,7 +169,7 @@ export class PolytwisterSymbol {
         asFraction(thing[1]),
         asFraction(2),
         asFraction(thing[0]),
-        false,
+        true,
       );
     }
     if (thing.length === 3) {
@@ -162,7 +177,7 @@ export class PolytwisterSymbol {
         asFraction(thing[2]),
         asFraction(thing[0]),
         asFraction(thing[1]),
-        true,
+        false,
       );
     }
     throw new Error("Invalid polytwister symbol");
@@ -172,10 +187,10 @@ export class PolytwisterSymbol {
     const a = fractionToString(this.twister1);
     const b = fractionToString(this.twister2);
     const c = fractionToString(this.ring);
-    if (this.quasiregular) {
-      return `${a}.${b}.${c}`;
+    if (this.regular) {
+      return `${b}.${c}`;
     }
-    return `${b}.${c}`;
+    return `${a}.${b}.${c}`;
   }
 
   static deserializeURI(string: string): PolytwisterSymbol {
@@ -185,7 +200,7 @@ export class PolytwisterSymbol {
         fraction.parse(parts[1]),
         asFraction(2),
         fraction.parse(parts[0]),
-        false,
+        true,
       );
     }
     if (parts.length !== 3) {
@@ -195,7 +210,34 @@ export class PolytwisterSymbol {
       fraction.parse(parts[2]),
       fraction.parse(parts[0]),
       fraction.parse(parts[1]),
-      true,
+      false,
     );
+  }
+
+  symmetrySymbol(): SymmetrySymbol {
+    /* Coxeter, "Uniform Polyhedra," p. 409:
+    "A given Schwarz triangle (p q r) can be recognized as dihedral if two of p, q, r are equal to
+    2, and otherwise tetrahedral (g = 24), octahedral (g = 48), or icosahedral (g = 120), according
+    as the largest numerator occuring is 3, 4, or 5."
+    */
+
+    // Find the numerators and sort them from smallest to largest.
+    const numerators = [this.twister1.n, this.twister2.n, this.ring.n].sort();
+
+    // Dihedral case: [2, 2, n].
+    if (numerators[0] === 2 && numerators[1] === 2) {
+      return { kind: SymmetryKind.Dihedral, n: numerators[2] };
+    }
+    const maxNumerator = Math.max(...numerators);
+    if (maxNumerator === 3) {
+      return { kind: SymmetryKind.Tetrahedral };
+    }
+    if (maxNumerator === 4) {
+      return { kind: SymmetryKind.Octahedral };
+    }
+    if (maxNumerator === 5) {
+      return { kind: SymmetryKind.Icosahedral };
+    }
+    throw new Error("Invalid Schwarz triangle, cannot find symbol");
   }
 }

@@ -4,7 +4,7 @@ import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
 
 const twistersLink = "https://www.polytope.net/hedrondude/twisters.htm";
 
-const vKatex = {
+const vAutoKatex = {
   mounted: (el: HTMLElement) => {
     renderMathInElement(el);
   },
@@ -15,7 +15,7 @@ const vKatex = {
 </script>
 
 <template>
-  <article class="my-5" v-katex id="article">
+  <article class="my-5" v-auto-katex id="article">
     <p>
       <a :href="twistersLink" target="_blank">Polytwisters</a> are a family of
       four-dimensional curved shapes related to polyhedra and Hopf fibration. As
@@ -29,17 +29,17 @@ const vKatex = {
       <section class="flex-1">
         <h1>Known issues</h1>
         <ul class="list-disc list-inside">
+          <li>Not mobile friendly at the moment.</li>
           <li>
-            Browser may freeze briefly when switching polytwisters as the
+            On Windows, browser freezes briefly when switching polytwisters as the
             shaders are compiled.
           </li>
-          <li>Not mobile friendly at the moment.</li>
         </ul>
       </section>
       <section class="flex-1">
         <h1>Future plans</h1>
         <ul class="">
-          <li>All 200+ regular and quasiregular polytwisters</li>
+          <li>All 200+ uniform polytwisters</li>
           <li>Custom polytwister construction</li>
           <li>Display of combinatorial structure</li>
           <li>Mesh export for use in other software or 3D printing</li>

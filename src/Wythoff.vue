@@ -19,7 +19,7 @@ const group = computed(() =>
   wythoff.SymmetryGroup.fromSchwarzTriangle(schwarzTriangle.value),
 );
 const polyhedron = computed(() =>
-  group.value.makePolyhedron(symbol.value.quasiregular),
+  group.value.makePolyhedron(symbol.value.regular),
 );
 
 const mirrorColors = ["red", "lime", "blue"];

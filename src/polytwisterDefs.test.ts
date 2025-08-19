@@ -1,5 +1,6 @@
 import { test, expect } from "vitest";
 import { database } from "./polytwisterDefs";
+import * as wythoff from "./wythoff";
 
 test("All names are unique", () => {
   const names = database.defs.map((x) => x.name);
@@ -49,5 +50,11 @@ test("All acronyms are lowercase and end with -ter", () => {
     if (acronym !== undefined) {
       expect(acronym).toMatch(/^[a-z ]+ter$/);
     }
+  }
+});
+
+test("Wythoff construction is successful for all symbols in database", () => {
+  for (let { symbol } of database.defs) {
+    wythoff.symbolToPolyhedron(symbol);
   }
 });
