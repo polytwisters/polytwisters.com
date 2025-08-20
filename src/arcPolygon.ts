@@ -8,6 +8,8 @@
  * case where all circles contain the origin.
  */
 
+import { sortAndDeduplicateDiagnostics } from "typescript";
+
 /**
  * Return the radii of an (n, r) circle configuration where r crosses a threshold that changes the
  * adjacency graph. These radii are 0, 1, half the edge length, and half the length of every
@@ -55,55 +57,54 @@ export interface Region {
 }
 
 /**
- * Return the filled-in regions for a binary filling the given n and radius
- * index q, and the given turning number d.
- * Currently it is assumed that d < n / 2, and we're using the "normal" case.
+ * Return the filled-in regions for a binary filling, given n, radius index q, rotation number d,
+ * and bloatedness.
  */
-export function regions(n: number, q: number, d: number): Region[] {
-  const result = [];
+export function regions(n: number, q: number, d: number, bloated: boolean): Region[] {
+  const result: Region[] = [];
   if (q === Math.ceil(n / 2)) {
-    // Monotonic case:
-    // - Regions 0 through d are excluded.
-    // - d + 1 included.
-    // - Regions d + 1, d + 2, d + 3, ... alternate.
-    let include = true;
-    for (let i = d + 1; i <= n; i++) {
-      if (include) {
-        result.push({ order: i, mode: RegionMode.Both });
-      }
-      include = !include;
-    }
-  } else {
-    // - Regions outer(0) through outer(d) are excluded.
-    // - outer(d + 1) included.
-    // Alternate:
-    // - outer(d + 2)
-    // - ...
-    // - outer(q - 1)
-    // - both(q)
-    // - inner(q - 1)
-    // - ...
-    // - inner(0)
-    //
-    // both(q) and both(q + 1) alternate.
-    let include = true;
-    for (let i = d + 1; i < q; i++) {
-      if (include) {
-        result.push({ order: i, mode: RegionMode.Outer });
-      }
-      include = !include;
-    }
-    if (include) {
-      result.push({ order: q, mode: RegionMode.Both });
-    }
-    if (!include) {
-      result.push({ order: q + 1, mode: RegionMode.Both });
-    }
-    for (let i = 0; i < q; i++) {
-      if (include) {
-        result.push({ order: q - 1 - i, mode: RegionMode.Inner });
-      }
-    }
+    // Monotonic case. 
   }
   return result;
+}
+
+export function regionsToString(regions: Region[]): string {
+  const sortedRegions = [...regions];
+  sortedRegions.sort((region1: Region, region2: Region) => {
+    // If both regions are of the form [x], just compare them in reverse order.
+    if (region1.mode === RegionMode.Both && region2.mode === RegionMode.Both) {
+      return region2.order - region1.order;
+    }
+    if (region1.mode === RegionMode.Inner && region2.mode === RegionMode.Inner) {
+      return region1.order - region2.order;
+    }
+    if (region1.mode === RegionMode.Outer && region2.mode === RegionMode.Outer) {
+      return region2.order - region1.order;
+    }
+    if (region1.mode === RegionMode.Inner) {
+      return -1;
+    }
+    if (region1.mode === RegionMode.Outer) {
+      return 1;
+    }
+    if (region2.mode === RegionMode.Inner) {
+      return 1;
+    }
+    if (region2.mode === RegionMode.Outer) {
+      return -1;
+    }
+    return 0;
+  });
+  const parts = sortedRegions.map((region: Region) => (
+    "[" +
+    region.order.toString() + (
+      region.mode === RegionMode.Both
+      ? ""
+      : region.mode === RegionMode.Inner
+      ? "-"
+      : "+"
+    )
+    + "]"
+  ));
+  return parts.join(" ");
 }
