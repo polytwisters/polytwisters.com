@@ -64,6 +64,27 @@ export function regions(n: number, q: number, d: number, bloated: boolean): Regi
   const result: Region[] = [];
   if (q === Math.ceil(n / 2)) {
     // Monotonic case. 
+    if (!bloated) {
+      for (let i = 0; i <= n; i++) {
+        if (i > n - d && (i - (n - d)) % 2 === 1) {
+          result.push({
+            order: i,
+            mode: RegionMode.Both,
+          })
+        }
+      }
+    } else {
+      for (let i = 0; i <= n; i++) {
+        if ((i < d && i % 2 === 1) || (d % 2 === 1 && i >= d)) {
+          result.push({
+            order: i,
+            mode: RegionMode.Both,
+          })
+        }
+      }
+    }
+  } else {
+    // Non-monotonic case.
   }
   return result;
 }
