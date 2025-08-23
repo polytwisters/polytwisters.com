@@ -7,8 +7,8 @@
  * an index. Index 0 is a degenerate case where no circles intersect. Index Math.ceil(n / 2) is the
  * case where all circles contain the origin.
  */
+import { mod } from "./mathUtils";
 
-import { sortAndDeduplicateDiagnostics } from "typescript";
 
 /**
  * Return the radii of an (n, r) circle configuration where r crosses a threshold that changes the
@@ -66,7 +66,7 @@ export function regions(n: number, q: number, d: number, bloated: boolean): Regi
     // Monotonic case. 
     if (!bloated) {
       for (let i = 0; i <= n; i++) {
-        if (i > n - d && (i - (n - d)) % 2 === 1) {
+        if (i > n - d && mod(i - (n - d), 2) === 1) {
           result.push({
             order: i,
             mode: RegionMode.Both,
@@ -75,7 +75,7 @@ export function regions(n: number, q: number, d: number, bloated: boolean): Regi
       }
     } else {
       for (let i = 0; i <= n; i++) {
-        if ((i < d && i % 2 === 1) || (d % 2 === 1 && i >= d)) {
+        if ((i < d && mod(i, 2) === 1) || (mod(d, 2) === 1 && i >= d)) {
           result.push({
             order: i,
             mode: RegionMode.Both,
@@ -85,6 +85,49 @@ export function regions(n: number, q: number, d: number, bloated: boolean): Regi
     }
   } else {
     // Non-monotonic case.
+    if (!bloated) {
+      if (d < n / 2) {
+        for (let i = 0; i < q; i++) {
+          if (i < d && mod(d - i, 2) === 1) {
+            result.push({
+              order: i,
+              mode: RegionMode.Inner,
+            })
+          }
+        }
+      } else {
+        const u = d - n + q;
+        for (let i = 0; i < q; i++) {
+          if (i > q - u && mod(i - (q - u), 2) === 1) {
+            result.push({
+              order: i,
+              mode: RegionMode.Outer,
+            })
+          }
+        }
+        const qFilled = mod(u, 2) === 1;
+        if (qFilled) {
+          result.push({
+            order: q,
+            mode: RegionMode.Both,
+          })
+        }
+        if (!qFilled) {
+          result.push({
+            order: q + 1,
+            mode: RegionMode.Both,
+          })
+        }
+        for (let i = 0; i < q; i++) {
+          if ((mod(q - i, 2) === 0) !== !qFilled) {
+            result.push({
+              order: i,
+              mode: RegionMode.Inner,
+            })
+          }
+        }
+      }
+    }
   }
   return result;
 }
