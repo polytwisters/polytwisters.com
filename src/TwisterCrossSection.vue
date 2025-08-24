@@ -1,15 +1,6 @@
 <script setup lang="ts">
-import {
-  type Ref,
-  ref,
-  useTemplateRef,
-  onMounted,
-  computed,
-  watch,
-  toRef,
-} from "vue";
+import { useTemplateRef, onMounted, computed, watch, toRef } from "vue";
 import * as THREE from "three";
-import { Complex } from "./complex";
 import * as globalState from "./globalState";
 import { faceSymbolToColor } from "./colors";
 

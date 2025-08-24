@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ref, toRef, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
+import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
 import * as _ from "lodash";
 import * as THREE from "three";
 import { Vector3 } from "three";
 
 import * as polytwisters from "./polytwisters";
-import { Polytwister } from "./polytwisters";
 import * as camera from "./camera";
 import * as cameraControls from "./cameraControls";
-import { PolytwisterSymbol } from "./symbol";
 import * as globalState from "./globalState";
 import SymmetryGroupDisplay from "./SymmetryGroupDisplay.vue";
 
@@ -21,9 +19,6 @@ import Wythoff from "./Wythoff.vue";
 
 import fragmentShaderTemplate from "./shader.glsl?raw";
 import PolytwisterTable from "./PolytwisterTable.vue";
-import PropertyTags from "./PropertyTags.vue";
-import { fractionToString } from "./fraction";
-import { database } from "./polytwisterDefs";
 import TwisterCrossSections from "./TwisterCrossSections.vue";
 import { faceSymbolToColor } from "./colors";
 
@@ -46,7 +41,8 @@ const devMode = import.meta.env.DEV;
 const experimentalMode = ref(false);
 
 const isWindows = navigator.userAgent.indexOf("Windows") !== -1;
-const dismissedMessage = localStorage.getItem("dismissedWindowsMessage") !== null;
+const dismissedMessage =
+  localStorage.getItem("dismissedWindowsMessage") !== null;
 const showWindowsMessage = ref(isWindows && !dismissedMessage);
 
 function dismissWindowsMessage() {
@@ -471,15 +467,18 @@ const cameraDirection = camera.direction;
           <Transition
             leave-active-class="duration-200"
             leave-from-class="opacity-100"
-            leave-to-class="opacity-0">
+            leave-to-class="opacity-0"
+          >
             <div
               v-if="showWindowsMessage"
               class="absolute text-sm top-8 left-8 w-100 p-2 bg-primary flex flex-row gap-2 rounded-sm shadow-lg/50 cursor-pointer"
-              @click="dismissWindowsMessage">
+              @click="dismissWindowsMessage"
+            >
               <div class="material">warning</div>
               <p>
-                Your browser may freeze briefly when loading polytwisters while the shader compiles.
-                To avoid this, use macOS or Linux instead of Windows.
+                Your browser may freeze briefly when loading polytwisters while
+                the shader compiles. To avoid this, use macOS or Linux instead
+                of Windows.
               </p>
               <div class="material text-sm!">close</div>
             </div>
