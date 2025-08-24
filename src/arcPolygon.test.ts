@@ -1,6 +1,5 @@
 import { test, expect } from "vitest";
 import * as arcPolygon from "./arcPolygon";
-import { RegionMode } from "./arcPolygon";
 
 test("radius index works", () => {
   const n = 7;
@@ -57,12 +56,20 @@ const cases: Array<[[number, number, number, string], string]> = [
   // [[5, 2, 1, "+"], "[0-] [1-] [3] [2] [1+]"],
   [[5, 2, 4, "-"], "[0-] [2]"],
   // [[5, 2, 4, "+"], "[0-] [1-] [3] [1+]"],
+
+  [[5, 2, 2, "-"], "[1-]"],
+  // [[5, 2, 1, "+"], "[0-] [1-] [3] [2] [1+]"],
+  [[5, 2, 3, "-"], "[1-] [3]"],
+  // [[5, 2, 4, "+"], "[0-] [1-] [3] [1+]"],
 ];
 
-test.each(cases)("binary filling %p", (spec: [number, number, number, string], filling: string) => {
-  const [n, q, d, bloatedString] = spec;
-  const bloated = bloatedString === "+";
-  const regions = arcPolygon.regions(n, q, d, bloated);
-  const regionsString = arcPolygon.regionsToString(regions);
-  expect(regionsString).toBe(filling);
-});
+test.each(cases)(
+  "binary filling %p",
+  (spec: [number, number, number, string], filling: string) => {
+    const [n, q, d, bloatedString] = spec;
+    const bloated = bloatedString === "+";
+    const regions = arcPolygon.regions(n, q, d, bloated);
+    const regionsString = arcPolygon.regionsToString(regions);
+    expect(regionsString).toBe(filling);
+  },
+);
