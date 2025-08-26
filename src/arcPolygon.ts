@@ -130,7 +130,6 @@ export function regions(
     if (!bloated) {
       mainArcs.reverse();
     }
-    console.log(mainArcs);
 
     const mainRegionColors: boolean[] = [];
     // Region [0+] is always excluded.
