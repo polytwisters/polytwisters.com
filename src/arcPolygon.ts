@@ -7,7 +7,6 @@
  * an index. Index 0 is a degenerate case where no circles intersect. Index Math.ceil(n / 2) is the
  * case where all circles contain the origin.
  */
-import { mod } from "./mathUtils";
 
 /**
  * Return the radii of an (n, r) circle configuration where r crosses a threshold that changes the
