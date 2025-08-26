@@ -65,91 +65,100 @@ export function regions(
   d: number,
   bloated: boolean,
 ): Region[] {
-  const result: Region[] = [];
   if (q === Math.ceil(n / 2)) {
-    if (!bloated) {
-      // Monotonic + nonbloated.
-      for (let i = 0; i <= n; i++) {
-        if (i > n - d && mod(i - (n - d), 2) === 1) {
-          result.push({
-            order: i,
-            mode: RegionMode.Both,
-          });
-        }
-      }
-    } else {
-      // Monotonic + bloated.
-      for (let i = 0; i <= n; i++) {
-        if ((i < d && mod(i, 2) === 1) || (mod(d, 2) === 1 && i >= d)) {
-          result.push({
-            order: i,
-            mode: RegionMode.Both,
-          });
-        }
-      }
+    // Create a list of all regions from 0 to n inclusive, outer to inner.
+    const allRegions: Region[] = [];
+    for (let i = 0; i <= n; i++) {
+      allRegions.push({ order: i, mode: RegionMode.Both });
     }
-  } else {
+
+    // List of fundamental arcs. arcs[i] is incident on regions[i] and regions[i + 1].
+    const arcs: boolean[] = Array(allRegions.length - 1).fill(false);
+    // Turn on the last d arcs for non-bloated case, first d arcs for bloated case.
+    for (let i = 0; i < d; i++) {
+      arcs[i] = true;
+    }
     if (!bloated) {
-      if (d < n / 2) {
-        // Non-monotonic + non-bloated + curve does not divide regions
-        // [q] and [q+1], so all regions are inner.
-        for (let i = 0; i < q; i++) {
-          if (i < d && mod(d - i, 2) === 1) {
-            result.push({
-              order: i,
-              mode: RegionMode.Inner,
-            });
-          }
-        }
+      arcs.reverse();
+    }
+
+    // Color regions excluded = false, included = true.
+    // Color regions[0] excluded.
+    // Color regions[i] and regions[i + 1] opposite if arcs[i] is true.
+    // Color regions[i] and regions[i + 1] the same if arcs[i] is false.
+    const regionColors: boolean[] = [];
+    regionColors[0] = false;
+    for (let i = 1; i < allRegions.length; i++) {
+      if (arcs[i - 1] === true) {
+        regionColors[i] = !regionColors[i - 1];
       } else {
-        // Non-monotonic + non-bloated + curve divides regions [q] and [q+1].
-        const u = d - n + q;
-        for (let i = 0; i < q; i++) {
-          if (i > q - u && mod(i - (q - u), 2) === 1) {
-            result.push({
-              order: i,
-              mode: RegionMode.Outer,
-            });
-          }
-        }
-        const qFilled = mod(u, 2) === 1;
-        if (qFilled) {
-          result.push({
-            order: q,
-            mode: RegionMode.Both,
-          });
-        }
-        if (!qFilled) {
-          result.push({
-            order: q + 1,
-            mode: RegionMode.Both,
-          });
-        }
-        for (let i = 0; i < q; i++) {
-          if ((mod(q - i, 2) === 0) !== !qFilled) {
-            result.push({
-              order: i,
-              mode: RegionMode.Inner,
-            });
-          }
-        }
-      }
-    } else {
-      if (d < n / 2) {
-        // Non-monotonic + bloated + curve does not divide regions
-        // [q] and [q+1], so all inner regions are the same color.
-        for (let i = 0; i < q; i++) {
-          if (i < d && mod(d - i, 2) === 1) {
-            result.push({
-              order: i,
-              mode: RegionMode.Inner,
-            });
-          }
-        }
+        regionColors[i] = regionColors[i - 1];
       }
     }
+
+    // Convert the list of colors into actual Region objects.
+    const result = [];
+    for (let i = 0; i < allRegions.length; i++) {
+      if (regionColors[i]) {
+        result.push(allRegions[i]);
+      }
+    }
+    return result;
+  } else {
+    // Create a list of "mainline" regions which looks like this:
+    // [0+] [1+] [2+] ... [(q-1)+] [q] [(q-1)-] ... [1-] [0-].
+    // There is one more region, [q+1], which is not in this mainline list.
+    // The regions are outer to inner.
+    // Also note that mainRegions[q] is region [q] -- we'll use that later.
+    const mainRegions: Region[] = [];
+    for (let i = 0; i < q; i++) {
+      mainRegions.push({ order: i, mode: RegionMode.Outer });
+    }
+    mainRegions.push({ order: q, mode: RegionMode.Both });
+    for (let i = 1; i <= q; i++) {
+      mainRegions.push({ order: q - i, mode: RegionMode.Inner });
+    }
+
+    // List of fundamental arcs. arcs[i] is incident on regions[i] and regions[i + 1].
+    // There is one special arc missing, the one joining [q] to [q+1]. We'll handle that later.
+    const mainArcs: boolean[] = Array(mainRegions.length - 1).fill(false);
+    const numMainArcs = d < n / 2 ? d : 2 * q + (d - n); // I have no idea how this works.
+    // Turn on the last numMainArcs for non-bloated case, first numMainArcs for bloated case.
+    for (let i = 0; i < numMainArcs; i++) {
+      mainArcs[i] = true;
+    }
+    if (!bloated) {
+      mainArcs.reverse();
+    }
+    console.log(mainArcs);
+
+    const mainRegionColors: boolean[] = [];
+    // Region [0+] is always excluded.
+    mainRegionColors[0] = false;
+    for (let i = 1; i < mainRegions.length; i++) {
+      if (mainArcs[i - 1]) {
+        mainRegionColors[i] = !mainRegionColors[i - 1];
+      } else {
+        mainRegionColors[i] = mainRegionColors[i - 1];
+      }
+    }
+
+    // Now for the arc between [q] and [q+1].
+    const loopArc = d > n / 2;
+    const includeLoopRegion = mainRegionColors[q] !== loopArc;
+
+    // Convert the list of colors into actual Region objects.
+    const result = [];
+    for (let i = 0; i < mainRegions.length; i++) {
+      if (mainRegionColors[i]) {
+        result.push(mainRegions[i]);
+      }
+    }
+    if (includeLoopRegion) {
+      result.push({ order: q + 1, mode: RegionMode.Both });
+    }
+    return result;
   }
-  return result;
 }
 
 export function regionsToString(regions: Region[]): string {
