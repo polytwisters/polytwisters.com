@@ -1236,7 +1236,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "small dodecabloatoretroicosatwister",
-    acronym: "sidbriditer",
+    acronym: "sidbriter",
     symbol: [[3, 2], 5, [5, 9]],
   },
   {
