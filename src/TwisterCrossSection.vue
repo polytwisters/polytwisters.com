@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { useTemplateRef, onMounted, computed, watch, toRef } from "vue";
+import {
+  useTemplateRef,
+  onMounted,
+  computed,
+  watch,
+  toRef,
+  type Ref,
+} from "vue";
 import * as THREE from "three";
 import * as globalState from "./globalState";
 import { faceSymbolToColor } from "./colors";
+import * as arcPolygon from "./arcPolygon";
 
 const polytwister = globalState.polytwister;
 
@@ -19,6 +27,8 @@ const canvasHeight = 300;
 
 const { faceIndex } = defineProps<{ faceIndex: number }>();
 const face = computed(() => polytwister.value.polyhedron.faces[faceIndex]);
+const rotationNumber = computed(() => face.value.symbol.d);
+const bloated = computed(() => polytwister.value.bloated);
 
 let tmp = computed(() => {
   const polyhedron = polytwister.value.polyhedron;
@@ -60,6 +70,40 @@ let tmp = computed(() => {
 
 const circles = toRef(() => tmp.value.circles);
 const dots = toRef(() => tmp.value.dots);
+
+const numCircles = computed(() => circles.value.length);
+
+const normalizedCircleRadius = computed(() => {
+  const circle = circles.value[0];
+  return circle.radius / Math.hypot(circle.x, circle.y);
+});
+
+const radiusIndex = computed(() =>
+  arcPolygon.getRadiusIndex(numCircles.value, normalizedCircleRadius.value),
+);
+const filling: Ref<arcPolygon.Region[]> = computed(() =>
+  arcPolygon.regions(
+    numCircles.value,
+    radiusIndex.value,
+    rotationNumber.value,
+    polytwister.value.bloated,
+  ),
+);
+const fillCode: Ref<string> = computed(() => {
+  const regions = filling.value;
+  const parts = [];
+  for (let { order, mode } of regions) {
+    const tmp = `circles == ${order}`;
+    if (mode === arcPolygon.RegionMode.Both) {
+      parts.push(tmp);
+    } else if (mode === arcPolygon.RegionMode.Inner) {
+      parts.push(`(${tmp} && inner)`);
+    } else if (mode === arcPolygon.RegionMode.Outer) {
+      parts.push(`(${tmp} && outer)`);
+    }
+  }
+  return parts.join(" || ");
+});
 
 const scale = computed(() => {
   const circle = circles.value[0];
@@ -105,37 +149,20 @@ void main() {
     max(1.0 / aspectRatio, 1.0)
   ) * scale;
 
-  bool inAnywhere = length(position) < length(dots[0]);
+  bool inner = length(position) < length(dots[0]);
+  bool outer = !inner;
   bool inCircles[NUM_CIRCLES];
   int circles = 0;
   for (int i = 0; i < NUM_CIRCLES; i++) {
     vec2 center = circlePositions[i];
     float radius = circleRadii[i];
     inCircles[i] = length(position - center) < radius;
-    inAnywhere = inAnywhere || inCircles[i];
     if (inCircles[i]) {
       circles++;
     }
   }
   
-  // normal & quasi
-  bool interior =
-    bloated
-      ? (
-        (
-          d % 2 == 0
-            ? circles < d && circles % 2 == 1
-            : circles > d || circles % 2 == 1
-        ) || circles == 0
-      )
-      && inAnywhere
-      : (
-        (
-          (NUM_CIRCLES + 1 - d - circles) % 2 == 0
-          && circles >= NUM_CIRCLES + 1 - d
-        ) || circles == 0
-      )
-      && inAnywhere;
+  bool fill = $FILL;
 
   bool onCircle = false;
   float strokeWidth = 1.0 / iResolution.x;
@@ -180,7 +207,7 @@ void main() {
       vec3(1.0)
       : onCircle && showCircles ?
         vec3(0.2)
-        : interior && showFilling ?
+        : fill && showFilling ?
           fillColor
           : vec3(0.0);
 
@@ -189,7 +216,9 @@ void main() {
 `;
 
 const fragmentShader = computed(() =>
-  fragmentShaderTemplate.replace("$NUM_CIRCLES", `${circles.value.length}`),
+  fragmentShaderTemplate
+    .replace("$NUM_CIRCLES", `${numCircles.value}`)
+    .replace("$FILL", `${fillCode.value}`),
 );
 
 const material = computed(() => {
@@ -247,10 +276,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <canvas
-    ref="canvas"
-    :width="canvasWidth"
-    :height="canvasHeight"
-    :style="{ aspectRatio: canvasWidth / canvasHeight }"
-  ></canvas>
+  <div>
+    n = {{ numCircles }}, d = {{ rotationNumber }}, q = {{ radiusIndex }},
+    bloated = {{ bloated }}
+    <canvas
+      ref="canvas"
+      :width="canvasWidth"
+      :height="canvasHeight"
+      :style="{ aspectRatio: canvasWidth / canvasHeight }"
+    ></canvas>
+  </div>
 </template>
