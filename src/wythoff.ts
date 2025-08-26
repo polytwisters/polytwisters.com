@@ -244,16 +244,6 @@ function dedupePoints(points: Vector3[]): Vector3[] {
   );
 }
 
-function dedupeMirrors(mirrors: Vector3[]): Vector3[] {
-  const result: Vector3[] = [];
-  for (let mirror of mirrors) {
-    if (!result.some((mirror2) => mirror.dot(mirror2) >= 1 - EPSILON)) {
-      result.push(mirror);
-    }
-  }
-  return result;
-}
-
 /**
  * A representation of a finite subgroup of O(3). "Representation" is in the formal, group-theoretic
  * sense, i.e. a set of 3x3 orthogonal matrices ("symmetries") with the following properties:
@@ -381,7 +371,9 @@ export class SymmetryGroup {
     // fixed this bug.
     const baseEdgePosition = regular
       ? schwarzTriangleVertices[1]
-      : schwarzTriangleVertices[1].clone().lerp(schwarzTriangleVertices[2], 0.3);
+      : schwarzTriangleVertices[1]
+          .clone()
+          .lerp(schwarzTriangleVertices[2], 0.3);
     const baseEdgeEndpoint1 = GENERATOR_POINT.clone();
     const baseEdgeEndpoint2 = GENERATOR_POINT.clone().applyMatrix3(
       this.operators[0],
