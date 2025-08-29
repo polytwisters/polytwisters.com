@@ -82,7 +82,8 @@ export class PolytwisterSymbol {
   }
 
   isBloated(): boolean {
-    return this.ring.d > this.ring.n / 2;
+    // return this.ring.d > this.ring.n / 2;
+    return false;
   }
 
   isRegular(): boolean {

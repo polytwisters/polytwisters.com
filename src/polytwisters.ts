@@ -74,7 +74,39 @@ export class Polytwister {
       );
       logs.push(logPoint);
     }
-    return new Polytwister(logs, rings, polyhedron, symbol.isBloated());
+
+    // Try to find a twister that is not a digon. 
+    const faceIndex = polyhedron.faces.findIndex((face) => face.vertices.length > 2);
+    let bloated = false;
+    if (faceIndex === -1) {
+      // This is a dyadic twister, derive bloatedness from ring figure.
+      bloated = symbol.ring.d > symbol.ring.n / 2;
+    } else {
+      const adjacentFaceIndices = polyhedron.getAdjacentFaceIndices(faceIndex);
+      // Intersect the containing pipes of this twister and two adjacent ones that form a ring.
+      const tmp = C2.intersect(
+        logs[faceIndex], logs[adjacentFaceIndices[0]], logs[adjacentFaceIndices[1]]
+      );
+      // One of these radii should be 1, the other won't be.
+      const radius1 = tmp[0].abs();
+      const radius2 = tmp[1].abs();
+      if (Math.abs(radius1 - radius2) < 1e-3) {
+        throw new Error("Bloatedness test failed");
+      }
+      let outer = false;
+      if (Math.abs(radius1 - 1) < 1e-3) {
+        outer = radius2 < 1;
+      } else if (Math.abs(radius2 - 1) < 1e-3) {
+        outer = radius1 < 1;
+      } else {
+        throw new Error("This shouldn't happen");
+      }
+      console.log(outer ? "outer" : "inner");
+      const twisterSymbol = polyhedron.faces[faceIndex].symbol;
+      bloated = (twisterSymbol.d > twisterSymbol.n / 2) !== outer;
+    }
+
+    return new Polytwister(logs, rings, polyhedron, bloated);
   }
 
   get numLogs(): number {
