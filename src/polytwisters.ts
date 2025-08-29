@@ -4,6 +4,7 @@ import { Polyhedron, symbolToPolyhedron } from "./wythoff";
 import { PolytwisterSymbol } from "./symbol";
 import { C2 } from "./complex";
 import { square } from "./mathUtils";
+import * as arcPolygon from "./arcPolygon";
 
 export function getTorusMaxRadius(p1: C2, p2: C2): number {
   // Transform the pair (p1, p2) so that p2 = (1, 0).
@@ -155,6 +156,50 @@ export class Polytwister {
     return this.scale(1 / radius);
   }
 
+  getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
+    const n = this.polyhedron.faces[twisterIndex].vertices.length;
+    const symbol = this.polyhedron.faces[twisterIndex].symbol;
+    const rotationNumber = symbol.d;
+    const adjacentTwisterIndex = this.polyhedron.getAdjacentFaceIndices(twisterIndex)[0];
+    const log = this.logs[twisterIndex];
+    const normalizingTransform = log.normalizingSU2Matrix();
+    const k = 1 / log.abs();
+    const z = this.logs[adjacentTwisterIndex]
+      .multiplyBySU2Matrix(normalizingTransform)
+      .mulReal(k)
+      .makeBReal();
+    const a = z.a;
+    const b = z.b.real;
+    const radius = 1 / b;
+    const circleCenterDistance = a.abs() / b;
+    const normalizedRadius = radius / circleCenterDistance;
+    const radiusIndex = arcPolygon.getRadiusIndex(n, normalizedRadius);
+    const filling = arcPolygon.regions(
+      n,
+      radiusIndex,
+      rotationNumber,
+      this.bloated
+    );
+    console.log(`symbol = ${symbol.n}/${symbol.d}, q = ${radiusIndex}, r = ${normalizedRadius}`)
+    return filling;
+  }
+
+  getTwisterFillingCode(twisterIndex: number): string {
+    const regions = this.getTwisterFilling(twisterIndex);
+    const parts = [];
+    for (let { order, mode } of regions) {
+      const tmp = `order == ${order}`;
+      if (mode === arcPolygon.RegionMode.Both) {
+        parts.push(tmp);
+      } else if (mode === arcPolygon.RegionMode.Inner) {
+        parts.push(`(${tmp} && inner)`);
+      } else if (mode === arcPolygon.RegionMode.Outer) {
+        parts.push(`(${tmp} && outer)`);
+      }
+    }
+    return parts.join(" || ");
+  }
+
   twisterCode(): string {
     const parts = [];
     for (const [twisterIndex, face] of this.polyhedron.faces.entries()) {
@@ -176,44 +221,27 @@ export class Polytwister {
         vec3 point = Ray_at(ray, t);
         int n = ${n};
         int d = ${d};
-        int count = 0;
         float ringRadius = ${this.rings[0].abs()};
         float cutoffRadius = 1.0 / sqrt(square(ringRadius * length(pipes[${twisterIndex}])) - 1.0);
-        bool inRing = Pipe_antipode_contains(
+        bool inner = Pipe_antipode_contains(
           Pipe(pipes[${twisterIndex}] * cutoffRadius, crossSectionW), point
         );
-        bool inAnywhere = inRing;
+        bool outer = !inner;
+        int order = 0;
       `);
       for (let adjacentTwisterIndex of adjacentTwisterIndices) {
         tmp.push(`
           if (Pipe_contains(Pipe(pipes[${adjacentTwisterIndex}], crossSectionW), point)) {
-            count++;
-            inAnywhere = true;
+            order++;
           }
         `);
       }
-      if (this.bloated) {
-        tmp.push(`
-          bool inTwister = (
-            (
-              d % 2 == 0
-                ? count < d && count % 2 == 1
-                : count > d || count % 2 == 1
-            ) || count == 0
-          ) && inAnywhere;
-        `);
-      } else {
-        tmp.push(`
-          bool inTwister = (
-            (
-              (n + 1 - d - count) % 2 == 0
-              && count >= n + 1 - d
-            ) || count == 0
-          ) && inAnywhere;
-        `);
-      }
+
+      const fillingCode = this.getTwisterFillingCode(twisterIndex);
+      tmp.push(`bool fill = ${fillingCode};`);
+
       tmp.push(`
-        if (inTwister) {
+        if (fill) {
           tmin = min(tmin, t);
         }
       `);
