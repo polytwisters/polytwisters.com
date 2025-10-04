@@ -27,8 +27,16 @@ const canvasHeight = 300;
 
 const { faceIndex } = defineProps<{ faceIndex: number }>();
 const face = computed(() => polytwister.value.polyhedron.faces[faceIndex]);
-const rotationNumber = computed(() => face.value.symbol.d);
+const symbolN = computed(() => face.value.symbol.n);
+const symbolDenominator = computed(() => face.value.symbol.d);
 const bloated = computed(() => polytwister.value.bloated);
+
+const verticesOuter = computed(() => polytwister.value.outerRings[face.value.orbit]);
+const d = computed(() =>
+  symbolDenominator.value > symbolN.value / 2
+  ? symbolN.value - symbolDenominator.value
+  : symbolDenominator.value
+);
 
 let tmp = computed(() => {
   const polyhedron = polytwister.value.polyhedron;
@@ -81,11 +89,15 @@ const normalizedCircleRadius = computed(() => {
 const radiusIndex = computed(() =>
   arcPolygon.getRadiusIndex(numCircles.value, normalizedCircleRadius.value),
 );
+const q = computed(() =>
+  arcPolygon.safeFloor(radiusIndex.value),
+);
 const filling: Ref<arcPolygon.Region[]> = computed(() =>
   arcPolygon.regions(
     numCircles.value,
-    radiusIndex.value,
-    rotationNumber.value,
+    q.value,
+    d.value,
+    verticesOuter.value,
     polytwister.value.bloated,
   ),
 );
@@ -277,8 +289,11 @@ onMounted(() => {
 
 <template>
   <div>
-    n = {{ numCircles }}, d = {{ rotationNumber }}, q = {{ radiusIndex }},
-    bloated = {{ bloated }}
+    n = {{ numCircles }},
+    q = {{ q === Infinity ? "\u221e" : q }},
+    d = {{ d }},
+    v = {{ verticesOuter ? "+" : "-" }},
+    i = {{ bloated ? "+" : "-" }}
     <canvas
       ref="canvas"
       :width="canvasWidth"

@@ -2,10 +2,6 @@
  * In this module, an (n, r) circle configuration is a set of n circles whose centers are positioned
  * at the vertices of a regular n-gon and are all of distance 1 from the origin, and all their radii
  * are r.
- *
- * If r starts from 0 and increases, the adjacency graph of region classes changes and is assigned
- * an index. Index 0 is a degenerate case where no circles intersect. Index Math.ceil(n / 2) is the
- * case where all circles contain the origin.
  */
 
 /**
@@ -35,12 +31,16 @@ export function getExampleRadius(n: number, q: number): number {
   return (criticalRadii[q] + criticalRadii[q + 1]) / 2;
 }
 
-/**
- * Get the index that identifies the graph. Will be between 1 and Math.ceil(n / 2) inclusive.
- */
 export function getRadiusIndex(n: number, r: number): number {
-  const criticalRadii = getCriticalRadii(n).reverse();
-  return criticalRadii.length - 1 - criticalRadii.findIndex((r2) => r > r2);
+  if (r >= 1) {
+    return Infinity;
+  }
+  return n * Math.asin(r) / Math.PI;
+}
+
+const EPSILON = 1e-3;
+export function safeFloor(n: number): number {
+  return Math.floor(n + EPSILON);
 }
 
 export enum RegionMode {
@@ -56,16 +56,17 @@ export interface Region {
 
 /**
  * Return the filled-in regions for a binary filling, given n, radius index q, rotation number d,
- * and bloatedness.
+ * and booleans on vertex and arcs.
  */
 export function regions(
   n: number,
   q: number,
   d: number,
-  bloated: boolean,
+  verticesOuter: boolean,
+  arcsOuter: boolean,
 ): Region[] {
-  if (q === Math.ceil(n / 2)) {
-    // Create a list of all regions from 0 to n inclusive, outer to inner.
+  if (q === Infinity) {
+    // Create a list of all regions from [0] to [n] inclusive, outer to inner.
     const allRegions: Region[] = [];
     for (let i = 0; i <= n; i++) {
       allRegions.push({ order: i, mode: RegionMode.Both });
@@ -73,12 +74,10 @@ export function regions(
 
     // List of fundamental arcs. arcs[i] is incident on regions[i] and regions[i + 1].
     const arcs: boolean[] = Array(allRegions.length - 1).fill(false);
-    // Turn on the last d arcs for non-bloated case, first d arcs for bloated case.
-    for (let i = 0; i < d; i++) {
-      arcs[i] = true;
-    }
-    if (!bloated) {
-      arcs.reverse();
+
+    const vertexIndex = verticesOuter ? d : arcs.length - d;
+    for (let i = 0; i < arcs.length; i++) {
+      arcs[i] = (i < vertexIndex) === arcsOuter;
     }
 
     // Color regions excluded = false, included = true.
@@ -121,13 +120,9 @@ export function regions(
     // List of fundamental arcs. arcs[i] is incident on regions[i] and regions[i + 1].
     // There is one special arc missing, the one joining [q] to [q+1]. We'll handle that later.
     const mainArcs: boolean[] = Array(mainRegions.length - 1).fill(false);
-    const numMainArcs = d < n / 2 ? d : 2 * q + (d - n); // I have no idea how this works.
-    // Turn on the last numMainArcs for non-bloated case, first numMainArcs for bloated case.
-    for (let i = 0; i < numMainArcs; i++) {
-      mainArcs[i] = true;
-    }
-    if (!bloated) {
-      mainArcs.reverse();
+    const vertexIndex = verticesOuter ? d : mainArcs.length - d;
+    for (let i = 0; i < mainArcs.length; i++) {
+      mainArcs[i] = (i < vertexIndex) === arcsOuter;
     }
 
     const mainRegionColors: boolean[] = [];
@@ -142,7 +137,7 @@ export function regions(
     }
 
     // Now for the arc between [q] and [q+1].
-    const loopArc = d > n / 2;
+    const loopArc = verticesOuter !== arcsOuter;
     const includeLoopRegion = mainRegionColors[q] !== loopArc;
 
     // Convert the list of colors into actual Region objects.

@@ -41,17 +41,20 @@ export class Polytwister {
   logs: C2[];
   rings: C2[];
   polyhedron: Polyhedron;
+  outerRings: boolean[];
   bloated: boolean;
 
   constructor(
     logs: C2[],
     rings: C2[],
     polyhedron: Polyhedron,
+    outerRings: boolean[],
     bloated: boolean,
   ) {
     this.logs = logs;
     this.rings = rings;
     this.polyhedron = polyhedron;
+    this.outerRings = outerRings;
     this.bloated = bloated;
   }
 
@@ -76,38 +79,52 @@ export class Polytwister {
       logs.push(logPoint);
     }
 
-    // Try to find a twister that is not a digon. 
-    const faceIndex = polyhedron.faces.findIndex((face) => face.vertices.length > 2);
-    let bloated = false;
-    if (faceIndex === -1) {
-      // This is a dyadic twister, derive bloatedness from ring figure.
-      bloated = symbol.ring.d > symbol.ring.n / 2;
-    } else {
-      const adjacentFaceIndices = polyhedron.getAdjacentFaceIndices(faceIndex);
-      // Intersect the containing pipes of this twister and two adjacent ones that form a ring.
-      const tmp = C2.intersect(
-        logs[faceIndex], logs[adjacentFaceIndices[0]], logs[adjacentFaceIndices[1]]
+    const bloated = symbol.isRegular()
+      ? symbol.ring.n / symbol.ring.d < 2
+      : symbol.ring.n / symbol.ring.d < 1;
+    
+    const ringOuter = [];
+    for (let orbit = 0; orbit < polyhedron.numFaceOrbits; orbit++) {
+      const faceIndex = polyhedron.faces.findIndex((face) => face.orbit === orbit);
+      if (faceIndex === -1) {
+        throw new Error(`This shouldn't happen, no face found with orbit ${orbit}`);
+      }
+      const outer = Polytwister.computeTwisterRingOrientation(
+        polyhedron, logs, faceIndex
       );
-      // One of these radii should be 1, the other won't be.
-      const radius1 = tmp[0].abs();
-      const radius2 = tmp[1].abs();
-      if (Math.abs(radius1 - radius2) < 1e-3) {
-        throw new Error("Bloatedness test failed");
-      }
-      let outer = false;
-      if (Math.abs(radius1 - 1) < 1e-3) {
-        outer = radius2 < 1;
-      } else if (Math.abs(radius2 - 1) < 1e-3) {
-        outer = radius1 < 1;
-      } else {
-        throw new Error("This shouldn't happen");
-      }
-      console.log(outer ? "outer" : "inner");
-      const twisterSymbol = polyhedron.faces[faceIndex].symbol;
-      bloated = (twisterSymbol.d > twisterSymbol.n / 2) !== outer;
+      ringOuter.push(outer);
     }
+  
+    return new Polytwister(logs, rings, polyhedron, ringOuter, bloated);
+  }
 
-    return new Polytwister(logs, rings, polyhedron, bloated);
+  /**
+   * Given a polyhedron and its logs, assuming its ring radius is 1, return true if the given
+   * twister index has rings outer.
+   */
+  static computeTwisterRingOrientation(
+    polyhedron: Polyhedron,
+    logs: C2[],
+    faceIndex: number
+  ) {
+    const adjacentFaceIndices = polyhedron.getAdjacentFaceIndices(faceIndex);
+    // Intersect the containing pipes of this twister and two adjacent ones that form a ring.
+    const tmp = C2.intersect(
+      logs[faceIndex], logs[adjacentFaceIndices[0]], logs[adjacentFaceIndices[1]]
+    );
+    if (tmp.length === 0) {
+      throw new Error("This shouldn't happen");
+    }
+    const radius1 = tmp[0].abs();
+    const radius2 = tmp[1].abs();
+    const EPSILON = 1e-5;
+    if (Math.abs(radius1 - 1.0) < EPSILON) {
+      return radius2 < 1.0;
+    }
+    if (Math.abs(radius2 - 1.0) < EPSILON) {
+      return radius1 < 1.0;
+    }
+    return false;
   }
 
   get numLogs(): number {
@@ -135,6 +152,10 @@ export class Polytwister {
     return 1.0;
   }
 
+  ringRadius(): number {
+    return this.rings[0].abs();
+  }
+
   /**
    * Uniformly scale the polytwister by a factor k. This multiples all the log points by 1 / k since
    * log radii have an inverse relationship to the norm of the log points.
@@ -144,6 +165,7 @@ export class Polytwister {
       this.logs.map((x) => x.mulReal(1 / k)),
       this.rings.map((x) => x.mulReal(k)),
       this.polyhedron,
+      this.outerRings,
       this.bloated,
     );
   }
@@ -159,7 +181,9 @@ export class Polytwister {
   getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
     const n = this.polyhedron.faces[twisterIndex].vertices.length;
     const symbol = this.polyhedron.faces[twisterIndex].symbol;
-    const rotationNumber = symbol.d;
+
+    const d = symbol.d > n / 2 ? n - symbol.d : symbol.d;
+
     const adjacentTwisterIndex = this.polyhedron.getAdjacentFaceIndices(twisterIndex)[0];
     const log = this.logs[twisterIndex];
     const normalizingTransform = log.normalizingSU2Matrix();
@@ -173,14 +197,15 @@ export class Polytwister {
     const radius = 1 / b;
     const circleCenterDistance = a.abs() / b;
     const normalizedRadius = radius / circleCenterDistance;
+
     const radiusIndex = arcPolygon.getRadiusIndex(n, normalizedRadius);
+    const q = arcPolygon.safeFloor(radiusIndex);
+
+    const ringsOuter = this.outerRings[this.polyhedron.faces[twisterIndex].orbit];
+
     const filling = arcPolygon.regions(
-      n,
-      radiusIndex,
-      rotationNumber,
-      this.bloated
+      n, q, d, ringsOuter, this.bloated
     );
-    console.log(`symbol = ${symbol.n}/${symbol.d}, q = ${radiusIndex}, r = ${normalizedRadius}`)
     return filling;
   }
 

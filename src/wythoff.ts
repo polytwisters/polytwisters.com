@@ -44,11 +44,13 @@ export class Polyhedron {
   vertices: Vertex[];
   edges: Edge[];
   faces: Face[];
+  numFaceOrbits: number;
 
-  constructor(vertices: Vertex[], edges: Edge[], faces: Face[]) {
+  constructor(vertices: Vertex[], edges: Edge[], faces: Face[], numFaceOrbits: number) {
     this.vertices = vertices;
     this.edges = edges;
     this.faces = faces;
+    this.numFaceOrbits = numFaceOrbits;
   }
 
   /**
@@ -485,7 +487,9 @@ export class SymmetryGroup {
       faces = facesA.concat(facesB);
     }
 
-    return new Polyhedron(vertices, edges, faces);
+    const numFaceOrbits = regular ? 1 : 2;
+
+    return new Polyhedron(vertices, edges, faces, numFaceOrbits);
   }
 }
 
