@@ -1003,7 +1003,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "small ditetragonary bloated cubioctatwister",
-    acronym: "satdablicoter",
+    acronym: "sadtablicoter",
     symbol: [3, 4, [4, 5]],
   },
   {
@@ -1013,8 +1013,8 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "great ditetragonary bloated cubioctatwister",
-    acronym: "gatdablicoter",
-    symbol: [3, 4, [4, 5]],
+    acronym: "gadtablicoter",
+    symbol: [[3, 2], [4, 3], [4, 5]],
   },
   {
     name: "cubibloated cubitwister",
