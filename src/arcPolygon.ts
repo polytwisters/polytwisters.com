@@ -1,36 +1,21 @@
 /**
- * In this module, an (n, r) circle configuration is a set of n circles whose centers are positioned
- * at the vertices of a regular n-gon and are all of distance 1 from the origin, and all their radii
- * are r.
+ * In this module, an (n, r) circle configuration is a set of n circles whose
+ * centers are positioned at the vertices of a regular n-gon and are all of
+ * distance 1 from the origin, and all their radii are r. The circles are
+ * numbered C0, C1, C2, ..., C(n-1).
  */
 
 /**
- * Return the radii of an (n, r) circle configuration where r crosses a threshold that changes the
- * adjacency graph. These radii are 0, 1, half the edge length, and half the length of every
- * diagonal. There will be Math.ceil(n / 2) + 1 of them.
+ * Given an (n, r) circle configuration, return the "radius index" which
+ * indicates how much the circles overlap. The radius index determines the
+ * combinatorial structure of the circle configuration as follows:
+ *
+ * - If the radius index is Infinity, then the circles all contain the origin.
+ * - If the radius index is an integer, then there are tangent circles.
+ * - If the radius index is a non-integer, then if we set
+ * q = floor(radius index) then circles C0 and Cq intersect at two points, but
+ * C0 and Ck do not for all 0 < k < q.
  */
-export function getCriticalRadii(n: number): number[] {
-  const result = [];
-  for (let q = 0; q < Math.ceil(n / 2); q++) {
-    const angle = (q * 2 * Math.PI) / n;
-    const radius = Math.hypot(1 - Math.cos(angle), Math.sin(angle)) / 2;
-    result.push(radius);
-  }
-  result.push(1.0);
-  return result;
-}
-
-/**
- * Return a radius of (n, r) circle configuration which has index q. Used for testing purposes.
- */
-export function getExampleRadius(n: number, q: number): number {
-  const criticalRadii = getCriticalRadii(n);
-  if (q >= Math.ceil(n / 2)) {
-    return 2;
-  }
-  return (criticalRadii[q] + criticalRadii[q + 1]) / 2;
-}
-
 export function getRadiusIndex(n: number, r: number): number {
   if (r >= 1) {
     return Infinity;
@@ -55,8 +40,32 @@ export interface Region {
 }
 
 /**
- * Return the filled-in regions for a binary filling, given n, radius index q, rotation number d,
- * and booleans on vertex and arcs.
+ * Compute the binary filling of an arc-polygon. The curve is specified by the
+ * following parameters:
+ *
+ * - n, the number of circles
+ * - q, the "radius index" which is Infinity if the circles contain the center
+ * of the arc-polygon, and otherwise a finite integer such that circles C0 and
+ * Cq intersect but circles C0 and Ck do not overlap for all 0 < k < q
+ * - d, the central winding number of the arc-polygon. Note that this is not
+ * necessarily the denominator of the twister symbol n/D, as it is always less
+ * than n/2. The denominator of the twister symbol n/D can be converted to d
+ * with d = D < n/2 ? n - D : d.
+ * - verticesOuter: with the above parameters, there are usually two possible
+ * sets of vertices. If this boolean is true then pick the outer set, otherwise
+ * the inner set.
+ * - arcsOuter: with all the above fixed, there are still two possible
+ * arc-polygons, one inner and outer. Select the outer one if this is true.
+ *
+ * The output is in the form of an array of Region objects. Regions come in
+ * three types:
+ *
+ * - { order: k, mode: RegionMode.Both } is all points that are contained inside
+ * exactly k circles.
+ * - { order: k, mode: RegionMode.Inner } is all points that are contained
+ * inside exactly k circles but are close to the origin.
+ * - { order: k, mode: RegionMode.Outer } is all points that are contained
+ * inside exactly k circles but are far from the origin.
  */
 export function regions(
   n: number,

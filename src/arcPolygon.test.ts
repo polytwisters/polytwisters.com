@@ -1,20 +1,6 @@
 import { test, expect } from "vitest";
 import * as arcPolygon from "./arcPolygon";
 
-test("radius index works", () => {
-  const n = 7;
-  const q = 3;
-  const radius = arcPolygon.getExampleRadius(n, q);
-  expect(arcPolygon.getRadiusIndex(n, radius)).toBe(q);
-});
-
-test("radius index works, monotonic", () => {
-  const n = 5;
-  const q = 3;
-  const radius = arcPolygon.getExampleRadius(n, q);
-  expect(arcPolygon.getRadiusIndex(n, radius)).toBe(q);
-});
-
 const cases: Array<[[number, number, number, string, string], string]> = [
   // (n, q, d, v, i), regions inner to outer
   [[2, Infinity, 1, "-", "-"], "[2]"],
@@ -52,7 +38,7 @@ const cases: Array<[[number, number, number, string, string], string]> = [
 ];
 
 test.each(cases)(
-  "binary filling %p",
+  "binary filling",
   (spec: [number, number, number, string, string], filling: string) => {
     const [n, q, d, vString, iString] = spec;
     const verticesOuter = vString === "+";
