@@ -11,7 +11,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
-        arc_polygon: resolve(__dirname, "arc_polygon.html"),
       },
     },
   },

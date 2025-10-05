@@ -135,11 +135,6 @@ function bloatedRectifiedDyadicTwister(
   };
 }
 
-const bugs = {
-  WRONG_POLYTWISTER: "Wrong polytwister",
-  STRANDS: "Weird strands",
-};
-
 const specsSporadic: PolytwisterDefSpec[] = [
   {
     name: "tetratwister",
