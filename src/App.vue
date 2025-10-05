@@ -477,8 +477,8 @@ const cameraDirection = camera.direction;
               <div class="material">warning</div>
               <p>
                 Your browser may freeze briefly when loading polytwisters while
-                the shader compiles. To avoid this, use macOS or Linux instead
-                of Windows.
+                the shader compiles. Unfortunately, there is no solution to this
+                except to use macOS or Linux instead of Windows.
               </p>
               <div class="material text-sm!">close</div>
             </div>
