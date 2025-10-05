@@ -50,6 +50,15 @@ export class PolytwisterSymbol {
     this.regular = regular;
   }
 
+  asJSON(): any {
+    return {
+      ring: this.ring,
+      twister1: this.twister1,
+      twister2: this.twister2,
+      regular: this.regular
+    };
+  }
+
   toString_(): string {
     const a = fractionToString(this.twister1);
     const b = fractionToString(this.twister2);

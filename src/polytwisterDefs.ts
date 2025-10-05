@@ -51,6 +51,16 @@ export class PolytwisterDef {
       id: this.id(),
     };
   }
+
+  asJSON(): any {
+    return {
+      name: this.name,
+      acronym: this.acronym,
+      index: this.index,
+      symbol: this.symbol.asJSON(),
+      symbolString: this.symbol.toString_(),
+    };
+  }
 }
 
 export interface PolytwisterFields {
@@ -101,6 +111,10 @@ export class PolytwisterDatabase {
     let index = this.findIndexByID(id);
     const newIndex = (index - 1 + this.defs.length) % this.defs.length;
     return this.defs[newIndex].id();
+  }
+
+  asJSON(): any {
+    return this.defs.map((x) => x.asJSON());
   }
 }
 
@@ -289,7 +303,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "small quasistellated dodecatwister",
-    acronym: "soquissiditer",
+    acronym: "siquissiditer",
     symbol: [[5, 3], 5],
   },
   {
@@ -341,7 +355,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "great quasistellated dodecatwister",
-    acronym: "gaquassiditer",
+    acronym: "gaquissiditer",
     symbol: [[5, 3], 3],
   },
   {
@@ -685,12 +699,12 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "great quasisheaved dodecatwister",
-    acronym: "gaquividiter",
+    acronym: "gaquaviditer",
     symbol: [2, [5, 4], [5, 2]],
   },
   {
     name: "great bloatosheaved dodecatwister",
-    acronym: "gablividiter",
+    acronym: "gablaviditer",
     symbol: [2, 5, [5, 3]],
   },
   {
@@ -876,12 +890,12 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "great quasiplated dodecatwister",
-    acronym: "gaquipiditer",
+    acronym: "gaquapiditer",
     symbol: [2, [5, 4], [5, 7]],
   },
   {
     name: "great bloatoplated dodecatwister",
-    acronym: "gablipiditer",
+    acronym: "gablapiditer",
     symbol: [2, 5, [5, 8]],
   },
   {
@@ -1071,7 +1085,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "great quasiditrigonary bloatoicosidodecatwister",
-    acronym: "gadquidtabliditer",
+    acronym: "gaquidtabliditer",
     symbol: [[5, 2], 3, [3, 5]],
   },
   {
@@ -1155,7 +1169,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
     symbol: [[3, 2], 5, 5],
   },
   {
-    name: "great retrodekicosatwister",
+    name: "great retrododekicosatwister",
     acronym: "gorditer",
     symbol: [
       [3, 2],
@@ -1375,13 +1389,13 @@ const specsSporadic: PolytwisterDefSpec[] = [
     symbol: [3, 5, [5, 3]],
   },
   {
-    name: "great dipentagonary icosidodecatwister",
-    acronym: "gidpiditer",
+    name: "great dipentagonary dodekicosatwister",
+    acronym: "gidpoditer",
     symbol: [3, [5, 4], [5, 2]],
   },
   {
-    name: "great dipentagonary dodekicosatwister",
-    acronym: "gidpoditer",
+    name: "great dipentagonary icosidodecatwister",
+    acronym: "gidpiditer",
     symbol: [3, [5, 2], [5, 4]],
   },
 
