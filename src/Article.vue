@@ -31,20 +31,17 @@ const vAutoKatex = {
         <ul class="list-disc list-inside">
           <li>Not mobile friendly at the moment.</li>
           <li>
-            On Windows, browser freezes briefly when switching polytwisters as the
-            shaders are compiled.
+            On Windows, browser freezes briefly when switching polytwisters as
+            the shaders are compiled.
           </li>
         </ul>
       </section>
       <section class="flex-1">
         <h1>Future plans</h1>
-        <ul class="">
-          <li>All 200+ uniform polytwisters</li>
-          <li>Custom polytwister construction</li>
-          <li>Display of combinatorial structure</li>
-          <li>Mesh export for use in other software or 3D printing</li>
+        <ul>
           <li>Cross sections at oblique angles</li>
-          <li>SDF renderer</li>
+          <li>Display of combinatorial structure (rings, strips)</li>
+          <li>Mesh export for use in other software or 3D printing</li>
           <li>Paper explaining the mathematics of polytwisters</li>
         </ul>
       </section>
@@ -125,8 +122,8 @@ const vAutoKatex = {
       A major part of this project was establishing a formal definition of
       polytwisters for the first time. This section defines convex polytwisters,
       and less formally describes strips, twisters, and nonconvex polytwisters.
-      It is intentionally terse because as of April 2025, I am working on a paper
-      which elaborates greatly on this.
+      It is intentionally terse because as of April 2025, I am working on a
+      paper which elaborates greatly on this.
     </p>
 
     <p>
@@ -203,14 +200,15 @@ const vAutoKatex = {
     <p>
       Taking further set operations on pipes and logs gives us the face lattice
       of the polytwister. A strip can be formed as the intersection of two pipes
-      and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\). In \(\mathbb{R}^4\)
-      it is an embedding of the cylinder, and its topological boundary is two fibers.
-      Unlike line segments, strips are not uniquely determined by their boundary: there
-      are infinitely many strips between a pair of fibers, and they bow out in different
-      amounts depending on the orienation of the pipes.
-      Finally, a twister (2-face) is formed by the intersection of one pipe and two or more logs,
-      such as \(L(y_1) \cap L(y_2) \cap P(y_3)\), and its boundary is a set of two or more strips.
-      (I am being informal here and leaving out some degeneracy conditions.)
+      and at least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\). In
+      \(\mathbb{R}^4\) it is an embedding of the cylinder, and its topological
+      boundary is two fibers. Unlike line segments, strips are not uniquely
+      determined by their boundary: there are infinitely many strips between a
+      pair of fibers, and they bow out in different amounts depending on the
+      orienation of the pipes. Finally, a twister (2-face) is formed by the
+      intersection of one pipe and two or more logs, such as \(L(y_1) \cap
+      L(y_2) \cap P(y_3)\), and its boundary is a set of two or more strips. (I
+      am being informal here and leaving out some degeneracy conditions.)
     </p>
 
     <p>
@@ -218,10 +216,10 @@ const vAutoKatex = {
       <a href="https://en.wikipedia.org/wiki/Abstract_polytope">
         abstract 3-polytopes
       </a>
-      with a realization that maps each facet (twister) to a pipe called its "containing pipe,"
-      each edge to a strip, and each vertex to a ring (fiber), such that each strip's incident rings
-      are precisely its boundary, and each twister's incident strips are subsets of its containing
-      pipe.
+      with a realization that maps each facet (twister) to a pipe called its
+      "containing pipe," each edge to a strip, and each vertex to a ring
+      (fiber), such that each strip's incident rings are precisely its boundary,
+      and each twister's incident strips are subsets of its containing pipe.
     </p>
 
     <p>
@@ -247,15 +245,22 @@ const vAutoKatex = {
     </p>
 
     <p>
-      Thanks foremost to Jonathan Bowers for giving me access to his original
-      POV-Ray code and answering my many questions. I'm also grateful to members
-      of the
+      Thanks foremost to
+      <a href="https://www.polytope.net/hedrondude/home.htm">Jonathan Bowers</a>
+      for giving me access to his original POV-Ray code and answering my many
+      questions. I'm also grateful to members of the
       <a href="https://polytope.miraheze.org/" target="_blank">Polytope Wiki</a>
-      and Discord for their assistance, in particular Violeta, galoomba, and
-      PlanetN9ne.
+      and Discord for their assistance, in particular galoomba, Violeta,
+      PlanetN9ne, <a href="https://shapery.net/">ThePokemonkey123</a>, and
+      Mecejide.
     </p>
 
     <h2>Changelog</h2>
+
+    <p>
+      2025-10-04: All 222 uniform polytwisters and three infinite families are
+      implemented.
+    </p>
 
     <p>2025-06-13: Added 142 uniform polytwisters.</p>
 
