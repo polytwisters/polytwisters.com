@@ -486,7 +486,6 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "small dodecaquasidodecatwister",
     acronym: "sidquiditer",
     symbol: [5, [5, 3], 2],
-    bug: "5/3 twisters have wrong filling method",
   },
   {
     name: "quasidodecadodecatwister",
@@ -588,13 +587,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "bloatosheaved tetratwister",
     acronym: "blivitter",
     symbol: [2, 3, [3, 2]],
-    bug: "Incorrectly produces quasiplated tetratwister",
   },
   {
     name: "invertisheaved tetratwister",
     acronym: "ivitter",
     symbol: [2, [3, 2], [3, 2]],
-    bug: "Incorrectly produces plated tetratwister",
   },
 
   {
@@ -611,13 +608,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "bloatosheaved cube twister",
     acronym: "blivicter",
     symbol: [2, 4, [3, 2]],
-    bug: "Incorrectly produces quasiplated cube twister",
   },
   {
     name: "invertisheaved cube twister",
     acronym: "ivicter",
     symbol: [2, [4, 3], [3, 2]],
-    bug: "Incorrectly produces plated cube twister",
   },
 
   {
@@ -634,13 +629,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "bloatosheaved octatwister",
     acronym: "blivoter",
     symbol: [2, 3, [4, 3]],
-    bug: "Incorrectly produces quasiplated octatwister",
   },
   {
     name: "invertisheaved octatwister",
     acronym: "ivoter",
     symbol: [2, [3, 2], [4, 3]],
-    bug: "Incorrectly produces plated octatwister",
   },
 
   {
@@ -657,13 +650,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "bloatosheaved dodecatwister",
     acronym: "blividiter",
     symbol: [2, 5, [3, 2]],
-    bug: "Incorrectly produces quasiplated dodecatwister",
   },
   {
     name: "invertisheaved dodecatwister",
     acronym: "ividiter",
     symbol: [2, [5, 4], [3, 2]],
-    bug: "Incorrectly produces plated dodecatwister",
   },
 
   {
@@ -680,13 +671,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "bloatosheaved icosatwister",
     acronym: "bliviketer",
     symbol: [2, 3, [5, 4]],
-    bug: "Incorrectly produces quasiplated icosatwister",
   },
   {
     name: "invertisheaved icosatwister",
     acronym: "iviketer",
     symbol: [2, [3, 2], [5, 4]],
-    bug: "Incorrectly produces plated icosatwister",
   },
 
   {
@@ -703,13 +692,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "great bloatosheaved dodecatwister",
     acronym: "gablividiter",
     symbol: [2, 5, [5, 3]],
-    bug: "Incorrectly produces great quasiplated dodecatwister",
   },
   {
     name: "great invertisheaved dodecatwister",
     acronym: "gividiter",
     symbol: [2, [5, 4], [5, 3]],
-    bug: "Incorrectly produces great plated dodecatwister",
   },
 
   {
@@ -726,13 +713,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "bloatostellisheaved dodecatwister",
     acronym: "blisviditer",
     symbol: [2, [5, 2], [5, 4]],
-    bug: "Incorrectly produces quasistelliplated dodecatwister",
   },
   {
     name: "invertistellisheaved dodecatwister",
     acronym: "isviditer",
     symbol: [2, [5, 3], [5, 4]],
-    bug: "Incorrectly produces stelliplated dodecatwister",
   },
 
   {
@@ -749,13 +734,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "great bloatosheaved icosatwister",
     acronym: "gabliviter",
     symbol: [2, 3, [5, 3]],
-    bug: "Incorrectly produces great quasiplated icosatwister",
   },
   {
     name: "great invertisheaved icosatwister",
     acronym: "giviter",
     symbol: [2, [3, 2], [5, 3]],
-    bug: "Incorrectly produces great plated icosatwister",
   },
 
   {
@@ -772,13 +755,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "great bloatostellisheaved dodecatwister",
     acronym: "gablisviditer",
     symbol: [2, [5, 2], [3, 2]],
-    bug: "Incorrectly produces great quasistelliplated dodecatwister",
   },
   {
     name: "great invertistellisheaved dodecatwister",
     acronym: "gise viditer",
     symbol: [2, [5, 3], [3, 2]],
-    bug: "Incorrectly produces great stelliplated dodecatwister",
   },
 
   // Plated cases
@@ -988,19 +969,16 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "small cubiretro-octatwister",
     acronym: "sacroter",
     symbol: [[3, 2], 4, 4],
-    bug: "Filling method error creating weird strands",
   },
   {
     name: "small ditetragonary cubioctatwister",
     acronym: "sadtacoter",
     symbol: [3, 4, [4, 3]],
-    bug: "Produces wrong polytwister",
   },
   {
     name: "great cubiretro-octatwister",
     acronym: "gacroter",
     symbol: [3, [4, 3], 4],
-    bug: "Filling method error creating weird strands",
   },
   {
     name: "great ditetragonary cubioctatwister",
@@ -1010,13 +988,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [4, 3],
       [4, 3],
     ],
-    bug: "Produces wrong polytwister",
   },
   {
     name: "cubiretrocubitwister",
     acronym: "cricter",
     symbol: [4, [4, 3], 3],
-    bug: "Filling method error creating weird strands",
   },
 
   {
@@ -1026,7 +1002,7 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "small ditetragonary bloated cubioctatwister",
-    acronym: "satdablicoter",
+    acronym: "sadtablicoter",
     symbol: [3, 4, [4, 5]],
   },
   {
@@ -1036,9 +1012,12 @@ const specsSporadic: PolytwisterDefSpec[] = [
   },
   {
     name: "great ditetragonary bloated cubioctatwister",
-    acronym: "gatdablicoter",
-    symbol: [3, 4, [4, 5]],
-    bug: bugs.WRONG_POLYTWISTER,
+    acronym: "gadtablicoter",
+    symbol: [
+      [3, 2],
+      [4, 3],
+      [4, 5],
+    ],
   },
   {
     name: "cubibloated cubitwister",
@@ -1059,7 +1038,6 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [3, 2],
       [3, 2],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "quasi ditrigonary icosidodecatwister",
@@ -1070,13 +1048,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "grand ditrigonary icosidodecatwister",
     acronym: "gadtiditer",
     symbol: [[5, 3], 3, [3, 2]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "great icosicositwister",
     acronym: "giiter",
     symbol: [3, [3, 2], [5, 3]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
 
   {
@@ -1121,31 +1097,26 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [3, 2],
       [3, 2],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "small ditrigonary dodekicosatwister",
     acronym: "sidditditer",
     symbol: [[5, 4], 3, 3],
-    bug: bugs.STRANDS,
   },
   {
     name: "great ditrigonary icosidodecatwister",
     acronym: "gidtiditer",
     symbol: [5, 3, [3, 2]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "medial ditrigonary icosidodecatwister",
     acronym: "midtiditer",
     symbol: [5, [3, 2], 3],
-    bug: bugs.STRANDS,
   },
   {
     name: "small icosicositwister",
     acronym: "siiter",
     symbol: [[3, 2], 3, 5],
-    bug: bugs.STRANDS,
   },
 
   {
@@ -1182,7 +1153,6 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "small dodecaretroicosatwister",
     acronym: "sidriter",
     symbol: [[3, 2], 5, 5],
-    bug: bugs.STRANDS,
   },
   {
     name: "great retrodekicosatwister",
@@ -1192,25 +1162,21 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [5, 4],
       [5, 4],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "compact dodeckicosatwister",
     acronym: "coditer",
     symbol: [3, 5, [5, 4]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "great icosiretrododecatwister",
     acronym: "giriditer",
     symbol: [3, [5, 4], 5],
-    bug: bugs.STRANDS,
   },
   {
     name: "small dodecaretrododecatwister",
     acronym: "sidraditer",
     symbol: [5, [5, 4], 3],
-    bug: bugs.STRANDS,
   },
 
   {
@@ -1260,13 +1226,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [5, 3],
       [5, 3],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "small compact dodekicositwister",
     acronym: "scoditer",
     symbol: [3, [5, 2], [5, 3]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "small icosiretrododecatwister",
@@ -1321,7 +1285,6 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "dodecaretrododecatwister",
     acronym: "driditer",
     symbol: [[5, 4], 5, 5],
-    bug: bugs.STRANDS,
   },
   {
     name: "dipentagonary dodecadodecatwister",
@@ -1331,7 +1294,6 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [5, 3],
       [5, 3],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "dodecabloatoretrododecatwister",
@@ -1352,13 +1314,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "ditrigonary dodecadodecatwister",
     acronym: "ditdiditer",
     symbol: [[5, 3], 5, 3],
-    bug: bugs.STRANDS,
   },
   {
     name: "quasiditrigonary dodecadodecatwister",
     acronym: "quiditdiditer",
     symbol: [[5, 2], [5, 4], 3],
-    bug: bugs.STRANDS,
   },
   {
     name: "great ditrigonary dodecadodecatwister",
@@ -1368,13 +1328,11 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [5, 4],
       [3, 2],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "small ditrigonary dodecadodecatwister",
     acronym: "sadtadoditer",
     symbol: [[5, 2], 5, [3, 2]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
 
   {
@@ -1410,25 +1368,21 @@ const specsSporadic: PolytwisterDefSpec[] = [
     name: "small dipentagonary icosidodecatwister",
     acronym: "sidpiditer",
     symbol: [[5, 3], 3, 5],
-    bug: bugs.STRANDS,
   },
   {
     name: "small dipentagonary dodekicosatwister",
     acronym: "sidpoditer",
     symbol: [3, 5, [5, 3]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "great dipentagonary icosidodecatwister",
     acronym: "gidpiditer",
     symbol: [3, [5, 4], [5, 2]],
-    bug: bugs.STRANDS,
   },
   {
     name: "great dipentagonary dodekicosatwister",
     acronym: "gidpoditer",
     symbol: [3, [5, 2], [5, 4]],
-    bug: bugs.WRONG_POLYTWISTER,
   },
 
   {
@@ -1473,7 +1427,6 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [5, 4],
       [5, 3],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "grand dipentagonary icosidodecatwister",
@@ -1483,19 +1436,16 @@ const specsSporadic: PolytwisterDefSpec[] = [
       [5, 3],
       [5, 4],
     ],
-    bug: bugs.WRONG_POLYTWISTER,
   },
   {
     name: "medial dipentagonary dodekicosatwister",
     acronym: "midpoditer",
     symbol: [[3, 2], 5, [5, 2]],
-    bug: bugs.STRANDS,
   },
   {
     name: "medial dipentagonary icosidodecatwister",
     acronym: "midpiditer",
     symbol: [[3, 2], [5, 2], 5],
-    bug: bugs.STRANDS,
   },
 
   {

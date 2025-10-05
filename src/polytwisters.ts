@@ -4,6 +4,7 @@ import { Polyhedron, symbolToPolyhedron } from "./wythoff";
 import { PolytwisterSymbol } from "./symbol";
 import { C2 } from "./complex";
 import { square } from "./mathUtils";
+import * as arcPolygon from "./arcPolygon";
 
 export function getTorusMaxRadius(p1: C2, p2: C2): number {
   // Transform the pair (p1, p2) so that p2 = (1, 0).
@@ -40,17 +41,20 @@ export class Polytwister {
   logs: C2[];
   rings: C2[];
   polyhedron: Polyhedron;
+  outerRings: boolean[];
   bloated: boolean;
 
   constructor(
     logs: C2[],
     rings: C2[],
     polyhedron: Polyhedron,
+    outerRings: boolean[],
     bloated: boolean,
   ) {
     this.logs = logs;
     this.rings = rings;
     this.polyhedron = polyhedron;
+    this.outerRings = outerRings;
     this.bloated = bloated;
   }
 
@@ -74,7 +78,61 @@ export class Polytwister {
       );
       logs.push(logPoint);
     }
-    return new Polytwister(logs, rings, polyhedron, symbol.isBloated());
+
+    const bloated = symbol.isRegular()
+      ? symbol.ring.n / symbol.ring.d < 2
+      : symbol.ring.n / symbol.ring.d < 1;
+
+    const ringOuter = [];
+    for (let orbit = 0; orbit < polyhedron.numFaceOrbits; orbit++) {
+      const faceIndex = polyhedron.faces.findIndex(
+        (face) => face.orbit === orbit,
+      );
+      if (faceIndex === -1) {
+        throw new Error(
+          `This shouldn't happen, no face found with orbit ${orbit}`,
+        );
+      }
+      const outer = Polytwister.computeTwisterRingOrientation(
+        polyhedron,
+        logs,
+        faceIndex,
+      );
+      ringOuter.push(outer);
+    }
+
+    return new Polytwister(logs, rings, polyhedron, ringOuter, bloated);
+  }
+
+  /**
+   * Given a polyhedron and its logs, assuming its ring radius is 1, return true if the given
+   * twister index has rings outer.
+   */
+  static computeTwisterRingOrientation(
+    polyhedron: Polyhedron,
+    logs: C2[],
+    faceIndex: number,
+  ) {
+    const adjacentFaceIndices = polyhedron.getAdjacentFaceIndices(faceIndex);
+    // Intersect the containing pipes of this twister and two adjacent ones that form a ring.
+    const tmp = C2.intersect(
+      logs[faceIndex],
+      logs[adjacentFaceIndices[0]],
+      logs[adjacentFaceIndices[1]],
+    );
+    if (tmp.length === 0) {
+      throw new Error("This shouldn't happen");
+    }
+    const radius1 = tmp[0].abs();
+    const radius2 = tmp[1].abs();
+    const EPSILON = 1e-5;
+    if (Math.abs(radius1 - 1.0) < EPSILON) {
+      return radius2 < 1.0;
+    }
+    if (Math.abs(radius2 - 1.0) < EPSILON) {
+      return radius1 < 1.0;
+    }
+    return false;
   }
 
   get numLogs(): number {
@@ -102,6 +160,10 @@ export class Polytwister {
     return 1.0;
   }
 
+  ringRadius(): number {
+    return this.rings[0].abs();
+  }
+
   /**
    * Uniformly scale the polytwister by a factor k. This multiples all the log points by 1 / k since
    * log radii have an inverse relationship to the norm of the log points.
@@ -111,6 +173,7 @@ export class Polytwister {
       this.logs.map((x) => x.mulReal(1 / k)),
       this.rings.map((x) => x.mulReal(k)),
       this.polyhedron,
+      this.outerRings,
       this.bloated,
     );
   }
@@ -121,6 +184,53 @@ export class Polytwister {
   normalized(): Polytwister {
     const radius = this.radius();
     return this.scale(1 / radius);
+  }
+
+  getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
+    const n = this.polyhedron.faces[twisterIndex].vertices.length;
+    const symbol = this.polyhedron.faces[twisterIndex].symbol;
+
+    const d = symbol.d > n / 2 ? n - symbol.d : symbol.d;
+
+    const adjacentTwisterIndex =
+      this.polyhedron.getAdjacentFaceIndices(twisterIndex)[0];
+    const log = this.logs[twisterIndex];
+    const normalizingTransform = log.normalizingSU2Matrix();
+    const k = 1 / log.abs();
+    const z = this.logs[adjacentTwisterIndex]
+      .multiplyBySU2Matrix(normalizingTransform)
+      .mulReal(k)
+      .makeBReal();
+    const a = z.a;
+    const b = z.b.real;
+    const radius = 1 / b;
+    const circleCenterDistance = a.abs() / b;
+    const normalizedRadius = radius / circleCenterDistance;
+
+    const radiusIndex = arcPolygon.getRadiusIndex(n, normalizedRadius);
+    const q = arcPolygon.safeFloor(radiusIndex);
+
+    const ringsOuter =
+      this.outerRings[this.polyhedron.faces[twisterIndex].orbit];
+
+    const filling = arcPolygon.regions(n, q, d, ringsOuter, this.bloated);
+    return filling;
+  }
+
+  getTwisterFillingCode(twisterIndex: number): string {
+    const regions = this.getTwisterFilling(twisterIndex);
+    const parts = [];
+    for (let { order, mode } of regions) {
+      const tmp = `order == ${order}`;
+      if (mode === arcPolygon.RegionMode.Both) {
+        parts.push(tmp);
+      } else if (mode === arcPolygon.RegionMode.Inner) {
+        parts.push(`(${tmp} && inner)`);
+      } else if (mode === arcPolygon.RegionMode.Outer) {
+        parts.push(`(${tmp} && outer)`);
+      }
+    }
+    return parts.join(" || ");
   }
 
   twisterCode(): string {
@@ -144,44 +254,27 @@ export class Polytwister {
         vec3 point = Ray_at(ray, t);
         int n = ${n};
         int d = ${d};
-        int count = 0;
         float ringRadius = ${this.rings[0].abs()};
         float cutoffRadius = 1.0 / sqrt(square(ringRadius * length(pipes[${twisterIndex}])) - 1.0);
-        bool inRing = Pipe_antipode_contains(
+        bool inner = Pipe_antipode_contains(
           Pipe(pipes[${twisterIndex}] * cutoffRadius, crossSectionW), point
         );
-        bool inAnywhere = inRing;
+        bool outer = !inner;
+        int order = 0;
       `);
       for (let adjacentTwisterIndex of adjacentTwisterIndices) {
         tmp.push(`
           if (Pipe_contains(Pipe(pipes[${adjacentTwisterIndex}], crossSectionW), point)) {
-            count++;
-            inAnywhere = true;
+            order++;
           }
         `);
       }
-      if (this.bloated) {
-        tmp.push(`
-          bool inTwister = (
-            (
-              d % 2 == 0
-                ? count < d && count % 2 == 1
-                : count > d || count % 2 == 1
-            ) || count == 0
-          ) && inAnywhere;
-        `);
-      } else {
-        tmp.push(`
-          bool inTwister = (
-            (
-              (n + 1 - d - count) % 2 == 0
-              && count >= n + 1 - d
-            ) || count == 0
-          ) && inAnywhere;
-        `);
-      }
+
+      const fillingCode = this.getTwisterFillingCode(twisterIndex);
+      tmp.push(`bool fill = ${fillingCode};`);
+
       tmp.push(`
-        if (inTwister) {
+        if (fill) {
           tmin = min(tmin, t);
         }
       `);

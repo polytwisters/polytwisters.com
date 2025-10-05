@@ -44,11 +44,18 @@ export class Polyhedron {
   vertices: Vertex[];
   edges: Edge[];
   faces: Face[];
+  numFaceOrbits: number;
 
-  constructor(vertices: Vertex[], edges: Edge[], faces: Face[]) {
+  constructor(
+    vertices: Vertex[],
+    edges: Edge[],
+    faces: Face[],
+    numFaceOrbits: number,
+  ) {
     this.vertices = vertices;
     this.edges = edges;
     this.faces = faces;
+    this.numFaceOrbits = numFaceOrbits;
   }
 
   /**
@@ -62,6 +69,22 @@ export class Polyhedron {
     return this.vertices.map((v) => v.position);
   }
 
+  /**
+   * Get all faces incident on a vertex. Both the face and vertex are given by index.
+   */
+  getIncidentFaceIndicesForVertex(vertexIndex: number): number[] {
+    const incidentFaces: number[] = [];
+    for (let [faceIndex, face] of this.faces.entries()) {
+      if (face.vertices.indexOf(vertexIndex) !== -1) {
+        incidentFaces.push(faceIndex);
+      }
+    }
+    return incidentFaces;
+  }
+
+  /**
+   * Get all faces adjacent to a face.
+   */
   getAdjacentFaceIndices(faceIndex: number): number[] {
     const adjacentFaces: number[] = [];
     this.faces[faceIndex].edges.forEach((edgeIndex) => {
@@ -469,7 +492,9 @@ export class SymmetryGroup {
       faces = facesA.concat(facesB);
     }
 
-    return new Polyhedron(vertices, edges, faces);
+    const numFaceOrbits = regular ? 1 : 2;
+
+    return new Polyhedron(vertices, edges, faces, numFaceOrbits);
   }
 }
 

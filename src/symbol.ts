@@ -22,7 +22,7 @@ export type SymmetrySymbol =
   | { kind: SymmetryKind.Tetrahedral }
   | { kind: SymmetryKind.Octahedral }
   | { kind: SymmetryKind.Icosahedral }
-  | { kind: SymmetryKind.Dihedral, n: number };
+  | { kind: SymmetryKind.Dihedral; n: number };
 
 /**
  * A Wythoff-style symbol for a polytwister. The fields "ring," "twister1," and
@@ -79,10 +79,6 @@ export class PolytwisterSymbol {
       (fraction.equals(this.twister1, other.twister2) &&
         fraction.equals(this.twister2, other.twister1))
     );
-  }
-
-  isBloated(): boolean {
-    return this.ring.d > this.ring.n / 2;
   }
 
   isRegular(): boolean {
