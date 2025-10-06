@@ -58,10 +58,15 @@ function fold(value: number): number {
 }
 
 function tick(timestamp: number) {
-  const deltaInSeconds = (timestamp - lastTime) / 1000;
+  let deltaInSeconds = (timestamp - lastTime) / 1000;
+
+  // HACK: when compiling shaders we might get a really big delta, just ignore it and call it 0.
+  if (deltaInSeconds > 0.1) {
+    deltaInSeconds = 0;
+  }
+
   if (playing.value) {
-    let newValue =
-      model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
+    let newValue = model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
     if (playMode.value === PlayMode.Loop) {
       newValue = wrap(newValue);
     } else if (playMode.value === PlayMode.Zigzag) {
