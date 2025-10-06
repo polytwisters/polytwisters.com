@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, type Ref, onMounted, watch } from "vue";
+import { ref, computed, useTemplateRef, type Ref, onMounted, watch, nextTick } from "vue";
 import * as _ from "lodash";
 import * as THREE from "three";
 import { Vector3 } from "three";
@@ -185,6 +185,8 @@ function tickFPSTimer() {
   }
 }
 
+let renderingEnabled = true;
+
 onMounted(() => {
   cameraControls.enablePointerEvents();
 
@@ -232,17 +234,33 @@ onMounted(() => {
     fragmentShader,
     (newValue) => {
       loading.value = true;
-      material = new THREE.ShaderMaterial({
-        uniforms: getUniforms(),
-        vertexShader: vertexShader,
-        fragmentShader: newValue,
+  
+      // Disable calls to updateUniforms() and renderer.render in the middle of changing
+      // polytwisters, as this can cause nondeterministic errors.
+      renderingEnabled = false;
+
+      // The "new THREE.ShaderMaterial" call below may temporarily freeze the browser as it causes
+      // shaders to compile. To ensure that the loading message displays before the freeze we use
+      // Vue's nextTick to wait for the DOM to update. Unfortunately even this doesn't display the
+      // loading message sometimes. Waiting for 1 millisecond seems to work.
+      nextTick(() => {
+        setTimeout(() => {
+          material = new THREE.ShaderMaterial({
+            uniforms: getUniforms(),
+            vertexShader: vertexShader,
+            fragmentShader: newValue,
+          });
+          mesh.material = material;
+          loading.value = false;
+          renderingEnabled = true;
+        }, 1);
       });
-      mesh.material = material;
-      loading.value = false;
     },
     { immediate: true },
   );
 
+
+  // Timing information for requestAnimationFrame.
   let t: number = 0.0;
   let lastTimestamp: number | null = null;
   function update(timestamp: number) {
@@ -251,9 +269,12 @@ onMounted(() => {
     }
     lastTimestamp = timestamp;
     tickFPSTimer();
-    updateUniforms();
 
-    renderer.render(scene, threeCamera);
+    if (renderingEnabled) {
+      updateUniforms();
+      renderer.render(scene, threeCamera);
+    }
+
     if (takingScreenshot) {
       const screenshot = renderer.domElement.toDataURL();
       window.open(screenshot);
@@ -463,6 +484,12 @@ const cameraDirection = camera.direction;
             @pointerdown="cameraControls.canvasPointerDown"
             @wheel.prevent="cameraControls.canvasWheel"
           ></canvas>
+
+          <div
+            v-if="loading"
+            class="absolute text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
+            Compiling shader...
+          </div>
 
           <Transition
             leave-active-class="duration-200"
