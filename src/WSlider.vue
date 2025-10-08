@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import * as mathUtils from "./mathUtils";
 import * as globalState from "./globalState";
-import Button from "./Button.vue";
+import Button from "./components/Button.vue";
 
 const model = defineModel<number>({ required: true });
 

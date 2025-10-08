@@ -84,3 +84,12 @@ export function random() {
     polytwisterID.value = _.sample(validIDs)!;
   }
 }
+
+export const canvasSize: Ref<number> = ref(480);
+
+export const crossSectionW: Ref<number> = ref(0);
+
+export const takingScreenshot: Ref<boolean> = ref(false);
+export function takeScreenshot() {
+  takingScreenshot.value = true;
+}
