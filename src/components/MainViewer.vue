@@ -9,9 +9,7 @@ import fragmentShaderTemplate from "@/shader.glsl?raw";
 import * as camera from "@/camera";
 import * as cameraControls from "@/cameraControls";
 
-import Button from "./Button.vue";
 import Axes from "@/Axes.vue";
-import WSlider from "@/WSlider.vue";
 
 import * as THREE from "three";
 import { Vector3 } from "three";

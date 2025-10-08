@@ -3,18 +3,16 @@ import { ref } from "vue";
 import * as _ from "lodash";
 
 import * as globalState from "@/globalState";
-import * as camera from "@/camera";
-import * as cameraControls from "@/cameraControls";
 
 import MainViewer from "@/components/MainViewer.vue";
 import Button from "@/components/Button.vue";
 import WSlider from "@/WSlider.vue";
 import TopBar from "./components/TopBar.vue";
 import TwisterCrossSections from "./TwisterCrossSections.vue";
+import MainViewerControls from "./components/MainViewerControls.vue";
 
 const polytwisterDef = globalState.polytwisterDef;
 const crossSectionW = globalState.crossSectionW;
-const takeScreenshot = globalState.takeScreenshot;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
@@ -30,13 +28,6 @@ function openHelp() {
     document.getElementById("article")?.scrollIntoView();
   }, 10);
 }
-
-const devMode = import.meta.env.DEV;
-const experimentalMode = ref(false);
-
-const canvasHeights = [240, 360, 480, 720, 1080, 2160];
-
-const canvasSize = globalState.canvasSize;
 </script>
 
 <template>
@@ -113,58 +104,10 @@ const canvasSize = globalState.canvasSize;
           </div>
         </div>
 
-        <!-- Bar 3: View controls. -->
-
-        <div class="toolbar flex flex-row">
-          <div class="flex flex-row gap-2 flex-1">
-            <Button
-              @click="camera.reset"
-              material
-              icon="home"
-              help="Reset camera"
-            />
-            <Button
-              @click="cameraControls.zoomIn"
-              material
-              icon="add"
-              help="Zoom in"
-            />
-            <div
-              class="size-8 py-1 -mx-1 text-center material text-gray-200 select-none"
-            >
-              search
-            </div>
-            <Button
-              @click="cameraControls.zoomOut"
-              material
-              icon="remove"
-              help="Zoom out"
-            />
-          </div>
-          <div class="flex-1 flex flex-row justify-end gap-2">
-            <select v-model="canvasSize" class="button text-center">
-              <option v-for="height in canvasHeights" :value="height">
-                {{ height }}px
-              </option>
-            </select>
-            <Button
-              @click="takeScreenshot"
-              material
-              icon="photo_camera"
-              help="Take screenshot"
-            />
-          </div>
-        </div>
-
+        <MainViewerControls />
         <MainViewer />
-
-        <TwisterCrossSections v-if="experimentalMode" />
-
-        <div
-          :class="fullscreen ? ['absolute', 'bottom-0', 'w-full', 'p-8'] : []"
-        >
-          <WSlider v-model="crossSectionW" />
-        </div>
+        <TwisterCrossSections />
+        <WSlider v-model="crossSectionW" />
       </div>
     </div>
   </div>
