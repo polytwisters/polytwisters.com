@@ -255,66 +255,68 @@ onMounted(() => {
 </script>
 
 <template>
-  <canvas
-    ref="canvas"
-    class="block aspect-square"
-    @pointerdown="cameraControls.canvasPointerDown"
-    @wheel.prevent="cameraControls.canvasWheel"
-  ></canvas>
+  <div class="relative w-full flex flex-row justify-center">
+    <canvas
+      ref="canvas"
+      class="block aspect-square"
+      @pointerdown="cameraControls.canvasPointerDown"
+      @wheel.prevent="cameraControls.canvasWheel"
+    ></canvas>
 
-  <div
-    v-if="loading"
-    class="absolute text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
-    Compiling shader...
-  </div>
-
-  <Transition
-    leave-active-class="duration-200"
-    leave-from-class="opacity-100"
-    leave-to-class="opacity-0"
-  >
     <div
-      v-if="showWindowsMessage"
-      class="absolute text-sm top-8 left-8 w-100 p-2 bg-primary flex flex-row gap-2 rounded-sm shadow-lg/50 cursor-pointer"
-      @click="dismissWindowsMessage"
-    >
-      <div class="material">warning</div>
-      <p>
-        Your browser may freeze briefly when loading polytwisters while
-        the shader compiles. Unfortunately, there is no solution to this
-        except to use macOS or Linux instead of Windows.
-      </p>
-      <div class="material text-sm!">close</div>
+      v-if="loading"
+      class="absolute text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
+      Compiling shader...
     </div>
-  </Transition>
 
-  <div
-    :class="[
-      'flex',
-      'flex-row',
-      'items-center',
-      'justify-center',
-      ...(fullscreen
-        ? ['fixed', 'left-0', 'top-0', 'w-screen', 'h-screen']
-        : ['relative']),
-    ]"
-    ref="container"
-    v-if="!shaderError"
-  >
-    <pre v-if="shaderError">{{ shaderLog }}</pre>
-  </div>
+    <Transition
+      leave-active-class="duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="showWindowsMessage"
+        class="absolute text-sm top-8 left-8 w-100 p-2 bg-primary flex flex-row gap-2 rounded-sm shadow-lg/50 cursor-pointer"
+        @click="dismissWindowsMessage"
+      >
+        <div class="material">warning</div>
+        <p>
+          Your browser may freeze briefly when loading polytwisters while
+          the shader compiles. Unfortunately, there is no solution to this
+          except to use macOS or Linux instead of Windows.
+        </p>
+        <div class="material text-sm!">close</div>
+      </div>
+    </Transition>
 
-  <!--
-  Axes are hidden in fullscreen out of pure laziness. They don't
-  position properly with the position:fixed parent.
-  -->
-  <Axes
-    :cameraX="cameraX"
-    :cameraY="cameraY"
-    :cameraDirection="cameraDirection"
-    v-if="!fullscreen && experimentalMode"
-  />
-  <div class="absolute right-0 bottom-0" v-if="experimentalMode">
-    {{ Math.round(fps) }}FPS
+    <div
+      :class="[
+        'flex',
+        'flex-row',
+        'items-center',
+        'justify-center',
+        ...(fullscreen
+          ? ['fixed', 'left-0', 'top-0', 'w-screen', 'h-screen']
+          : ['relative']),
+      ]"
+      ref="container"
+      v-if="!shaderError"
+    >
+      <pre v-if="shaderError">{{ shaderLog }}</pre>
+    </div>
+
+    <!--
+    Axes are hidden in fullscreen out of pure laziness. They don't
+    position properly with the position:fixed parent.
+    -->
+    <Axes
+      :cameraX="cameraX"
+      :cameraY="cameraY"
+      :cameraDirection="cameraDirection"
+      v-if="!fullscreen && experimentalMode"
+    />
+    <div class="absolute right-0 bottom-0" v-if="experimentalMode">
+      {{ Math.round(fps) }}FPS
+    </div>
   </div>
 </template>

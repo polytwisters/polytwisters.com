@@ -1,114 +1,53 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import * as _ from "lodash";
-
 import * as globalState from "@/globalState";
 
 import MainViewer from "@/components/MainViewer.vue";
-import Button from "@/components/Button.vue";
+import PolytwisterTable from "@/PolytwisterTable.vue";
 import WSlider from "@/WSlider.vue";
-import TopBar from "./components/TopBar.vue";
+import TopBar from "@/components/TopBar.vue";
+import MainViewerControls from "@/components/MainViewerControls.vue";
 import TwisterCrossSections from "./TwisterCrossSections.vue";
-import MainViewerControls from "./components/MainViewerControls.vue";
+import InfoBox from "./components/InfoBox.vue";
 
-const polytwisterDef = globalState.polytwisterDef;
 const crossSectionW = globalState.crossSectionW;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// UI
-
-const fullscreen = ref(false);
-function toggleFullscreen() {
-  fullscreen.value = !fullscreen.value;
+enum Tab {
+  Navigation,
+  Twisters,
 }
 
-function openHelp() {
-  fullscreen.value = false;
-  setTimeout(() => {
-    document.getElementById("article")?.scrollIntoView();
-  }, 10);
+const tab = ref(Tab.Navigation);
+
+function setTab(newTab: Tab) {
+  tab.value = newTab;
 }
 </script>
 
 <template>
-  <div class="flex flex-col items-center text-slate-100">
-    <div class="flex flex-col gap-2 max-w-300">
+  <div class="
+  w-screen h-screen text-slate-100
+  gap-4
+  grid grid-cols-2 grid-rows-[min-content_min-content_auto]
+  ">
+    <div class="col-span-full">
       <TopBar />
-
-      <!-- fullscreen container -->
-      <div
-        :class="[
-          'flex',
-          'flex-col',
-          'gap-2',
-          ...(fullscreen
-            ? [
-                'fixed',
-                'left-0',
-                'top-0',
-                'z-10',
-                'bg-black',
-                'w-screen',
-                'h-screen',
-                'p-3',
-              ]
-            : []),
-        ]"
-      >
-        <!-- info: name, basic navigation, settings, fullscreen -->
-
-        <div class="toolbar flex flex-row items-center">
-          <div class="flex-1 flex flex-row items-baseline gap-2">
-            <div v-if="polytwisterDef.index !== undefined">
-              {{ polytwisterDef.index }}.
-            </div>
-            <h2
-              :class="[
-                'font-bold',
-                'text-xl',
-                polytwisterDef.name.length > 30 ? 'tracking-tight' : '',
-              ]"
-            >
-              {{ polytwisterDef.name }}
-            </h2>
-            <div :class="[polytwisterDef.name.length > 40 ? 'text-sm' : '']">
-              ({{ polytwisterDef.acronym }})
-            </div>
-          </div>
-          <div class="flex flex-row justify-end gap-2">
-            <Button
-              @click="globalState.previous"
-              material
-              icon="chevron_left"
-              help="Previous"
-            />
-            <Button
-              @click="globalState.next"
-              material
-              icon="chevron_right"
-              help="Next"
-            />
-            <Button
-              @click="globalState.random"
-              material
-              icon="casino"
-              help="Random"
-            />
-            <Button @click="openHelp" material icon="help" help="About" />
-            <Button
-              material
-              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
-              help="Fullscreen"
-              @click="toggleFullscreen"
-            />
-          </div>
-        </div>
-
-        <MainViewerControls />
-        <MainViewer />
-        <TwisterCrossSections />
-        <WSlider v-model="crossSectionW" />
-      </div>
+    </div>
+    <div class="row-span-2 grid grid-cols-1 grid-rows-[min-content_auto_min-content]">
+      <MainViewerControls />
+      <MainViewer />
+      <WSlider v-model="crossSectionW" />
+    </div>
+    <InfoBox />
+    <div class="grid grid-rows-[min-content_auto]">
+      <nav>
+        <ul class="flex flex-row">
+          <li :class="{ active: tab === Tab.Navigation }" @click="setTab(Tab.Navigation)">Navigation</li>
+          <li :class="{ active: tab === Tab.Twisters }"  @click="setTab(Tab.Twisters)">Twisters</li>
+        </ul>
+      </nav>
+      <TwisterCrossSections v-if="tab === Tab.Twisters" />
+      <PolytwisterTable v-if="tab === Tab.Navigation" />
     </div>
   </div>
 </template>
@@ -154,5 +93,13 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .toolbar {
   @apply z-20;
+}
+
+nav li {
+  @apply py-2 px-3 bg-primary;
+}
+
+nav li.active {
+  @apply py-2 px-3 bg-active;
 }
 </style>

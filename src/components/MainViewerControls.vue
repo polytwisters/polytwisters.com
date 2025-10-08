@@ -49,6 +49,11 @@ const canvasHeights = [240, 360, 480, 720, 1080, 2160];
         icon="photo_camera"
         help="Take screenshot"
       />
+      <Button
+        material
+        icon="fullscreen"
+        help="Fullscreen"
+      />
     </div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, toRef, useTemplateRef, watch, onMounted } from "vue";
-import { SymmetrySymbol, SymmetryKind } from './symbol';
+import { SymmetrySymbol, SymmetryKind } from '@/symbol';
 import * as katex from "katex";
 
 let props = defineProps<{ symmetryGroup: SymmetrySymbol }>();

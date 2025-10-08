@@ -22,8 +22,8 @@ interface Circle {
   radius: number;
 }
 
-const canvasWidth = 300;
-const canvasHeight = 300;
+const canvasWidth = 200;
+const canvasHeight = 200;
 
 const { faceIndex } = defineProps<{ faceIndex: number }>();
 const face = computed(() => polytwister.value.polyhedron.faces[faceIndex]);
