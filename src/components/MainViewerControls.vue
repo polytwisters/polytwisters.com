@@ -47,7 +47,7 @@ const canvasHeights = [240, 360, 480, 720, 1080, 2160];
         @click="takeScreenshot"
         material
         icon="photo_camera"
-        help="Take screenshot"
+        text="Take screenshot"
       />
       <Button
         material

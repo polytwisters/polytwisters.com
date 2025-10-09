@@ -136,32 +136,13 @@ function setPlayMode(newPlayMode: PlayMode) {
         />
         <Button @click="pause" icon="pause" help="Pause" />
       </div>
-      <div class="flex-1 flex justify-end items-center gap-2">
-        <Button
-          @click="setPlayMode(PlayMode.Loop)"
-          :active="playMode === PlayMode.Loop"
-          icon="laps"
-          help="Loop: wrap"
-        />
-        <Button
-          @click="setPlayMode(PlayMode.Zigzag)"
-          :active="playMode === PlayMode.Zigzag"
-          icon="turn_sharp_right"
-          help="Loop: bounce"
-        />
-        <Button
-          @click="setPlayMode(PlayMode.Autoplay)"
-          :active="playMode === PlayMode.Autoplay"
-          icon="arrow_circle_right"
-          help="Autoplay"
-        />
-        <Button
-          @click="setPlayMode(PlayMode.Shuffle)"
-          :active="playMode === PlayMode.Shuffle"
-          icon="shuffle"
-          help="Autoplay random"
-        />
-      </div>
+
+      <select v-model="playMode" class="button text-center">
+        <option :value="PlayMode.Loop">Loop</option>
+        <option :value="PlayMode.Zigzag">Bounce</option>
+        <option :value="PlayMode.Autoplay">Autoplay</option>
+        <option :value="PlayMode.Shuffle">Autoplay random</option>
+      </select>
     </div>
   </div>
 </template>

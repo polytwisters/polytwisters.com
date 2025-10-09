@@ -10,24 +10,17 @@ defineProps<{
 </script>
 
 <template>
-  <div class="h-8 group relative">
+  <div class="h-8">
     <button
-      :class="{
-        square: icon || square,
-        material: icon,
-        active,
-        relative: true,
-      }"
+      :class="{ square, active, flex: true, 'gap-1': true, 'align-middle': true }"
       @click="$emit('click')"
     >
-      <div
-        :class="{
-          'rotate-45': icon === 'turn_sharp_right',
-          '-scale-x-100': icon === 'laps',
-        }"
-      >
-        {{ icon ? icon : text }}
-      </div>
+      <span v-if="icon" class="material">
+        {{ icon }}
+      </span>
+      <span v-if="text">
+        {{ text }}
+      </span>
     </button>
   </div>
 </template>
