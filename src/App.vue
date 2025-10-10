@@ -27,27 +27,33 @@ function setTab(newTab: Tab) {
 <template>
   <div class="
   w-screen h-screen text-slate-100
-  gap-4
-  grid grid-cols-2 grid-rows-[min-content_min-content_auto]
+  grid grid-cols-2 grid-rows-[min-content_1fr]
   ">
-    <div class="col-span-full">
+    <!-- Row 1 -->
+    <div class="panel col-span-full">
       <TopBar />
     </div>
-    <div class="row-span-2 grid grid-cols-1 grid-rows-[min-content_auto_min-content]">
+
+    <!-- Row 2 -->
+    <div class="panel row-span-2 grid grid-cols-1 grid-rows-[min-content_auto_min-content]">
       <MainViewerControls />
       <MainViewer />
       <WSlider v-model="crossSectionW" />
     </div>
-    <InfoBox />
-    <div class="grid grid-rows-[min-content_auto]">
-      <nav>
-        <ul class="flex flex-row">
-          <li :class="{ active: tab === Tab.Navigation }" @click="setTab(Tab.Navigation)">Navigation</li>
-          <li :class="{ active: tab === Tab.Twisters }"  @click="setTab(Tab.Twisters)">Twisters</li>
-        </ul>
-      </nav>
-      <TwisterCrossSections v-if="tab === Tab.Twisters" />
-      <PolytwisterTable v-if="tab === Tab.Navigation" />
+  
+    <!-- Row 2, right side -->
+    <div class="grid grid-rows-[min-content_1fr]">
+      <InfoBox />
+      <div class="grid grid-rows-[min-content_1fr]">
+        <nav>
+          <ul class="flex flex-row">
+            <li :class="{ active: tab === Tab.Navigation }" @click="setTab(Tab.Navigation)">Navigation</li>
+            <li :class="{ active: tab === Tab.Twisters }"  @click="setTab(Tab.Twisters)">Twisters</li>
+          </ul>
+        </nav>
+        <TwisterCrossSections v-if="tab === Tab.Twisters" />
+        <PolytwisterTable v-if="tab === Tab.Navigation" />
+      </div>
     </div>
   </div>
 </template>
@@ -101,5 +107,9 @@ nav li {
 
 nav li.active {
   @apply py-2 px-3 bg-active;
+}
+
+.panel {
+  @apply p-2;
 }
 </style>
