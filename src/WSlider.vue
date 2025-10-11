@@ -36,11 +36,13 @@ function pause() {
   reverse.value = false;
 }
 
+/*
 function goToZero() {
   playing.value = false;
   reverse.value = false;
   model.value = 0;
 }
+*/
 
 function wrap(value: number): number {
   return mathUtils.mod((value + 1) / 2, 1) * 2 - 1;
@@ -91,13 +93,6 @@ function tick(timestamp: number) {
   requestAnimationFrame(tick);
 }
 requestAnimationFrame(tick);
-
-function setPlayMode(newPlayMode: PlayMode) {
-  playMode.value = newPlayMode;
-  if (playMode.value !== PlayMode.Zigzag) {
-    reverse.value = false;
-  }
-}
 </script>
 
 <template>

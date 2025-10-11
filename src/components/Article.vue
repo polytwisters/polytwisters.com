@@ -16,46 +16,15 @@ const vAutoKatex = {
 
 <template>
   <article class="my-5" v-auto-katex id="article">
-    <p>
-      <a :href="twistersLink" target="_blank">Polytwisters</a> are a family of
-      four-dimensional curved shapes related to polyhedra and Hopf fibration. As
-      polytwisters are 4D, the display shows 3D cross sections of the shapes.
-      Control the location of the slice using the slider.
-    </p>
-
-    <p>This app is in an early stage of development.</p>
-
-    <div class="flex flex-row justify-center gap-10 p-3">
-      <section class="flex-1">
-        <h1>Known issues</h1>
-        <ul class="list-disc list-inside">
-          <li>Not mobile friendly at the moment.</li>
-          <li>
-            On Windows, browser freezes briefly when switching polytwisters as
-            the shaders are compiled.
-          </li>
-        </ul>
-      </section>
-      <section class="flex-1">
-        <h1>Future plans</h1>
-        <ul>
-          <li>Cross sections at oblique angles</li>
-          <li>Display of combinatorial structure (rings, strips)</li>
-          <li>Mesh export for use in other software or 3D printing</li>
-          <li>Paper explaining the mathematics of polytwisters</li>
-        </ul>
-      </section>
-    </div>
-
     <h2>What are polytwisters?</h2>
 
     <p>
-      Polytwisters are a family of curved shapes that exist in four spatial
-      dimensions. They were discovered in 2000 by
+      Polytwisters are a family of curved shapes that exist in
+      <a href="https://en.wikipedia.org/wiki/Four-dimensional_space">four spatial dimensions</a>.
+      They were discovered in 2000 by
       <a href="https://www.polytope.net/hedrondude/home.htm" target="_blank"
         >Jonathan Bowers</a
-      >, an American mathematician known for his work on polytopes in four
-      dimensions and above. Check
+      >, an American mathematician known for his work on polytopes in higher dimensions. Check
       <a :href="twistersLink" target="_blank">his original polytwisters page</a
       >.
     </p>
@@ -116,13 +85,13 @@ const vAutoKatex = {
       is a polytwister's equivalent of a polygonal face.
     </p>
 
-    <h2>Definition of polytwisters</h2>
+    <h2>Mathematical definition of polytwisters</h2>
 
     <p>
       A major part of this project was establishing a formal definition of
       polytwisters for the first time. This section defines convex polytwisters,
       and less formally describes strips, twisters, and nonconvex polytwisters.
-      It is intentionally terse because as of April 2025, I am working on a
+      It is intentionally terse because as of October 2025, I am working on a
       paper which elaborates greatly on this.
     </p>
 
@@ -222,17 +191,13 @@ const vAutoKatex = {
       and each twister's incident strips are subsets of its containing pipe.
     </p>
 
-    <p>
-      Polytwisters will be explained in more detail in an upcoming paper, but I
-      hope this brief description is useful.
-    </p>
+    <p>All polytwisters shown in this application are <em>uniform</em>, which means
+    their symmetry group acts transitively on their rings and on their strips.</p>
 
-    <h2>Background</h2>
+    <h2>About the application</h2>
 
-    <p>
-      I have been working on this project since November 2022. It took over two
-      years of work to develop a simple and mathematically elegant definition of
-      polytwisters.
+    <p>This application is open source, MIT license.
+      Check the <a href="https://github.com/polytwisters/polytwisters.com">source code</a>.
     </p>
 
     <p>
@@ -242,6 +207,12 @@ const vAutoKatex = {
       infinite cylinder, and polytwisters are formed by Boolean operations on
       logs, so rendering polytwisters is no more difficult than raytracing
       cylinders.
+    </p>
+
+    <p>
+      Uniform polytwisters are generated on the fly from the symbols alone,
+      using a variant of the Wythoff construction to determine ring locations
+      and combinatorial structure.
     </p>
 
     <p>
@@ -281,7 +252,7 @@ const vAutoKatex = {
 </template>
 
 <style scoped>
-@reference "./style.css";
+@reference "@/style.css";
 
 article > h2 {
   @apply text-2xl font-bold my-5;

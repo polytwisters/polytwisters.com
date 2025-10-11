@@ -93,3 +93,8 @@ export const takingScreenshot: Ref<boolean> = ref(false);
 export function takeScreenshot() {
   takingScreenshot.value = true;
 }
+
+export const showingHelpModal: Ref<boolean> = ref(false);
+export function showHelpModal() {
+  showingHelpModal.value = true;
+}
