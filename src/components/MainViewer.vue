@@ -255,10 +255,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="relative w-full flex flex-row justify-center">
+  <!-- min-h-0 min-w-0 prevents container from growing the grid. -->
+  <div class="relative w-full min-h-0 min-w-0">
     <canvas
       ref="canvas"
-      class="block aspect-square"
+      class="block aspect-square w-full h-full object-contain"
       @pointerdown="cameraControls.canvasPointerDown"
       @wheel.prevent="cameraControls.canvasWheel"
     ></canvas>
