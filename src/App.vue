@@ -27,7 +27,7 @@ function setTab(newTab: Tab) {
 <template>
   <div class="
   w-screen h-screen text-slate-100
-  grid grid-cols-2 grid-rows-[min-content_1fr]
+  grid grid-cols-2 grid-rows-[min-content_minmax(0,1fr)]
   ">
     <!-- Row 1 -->
     <div class="panel col-span-full">
@@ -35,16 +35,16 @@ function setTab(newTab: Tab) {
     </div>
 
     <!-- Row 2 -->
-    <div class="panel row-span-2 grid grid-cols-1 grid-rows-[min-content_auto_min-content]">
+    <div class="panel row-span-2 grid grid-cols-1 grid-rows-[min-content_minmax(0,1fr)_min-content]">
       <MainViewerControls />
       <MainViewer />
       <WSlider v-model="crossSectionW" />
     </div>
   
     <!-- Row 2, right side -->
-    <div class="grid grid-rows-[min-content_1fr]">
+    <div class="grid grid-rows-[min-content_minmax(0,1fr)]">
       <InfoBox />
-      <div class="grid grid-rows-[min-content_1fr]">
+      <div class="grid grid-rows-[min-content_minmax(0,1fr)] relative">
         <nav>
           <ul class="flex flex-row">
             <li :class="{ active: tab === Tab.Navigation }" @click="setTab(Tab.Navigation)">Navigation</li>

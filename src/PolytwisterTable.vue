@@ -24,7 +24,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="h-90 overflow-y-auto scroll-auto" ref="outer">
+  <div class="overflow-y-scroll scroll-auto h-full" ref="outer">
     <table class="w-full relative">
       <thead>
         <tr class="text-left sticky top-0 bg-black">

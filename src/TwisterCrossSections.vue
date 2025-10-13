@@ -15,7 +15,7 @@ const faceIndexB = computed(() =>
 </script>
 
 <template>
-  <div class="flex flex-row justify-center">
+  <div class="flex flex-row justify-center h-full">
     <TwisterCrossSection :face-index="faceIndexA" />
     <TwisterCrossSection :face-index="faceIndexB" v-if="!isRegular" />
   </div>
