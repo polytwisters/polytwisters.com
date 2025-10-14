@@ -36,13 +36,11 @@ function pause() {
   reverse.value = false;
 }
 
-/*
-function goToZero() {
+function stop() {
   playing.value = false;
   reverse.value = false;
   model.value = 0;
 }
-*/
 
 function wrap(value: number): number {
   return mathUtils.mod((value + 1) / 2, 1) * 2 - 1;
@@ -108,8 +106,8 @@ requestAnimationFrame(tick);
         @pointerdown="pause"
       />
     </div>
-    <div class="flex flex-row w-full">
-      <div class="flex-1 flex justify-start items-center gap-2">
+    <div class="grid grid-rows-1 grid-cols-3 w-full">
+      <div class="flex flex-row justify-start items-center gap-2">
         <div>Cross section <em>w</em></div>
         <div>=</div>
         <input
@@ -123,6 +121,11 @@ requestAnimationFrame(tick);
       </div>
       <div class="flex-1 flex justify-center items-center gap-2">
         <Button
+          @click="stop()"
+          icon="stop"
+          help="Stop"
+        />
+        <Button
           :active="playing"
           @click="togglePlay"
           icon="play_arrow"
@@ -131,7 +134,7 @@ requestAnimationFrame(tick);
         <Button @click="pause" icon="pause" help="Pause" />
       </div>
 
-      <select v-model="playMode" class="button text-center">
+      <select v-model="playMode" class="button text-center justify-self-end">
         <option :value="PlayMode.Loop">Loop</option>
         <option :value="PlayMode.Zigzag">Bounce</option>
         <option :value="PlayMode.Autoplay">Autoplay</option>
