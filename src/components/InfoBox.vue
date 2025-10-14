@@ -15,7 +15,7 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
       <h2
         :class="[
           'font-bold',
-          'text-3xl',
+          'text-2xl',
           polytwisterDef.name.length > 30 ? 'tracking-tight' : '',
         ]"
       >
