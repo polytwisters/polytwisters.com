@@ -42,7 +42,7 @@ function setTab(newTab: Tab) {
     </div>
   
     <!-- Row 2, right side -->
-    <div class="grid grid-rows-[min-content_minmax(0,1fr)]">
+    <div class="panel grid grid-rows-[min-content_minmax(0,1fr)]">
       <InfoBox />
       <div class="grid grid-rows-[min-content_minmax(0,1fr)] relative">
         <nav>

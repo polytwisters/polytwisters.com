@@ -11,28 +11,7 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
 
 <template>
   <div>
-    <div class="toolbar flex flex-row gap-2 float-right">
-      <Button
-        @click="globalState.previous"
-        material
-        icon="chevron_left"
-        help="Previous"
-      />
-      <Button
-        @click="globalState.next"
-        material
-        icon="chevron_right"
-        help="Next"
-      />
-      <Button
-        @click="globalState.random"
-        material
-        icon="casino"
-        help="Random"
-      />
-    </div>
-
-    <div class="flex flex-row gap-2 align-middle">
+    <div class="toolbar grid grid-cols-[minmax(0,1fr)_min-content] gap-2">
       <h2
         :class="[
           'font-bold',
@@ -42,6 +21,26 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
       >
         {{ polytwisterDef.name }}
       </h2>
+      <div class="flex flex-row gap-2">
+        <Button
+          @click="globalState.previous"
+          material
+          icon="chevron_left"
+          help="Previous"
+        />
+        <Button
+          @click="globalState.next"
+          material
+          icon="chevron_right"
+          help="Next"
+        />
+        <Button
+          @click="globalState.random"
+          material
+          icon="casino"
+          help="Random"
+        />
+      </div>
     </div>
   
     <div class="grid grid-cols-3 items-start">
