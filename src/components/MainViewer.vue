@@ -266,8 +266,11 @@ onMounted(() => {
 
     <div
       v-if="loading"
-      class="absolute text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
-      Compiling shader...
+      class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center">
+      <div
+        class="text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
+        Compiling shader...
+      </div>
     </div>
 
     <Transition
