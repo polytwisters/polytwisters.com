@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, type Ref } from "vue";
 import * as mathUtils from "@/mathUtils";
 import * as globalState from "@/globalState";
 import Button from "@/components/Button.vue";
@@ -9,11 +9,15 @@ const model = defineModel<number>({ required: true });
 const playing = ref(false);
 const reverse = ref(false);
 
-// It would have been better to use a TypeScript enum here but the most obvious implementation
-// (playMode is an ref to an enum, <option> tags have a :value field) caused a strange bug where
-// the app would freeze up completely if I changed the play mode while the W slider is playing. I
-// have no idea why.
-const playMode = ref("Loop");
+// If these strings are changed they must also be changed in the <option> values. See comment in
+// HTML.
+enum PlayMode {
+  Loop = "loop",
+  Bounce = "bounce",
+  AutoplayNext = "autoplay_next",
+  AutoplayRandom = "autoplay_random"
+};
+const playMode: Ref<PlayMode> = ref(PlayMode.Loop);
 
 let lastTime = 0;
 function play() {
@@ -65,21 +69,21 @@ function tick(timestamp: number) {
 
   if (playing.value) {
     let newValue = model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
-    if (playMode.value === "Loop") {
+    if (playMode.value === PlayMode.Loop) {
       newValue = wrap(newValue);
-    } else if (playMode.value === "Bounce") {
+    } else if (playMode.value === PlayMode.Bounce) {
       if (newValue > 1 || newValue < -1.0) {
         reverse.value = !reverse.value;
       }
       newValue = fold(newValue);
-    } else if (playMode.value === "Autoplay next") {
+    } else if (playMode.value === PlayMode.AutoplayNext) {
       // newValue < -1.0 handles a case where the W value is moving in reverse and we switch play
       // modes.
       if (newValue >= 1 || newValue < -1.0) {
         newValue = -1;
         globalState.next();
       }
-    } else if (playMode.value === "Autoplay random") {
+    } else if (playMode.value === PlayMode.AutoplayRandom) {
       // newValue < -1.0 handles a case where the W value is moving in reverse and we switch play
       // modes.
       if (newValue >= 1 || newValue < -1.0) {
@@ -137,11 +141,16 @@ requestAnimationFrame(tick);
       </div>
 
       <select v-model="playMode" class="button text-center justify-self-end">
-        <!-- Do not change these strings without also changing the strings in the code. -->
-        <option>Loop</option>
-        <option>Bounce</option>
-        <option>Autoplay next</option>
-        <option>Autoplay random</option>
+        <!--
+        Ideally this would be e.g. :value="PlayMode.Loop" but this caused a strange bug where
+        the dropdown would lock up, flicker, and the entire app would freeze if the play mode was
+        changed while the slider was playing. It happens even if the <select>'s v-model isn't hooked
+        into the app's behavior, so I suspect a dank Vue internals issue.
+        -->
+        <option value="loop">Loop</option>
+        <option value="bounce">Bounce</option>
+        <option value="autoplay_next">Autoplay next</option>
+        <option value="autoplay_random">Autoplay random</option>
       </select>
     </div>
   </div>
