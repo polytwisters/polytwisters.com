@@ -1,8 +1,8 @@
 <script setup lang="tsx">
 import { onMounted, useTemplateRef, watch } from "vue";
-import * as globalState from "./globalState";
-import { database } from "./polytwisterDefs";
-import PropertyTags from "./PropertyTags.vue";
+import * as globalState from "@/globalState";
+import { database } from "@/polytwisterDefs";
+import PropertyTags from "@/components/PropertyTags.vue";
 
 const defs = database.defs;
 
@@ -61,7 +61,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@import "./style.css";
+@import "@/style.css";
 
 td,
 th {

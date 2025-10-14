@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { PolytwisterFields } from "./polytwisterDefs";
+import { PolytwisterFields } from "@/polytwisterDefs";
 
 defineProps<{ fields: PolytwisterFields }>();
 </script>

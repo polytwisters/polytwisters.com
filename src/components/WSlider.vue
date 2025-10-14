@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import * as mathUtils from "./mathUtils";
-import * as globalState from "./globalState";
-import Button from "./components/Button.vue";
+import * as mathUtils from "@/mathUtils";
+import * as globalState from "@/globalState";
+import Button from "@/components/Button.vue";
 
 const model = defineModel<number>({ required: true });
 

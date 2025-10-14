@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import TwisterCrossSection from "./TwisterCrossSection.vue";
-import * as globalState from "./globalState";
+import TwisterCrossSection from "@/components/TwisterCrossSection.vue";
+import * as globalState from "@/globalState";
 
 const isRegular = computed(
   () => globalState.polytwisterDef.value.symbol.regular,

@@ -8,9 +8,9 @@ import {
   type Ref,
 } from "vue";
 import * as THREE from "three";
-import * as globalState from "./globalState";
-import { faceSymbolToColor } from "./colors";
-import * as arcPolygon from "./arcPolygon";
+import * as globalState from "@/globalState";
+import { faceSymbolToColor } from "@/colors";
+import * as arcPolygon from "@/arcPolygon";
 
 const polytwister = globalState.polytwister;
 

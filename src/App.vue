@@ -3,12 +3,12 @@ import { ref } from "vue";
 import * as globalState from "@/globalState";
 
 import MainViewer from "@/components/MainViewer.vue";
-import PolytwisterTable from "@/PolytwisterTable.vue";
-import WSlider from "@/WSlider.vue";
+import PolytwisterTable from "@/components/PolytwisterTable.vue";
+import WSlider from "@/components/WSlider.vue";
 import TopBar from "@/components/TopBar.vue";
 import MainViewerControls from "@/components/MainViewerControls.vue";
-import TwisterCrossSections from "./TwisterCrossSections.vue";
-import InfoBox from "./components/InfoBox.vue";
+import TwisterCrossSections from "@/components/TwisterCrossSections.vue";
+import InfoBox from "@/components/InfoBox.vue";
 
 const crossSectionW = globalState.crossSectionW;
 
