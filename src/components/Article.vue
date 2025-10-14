@@ -229,6 +229,10 @@ const vAutoKatex = {
     <h2>Changelog</h2>
 
     <p>
+      2025-10-13: Major rework of user interface.
+    </p>
+
+    <p>
       2025-10-04: All 222 uniform polytwisters and three infinite families are
       implemented.
     </p>
