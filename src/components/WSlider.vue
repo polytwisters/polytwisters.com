@@ -6,16 +6,14 @@ import Button from "@/components/Button.vue";
 
 const model = defineModel<number>({ required: true });
 
-enum PlayMode {
-  Loop,
-  Zigzag,
-  Autoplay,
-  Shuffle,
-}
-
 const playing = ref(false);
 const reverse = ref(false);
-const playMode = ref(PlayMode.Loop);
+
+// It would have been better to use a TypeScript enum here but the most obvious implementation
+// (playMode is an ref to an enum, <option> tags have a :value field) caused a strange bug where
+// the app would freeze up completely if I changed the play mode while the W slider is playing. I
+// have no idea why.
+const playMode = ref("Loop");
 
 let lastTime = 0;
 function play() {
@@ -67,20 +65,24 @@ function tick(timestamp: number) {
 
   if (playing.value) {
     let newValue = model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
-    if (playMode.value === PlayMode.Loop) {
+    if (playMode.value === "Loop") {
       newValue = wrap(newValue);
-    } else if (playMode.value === PlayMode.Zigzag) {
+    } else if (playMode.value === "Bounce") {
       if (newValue > 1 || newValue < -1.0) {
         reverse.value = !reverse.value;
       }
       newValue = fold(newValue);
-    } else if (playMode.value === PlayMode.Autoplay) {
-      if (newValue >= 1) {
+    } else if (playMode.value === "Autoplay next") {
+      // newValue < -1.0 handles a case where the W value is moving in reverse and we switch play
+      // modes.
+      if (newValue >= 1 || newValue < -1.0) {
         newValue = -1;
         globalState.next();
       }
-    } else if (playMode.value === PlayMode.Shuffle) {
-      if (newValue >= 1) {
+    } else if (playMode.value === "Autoplay random") {
+      // newValue < -1.0 handles a case where the W value is moving in reverse and we switch play
+      // modes.
+      if (newValue >= 1 || newValue < -1.0) {
         newValue = -1;
         globalState.random();
       }
@@ -135,10 +137,11 @@ requestAnimationFrame(tick);
       </div>
 
       <select v-model="playMode" class="button text-center justify-self-end">
-        <option :value="PlayMode.Loop">Loop</option>
-        <option :value="PlayMode.Zigzag">Bounce</option>
-        <option :value="PlayMode.Autoplay">Autoplay</option>
-        <option :value="PlayMode.Shuffle">Autoplay random</option>
+        <!-- Do not change these strings without also changing the strings in the code. -->
+        <option>Loop</option>
+        <option>Bounce</option>
+        <option>Autoplay next</option>
+        <option>Autoplay random</option>
       </select>
     </div>
   </div>
