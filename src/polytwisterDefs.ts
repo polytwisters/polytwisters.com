@@ -1173,7 +1173,8 @@ const specsSporadic: PolytwisterDefSpec[] = [
     ],
   },
   {
-    name: "compact dodeckicosatwister",
+    // Original page has a small typo with "dodecki-" instead of "dodeki-".
+    name: "compact dodekicosatwister",
     acronym: "coditer",
     symbol: [3, 5, [5, 4]],
   },
