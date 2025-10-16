@@ -276,6 +276,6 @@ a:visited {
 }
 
 ul {
-  @apply ml-7 list-outside list-disc list-inside;
+  @apply ml-7 list-outside list-disc;
 }
 </style>
