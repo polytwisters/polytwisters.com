@@ -8,7 +8,7 @@ import Article from '@/components/Article.vue';
   <div class="flex flex-row items-center">
     <div class="flex flex-row gap-4 items-center">
       <h1>Polytwisters</h1>
-      <h2 class="text-active">v0.2.0-alpha</h2>
+      <h2 class="text-active">v0.2.1</h2>
     </div>
     <div class="flex-1 flex flex-row items-center justify-end gap-2">
       <button @click="showHelpModal" class="button cursor-pointer flex flex-row items-center gap-1">
