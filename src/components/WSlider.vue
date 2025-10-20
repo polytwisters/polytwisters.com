@@ -7,7 +7,7 @@ import Button from "@/components/Button.vue";
 const model = defineModel<number>({ required: true });
 
 const playing = ref(false);
-const reverse = ref(false);
+let reverse = false;
 
 // If these strings are changed they must also be changed in the <option> values. See comment in
 // HTML.
@@ -22,7 +22,7 @@ const playMode: Ref<PlayMode> = ref(PlayMode.Loop);
 let lastTime = 0;
 function play() {
   playing.value = true;
-  reverse.value = false;
+  reverse = false;
 }
 
 function togglePlay() {
@@ -35,12 +35,12 @@ function togglePlay() {
 
 function pause() {
   playing.value = false;
-  reverse.value = false;
+  reverse = false;
 }
 
 function stop() {
   playing.value = false;
-  reverse.value = false;
+  reverse = false;
   model.value = 0;
 }
 
@@ -67,13 +67,19 @@ function tick(timestamp: number) {
     deltaInSeconds = 0;
   }
 
+  // In non-bounce mode, the "reverse" flag should always be false. Otherwise the W value will
+  // get stuck at -1 in other modes.
+  if (playMode.value !== PlayMode.Bounce) {
+    reverse = false;
+  }
+
   if (playing.value) {
-    let newValue = model.value + deltaInSeconds * 0.5 * (reverse.value ? -1 : 1);
+    let newValue = model.value + deltaInSeconds * 0.5 * (reverse ? -1 : 1);
     if (playMode.value === PlayMode.Loop) {
       newValue = wrap(newValue);
     } else if (playMode.value === PlayMode.Bounce) {
       if (newValue > 1 || newValue < -1.0) {
-        reverse.value = !reverse.value;
+        reverse = !reverse;
       }
       newValue = fold(newValue);
     } else if (playMode.value === PlayMode.AutoplayNext) {
