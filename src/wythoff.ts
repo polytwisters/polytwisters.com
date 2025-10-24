@@ -1,5 +1,5 @@
 import { Matrix3, Vector3 } from "three";
-import * as _ from "lodash";
+import _ from "lodash";
 import * as mathUtils from "./mathUtils";
 import {
   type Fraction,
@@ -102,6 +102,21 @@ export class Polyhedron {
    */
   getFaceIndexFromOrbit(orbit: number): number {
     return this.faces.findIndex((face) => face.orbit === orbit);
+  }
+
+  export() {
+    return {
+      faces: this.faces.map((face) => ({
+        vertices: face.vertices,
+        edges: face.edges,
+        orbit: face.orbit,
+      })),
+      edges: this.edges.map((edge) => ({
+        vertex1: edge.vertex1,
+        vertex2: edge.vertex2,
+      })),
+      numFaceOrbits: this.numFaceOrbits,
+    };
   }
 }
 

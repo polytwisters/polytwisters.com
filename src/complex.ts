@@ -331,4 +331,9 @@ export class C2 {
     const length = point.length();
     return C2.inverseHopfMapNormalized(point).mulReal(length);
   }
+
+  toArray(): number[] {
+    const tmp = this.makeBReal();
+    return [tmp.a.real, tmp.a.imag, tmp.b.real, 0];
+  }
 }

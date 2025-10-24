@@ -299,4 +299,14 @@ export class Polytwister {
     }
     return parts.join("\n");
   }
+
+  export() {
+    return {
+      polyhedron: this.polyhedron.export(),
+      logs: this.logs.map((x) => x.toArray()),
+      rings: this.rings.map((x) => x.toArray()),
+      outerRings: this.outerRings,
+      twisterFillings: Array(this.polyhedron.numFaceOrbits).map((_ignore, i) => this.getTwisterFilling(i)),
+    };
+  }
 }
