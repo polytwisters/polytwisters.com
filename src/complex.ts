@@ -299,7 +299,15 @@ export class C2 {
    * S^3 is identified with unit vectors in C^2 and S^2 with unit vectors in R^3. The input vector
    * is normalized to be a unit vector, and the output will always be a unit vector.
    *
-   * The main use for this is to produce a quaternion that (0, 0, 1) to the input point.
+   * The main use for this is to produce a quaternion that maps (0, 0, 1) to the input point.
+   * 
+   * The convention used causes the following mappings:
+   * h^-1(-1, 0, 0) = (0, 1)
+   * h^-1( 1, 0, 0) = (1, 0)
+   * h^-1( 0, 1, 0) = (1, 1j) / sqrt(2)
+   * h^-1( 0,-1, 0) = (1, -1j) / sqrt(2)
+   * h^-1( 0, 0, 1) = (1, -1) / sqrt(2)
+   * h^-1( 0, 0,-1) = (1, 1) / sqrt(2)
    */
   static inverseHopfMapNormalized(point: Vector3): C2 {
     const pointNormalized = point.clone().normalize();

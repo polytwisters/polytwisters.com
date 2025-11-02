@@ -1,4 +1,4 @@
-import { Matrix3, Vector3 } from "three";
+import { Matrix3, Quaternion, Vector3 } from "three";
 import _ from "lodash";
 import * as mathUtils from "./mathUtils";
 import {
@@ -56,6 +56,38 @@ export class Polyhedron {
     this.edges = edges;
     this.faces = faces;
     this.numFaceOrbits = numFaceOrbits;
+  }
+
+  rotate(quaternion: Quaternion): Polyhedron {
+    return new Polyhedron(
+      this.vertices.map((vertex) => ({
+        position: vertex.position.clone().applyQuaternion(quaternion)
+      })),
+      this.edges.map((edge) => ({
+        ...edge,
+        position: edge.position.clone().applyQuaternion(quaternion)
+      })),
+      this.faces.map((face) => ({
+        ...face,
+        center: face.center.clone().applyQuaternion(quaternion)
+      })),
+      this.numFaceOrbits
+    )
+  }
+
+  rotateVertexFirst(): Polyhedron {
+    const rotation = new Quaternion().setFromUnitVectors(
+      this.vertices[0].position.clone().normalize(), new Vector3(1, 0, 0)
+    );
+    return this.rotate(rotation);
+  }
+
+  rotateFaceFirst(orbit: number): Polyhedron {
+    const index = this.getFaceIndexFromOrbit(orbit);
+    const rotation = new Quaternion().setFromUnitVectors(
+      this.faces[index].center.clone().normalize(), new Vector3(1, 0, 0)
+    );
+    return this.rotate(rotation);
   }
 
   /**
@@ -509,7 +541,7 @@ export class SymmetryGroup {
 
     const numFaceOrbits = regular ? 1 : 2;
 
-    return new Polyhedron(vertices, edges, faces, numFaceOrbits);
+    return new Polyhedron(vertices, edges, faces, numFaceOrbits).rotateVertexFirst();
   }
 }
 

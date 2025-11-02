@@ -249,12 +249,15 @@ export class Polytwister {
        * antipodal pipe is P(0, c), and c is set so that the intersection of
        * P(a, 0) and P(0, c) comprises rings of radius r. This is done by
        * solving the equation r = sqrt(1 + (1/c)^2) / |a|.
+       * 
+       * The call to .toFixed ensures the ring always has a decimal point. If it doesn't, GLSL will
+       * produce a compile error.
        */
       tmp.push(`
         vec3 point = Ray_at(ray, t);
         int n = ${n};
         int d = ${d};
-        float ringRadius = ${this.rings[0].abs()};
+        float ringRadius = ${this.rings[0].abs().toFixed(10)};
         float cutoffRadius = 1.0 / sqrt(square(ringRadius * length(pipes[${twisterIndex}])) - 1.0);
         bool inner = Pipe_antipode_contains(
           Pipe(pipes[${twisterIndex}] * cutoffRadius, crossSectionW), point
