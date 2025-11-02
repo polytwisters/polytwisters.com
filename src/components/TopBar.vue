@@ -2,13 +2,15 @@
 import { showHelpModal } from '@/globalState';
 import HelpModal from '@/components/HelpModal.vue';
 import Article from '@/components/Article.vue';
+
+const version = import.meta.env.PACKAGE_VERSION;
 </script>
 
 <template>
   <div class="flex flex-row items-center">
     <div class="flex flex-row gap-4 items-center">
       <h1>Polytwisters</h1>
-      <h2 class="text-active">v0.2.1</h2>
+      <h2 class="text-active">v{{ version }}</h2>
     </div>
     <div class="flex-1 flex flex-row items-center justify-end gap-2">
       <button @click="showHelpModal" class="button cursor-pointer flex flex-row items-center gap-1">
