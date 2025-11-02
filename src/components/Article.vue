@@ -229,7 +229,12 @@ const vAutoKatex = {
     <h2>Changelog</h2>
 
     <p>
-      2025-10-13: Major rework of user interface.
+      v0.2.1 (2025-11-02): Cross-sections are now symmetrically rotated so there is always a ring in
+      the xy-plane.
+    </p>
+
+    <p>
+      v0.2.0 (2025-10-13): Major rework of user interface.
     </p>
 
     <p>
@@ -240,11 +245,8 @@ const vAutoKatex = {
     <p>2025-06-13: Added 142 uniform polytwisters.</p>
 
     <p>
-      2025-04-09: Total rewrite, migrating from static videos rendered in
-      Blender to an interactive real-time application.
+      2025-04-09: Total rewrite.
     </p>
-
-    <p>2024-06-13: Improvements to CSS.</p>
 
     <p>2024-05-04: Initial launch.</p>
 
