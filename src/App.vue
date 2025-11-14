@@ -22,13 +22,26 @@ const tab = ref(Tab.Navigation);
 function setTab(newTab: Tab) {
   tab.value = newTab;
 }
+
+const expandedView = globalState.expandedView;
 </script>
 
 <template>
   <div class="
   w-screen h-screen text-slate-100
-  grid grid-cols-2 grid-rows-[min-content_minmax(0,1fr)]
-  ">
+  grid grid-rows-[min-content_minmax(0,1fr)]
+  panel
+  "
+  v-if="expandedView">
+    <MainViewerControls />
+    <MainViewer />
+    <WSlider v-model="crossSectionW" />
+  </div>
+  <div class="
+  w-screen h-screen text-slate-100
+  grid grid-cols-1
+  lg:grid-cols-2 lg:grid-rows-[min-content_minmax(0,1fr)]
+  " v-else>
     <!-- Row 1 -->
     <div class="panel col-span-full">
       <TopBar />
@@ -44,7 +57,7 @@ function setTab(newTab: Tab) {
     <!-- Row 2, right side -->
     <div class="panel grid grid-rows-[min-content_minmax(0,1fr)]">
       <InfoBox />
-      <div class="grid grid-rows-[min-content_minmax(0,1fr)] relative">
+      <div class="hidden lg:grid grid-rows-[min-content_minmax(0,1fr)] relative">
         <nav>
           <ul class="flex flex-row">
             <li :class="{ active: tab === Tab.Navigation }" @click="setTab(Tab.Navigation)">Navigation</li>

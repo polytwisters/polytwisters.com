@@ -22,7 +22,7 @@ export const distance = ref(0);
 export function reset() {
   azimuth.value = Math.PI * 0.2;
   elevation.value = Math.PI * 0.1;
-  distance.value = 3.0;
+  distance.value = 2.5;
 }
 reset();
 

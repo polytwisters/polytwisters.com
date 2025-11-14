@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import * as globalState from "@/globalState";
-import Button from "@/components/Button.vue";
 import SymmetryGroupDisplay from "@/components/SymmetryGroupDisplay.vue";
+import SmallNavigation from "@/components/SmallNavigation.vue";
 
 const polytwisterDef = globalState.polytwisterDef;
 const polytwister = globalState.polytwister;
@@ -21,26 +21,8 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
       >
         {{ polytwisterDef.name }}
       </h2>
-      <div class="flex flex-row gap-2">
-        <Button
-          @click="globalState.previous"
-          material
-          icon="chevron_left"
-          help="Previous"
-        />
-        <Button
-          @click="globalState.next"
-          material
-          icon="chevron_right"
-          help="Next"
-        />
-        <Button
-          @click="globalState.random"
-          material
-          icon="casino"
-          help="Random"
-        />
-      </div>
+
+      <SmallNavigation />
     </div>
   
     <div class="grid grid-cols-3 items-start">

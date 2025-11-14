@@ -98,3 +98,11 @@ export const showingHelpModal: Ref<boolean> = ref(false);
 export function showHelpModal() {
   showingHelpModal.value = true;
 }
+
+export const expandedView: Ref<boolean> = ref(false);
+export function expandView() {
+  expandedView.value = true;
+}
+export function exitExpandedView() {
+  expandedView.value = false;
+}
