@@ -20,11 +20,13 @@ const vAutoKatex = {
 
     <p>
       Polytwisters are a family of curved shapes that exist in
-      <a href="https://en.wikipedia.org/wiki/Four-dimensional_space">four spatial dimensions</a>.
-      They were discovered in 2000 by
+      <a href="https://en.wikipedia.org/wiki/Four-dimensional_space"
+        >four spatial dimensions</a
+      >. They were discovered in 2000 by
       <a href="https://www.polytope.net/hedrondude/home.htm" target="_blank"
         >Jonathan Bowers</a
-      >, an American mathematician known for his work on polytopes in higher dimensions. Check
+      >, an American mathematician known for his work on polytopes in higher
+      dimensions. Check
       <a :href="twistersLink" target="_blank">his original polytwisters page</a
       >.
     </p>
@@ -191,13 +193,18 @@ const vAutoKatex = {
       and each twister's incident strips are subsets of its containing pipe.
     </p>
 
-    <p>All polytwisters shown in this application are <em>uniform</em>, which means
-    their symmetry group acts transitively on their rings and on their strips.</p>
+    <p>
+      All polytwisters shown in this application are <em>uniform</em>, which
+      means their symmetry group acts transitively on their rings and on their
+      strips.
+    </p>
 
     <h2>About the application</h2>
 
-    <p>This application is open source, MIT license.
-      Check the <a href="https://github.com/polytwisters/polytwisters.com">source code</a>.
+    <p>
+      This application is open source, MIT license. Check the
+      <a href="https://github.com/polytwisters/polytwisters.com">source code</a
+      >.
     </p>
 
     <p>
@@ -229,13 +236,16 @@ const vAutoKatex = {
     <h2>Changelog</h2>
 
     <p>
-      v0.2.1 (2025-11-02): Cross-sections are now symmetrically rotated so there is always a ring in
-      the xy-plane.
+      v0.2.2 (2025-11-13): Add an "expanded" mode which shows only the
+      polytwister.
     </p>
 
     <p>
-      v0.2.0 (2025-10-13): Major rework of user interface.
+      v0.2.1 (2025-11-02): Cross-sections are now symmetrically rotated so there
+      is always a ring in the xy-plane.
     </p>
+
+    <p>v0.2.0 (2025-10-13): Major rework of user interface.</p>
 
     <p>
       2025-10-04: All 222 uniform polytwisters and three infinite families are
@@ -244,9 +254,7 @@ const vAutoKatex = {
 
     <p>2025-06-13: Added 142 uniform polytwisters.</p>
 
-    <p>
-      2025-04-09: Total rewrite.
-    </p>
+    <p>2025-04-09: Total rewrite.</p>
 
     <p>2024-05-04: Initial launch.</p>
 
