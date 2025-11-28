@@ -121,7 +121,8 @@ export class Polytwister {
       logs[adjacentFaceIndices[1]],
     );
     if (tmp.length === 0) {
-      throw new Error("This shouldn't happen");
+      // In this case the ring orientation does not matter, e.g. tetraretrotetratwister.
+      return false;
     }
     const radius1 = tmp[0].abs();
     const radius2 = tmp[1].abs();

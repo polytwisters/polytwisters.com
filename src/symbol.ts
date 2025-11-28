@@ -134,6 +134,12 @@ export class PolytwisterSymbol {
     );
   }
 
+  isBloated(): boolean {
+    return this.isRegular()
+      ? this.ring.n / this.ring.d < 2
+      : this.ring.n / this.ring.d < 1;
+  }
+
   static parse(string: string): PolytwisterSymbol {
     // Remove whitespace.
     const tmp = string.replace(/\s+/g, "");
