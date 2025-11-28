@@ -12,7 +12,7 @@ precision highp float;
 uniform vec2 iResolution;
 
 // Camera & viewer parameters.
-uniform vec3 cameraPosition_; // cameraPosition_ is used by Three.js
+uniform vec3 cameraPosition_; // cameraPosition is used by Three.js
 uniform vec3 cameraDirection;
 uniform vec3 cameraX;
 uniform vec3 cameraY;
