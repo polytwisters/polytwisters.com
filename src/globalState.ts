@@ -4,7 +4,7 @@ import { Polytwister } from "./polytwisters";
 import { PolytwisterSymbol } from "./symbol";
 import { database } from "./polytwisterDefs";
 
-const DEFAULT_POLYTWISTER_ID: string = "3.3";
+const DEFAULT_POLYTWISTER_ID: string = "5/3.3/2.3";
 const UNIFORM: string = "uniform=";
 
 function parseHash(hash: string): string | null {
