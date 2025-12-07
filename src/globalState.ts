@@ -87,7 +87,9 @@ export function random() {
 
 export const canvasSize: Ref<number> = ref(480);
 
-export const crossSectionW: Ref<number> = ref(0);
+// At initialization -- and only at initialization! -- there's a little offset so the user can see
+// the twisty nature a bit better.
+export const crossSectionW: Ref<number> = ref(0.02);
 
 export const takingScreenshot: Ref<boolean> = ref(false);
 export function takeScreenshot() {
