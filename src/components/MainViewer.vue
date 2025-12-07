@@ -120,6 +120,7 @@ function getUniforms(): { [key: string]: any } {
     crossSectionW: { value: crossSectionW.value },
     cameraPosition_: { value: camera.position.value },
     cameraDirection: { value: camera.direction.value },
+    cameraFocalLength: { value: camera.focalLength.value },
     cameraX: { value: camera.x.value },
     cameraY: { value: camera.y.value },
     pipes: { value: pipesR3.value },

@@ -16,6 +16,7 @@ uniform vec3 cameraPosition_; // cameraPosition is used by Three.js
 uniform vec3 cameraDirection;
 uniform vec3 cameraX;
 uniform vec3 cameraY;
+uniform float cameraFocalLength;
 uniform float crossSectionW;
 
 // Geometry parameters.
@@ -76,7 +77,7 @@ struct Camera {
   vec3 y;
 };
 
-Ray Camera_ray(Camera camera, Interval position) {
+Ray Camera_ray(Camera camera, vec2 position) {
   vec3 direction = normalize(
     camera.direction * camera.focalLength + (camera.x * position.x + camera.y * position.y)
   );
@@ -196,7 +197,7 @@ Ray getCameraRay() {
   Camera camera = Camera(
     cameraPosition_, // position
     cameraDirection, // direction
-    2.0, // focal length
+    cameraFocalLength, // focal length
     cameraX, // X
     cameraY // Y
   );
