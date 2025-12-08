@@ -19,7 +19,7 @@ onMounted(() => {
         outer.scrollTop = element.offsetTop - outer.clientHeight / 2;
       }
     }
-  });
+  }, { immediate: true });
 });
 </script>
 
