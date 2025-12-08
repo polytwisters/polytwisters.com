@@ -22,11 +22,19 @@ const version = import.meta.env.PACKAGE_VERSION;
       </HelpModal>
       <a
         target="_blank"
+        href="https://www.polytope.net/hedrondude/twisters.htm"
+        class="hidden md:flex button flex-row items-center gap-2"
+      >
+        <div>Bowers' page</div>
+        <div class="text-base! material">open_in_new</div>
+      </a>
+      <a
+        target="_blank"
         href="https://github.com/polytwisters/polytwisters.com/"
-        class="button flex flex-row items-center gap-2"
+        class="hidden md:flex button flex-row items-center gap-2"
       >
         <div>Source code</div>
-        <div class="text-sm! material">open_in_new</div>
+        <div class="text-base! material">open_in_new</div>
       </a>
     </div>
   </div>
