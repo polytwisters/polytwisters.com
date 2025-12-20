@@ -4,7 +4,7 @@ import { Polytwister } from "./polytwisters";
 import { PolytwisterSymbol } from "./symbol";
 import { database } from "./polytwisterDefs";
 
-const DEFAULT_POLYTWISTER_ID: string = "3.3";
+const DEFAULT_POLYTWISTER_ID: string = "5/3.3/2.3";
 const UNIFORM: string = "uniform=";
 
 function parseHash(hash: string): string | null {
@@ -87,7 +87,9 @@ export function random() {
 
 export const canvasSize: Ref<number> = ref(480);
 
-export const crossSectionW: Ref<number> = ref(0);
+// At initialization -- and only at initialization! -- there's a little offset so the user can see
+// the twisty nature a bit better.
+export const crossSectionW: Ref<number> = ref(0.02);
 
 export const takingScreenshot: Ref<boolean> = ref(false);
 export function takeScreenshot() {

@@ -121,7 +121,8 @@ export class Polytwister {
       logs[adjacentFaceIndices[1]],
     );
     if (tmp.length === 0) {
-      throw new Error("This shouldn't happen");
+      // In this case the ring orientation does not matter, e.g. tetraretrotetratwister.
+      return false;
     }
     const radius1 = tmp[0].abs();
     const radius2 = tmp[1].abs();
@@ -249,7 +250,7 @@ export class Polytwister {
        * antipodal pipe is P(0, c), and c is set so that the intersection of
        * P(a, 0) and P(0, c) comprises rings of radius r. This is done by
        * solving the equation r = sqrt(1 + (1/c)^2) / |a|.
-       * 
+       *
        * The call to .toFixed ensures the ring always has a decimal point. If it doesn't, GLSL will
        * produce a compile error.
        */
@@ -309,7 +310,9 @@ export class Polytwister {
       logs: this.logs.map((x) => x.toArray()),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
-      twisterFillings: Array(this.polyhedron.numFaceOrbits).map((_ignore, i) => this.getTwisterFilling(i)),
+      twisterFillings: Array(this.polyhedron.numFaceOrbits).map((_ignore, i) =>
+        this.getTwisterFilling(i),
+      ),
     };
   }
 }

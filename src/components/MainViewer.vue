@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, useTemplateRef, type Ref, onMounted, watch, nextTick } from "vue";
+import {
+  ref,
+  computed,
+  useTemplateRef,
+  type Ref,
+  onMounted,
+  watch,
+  nextTick,
+} from "vue";
 
 import * as polytwisters from "@/polytwisters";
 import * as globalState from "@/globalState";
@@ -120,6 +128,7 @@ function getUniforms(): { [key: string]: any } {
     crossSectionW: { value: crossSectionW.value },
     cameraPosition_: { value: camera.position.value },
     cameraDirection: { value: camera.direction.value },
+    cameraFocalLength: { value: camera.focalLength.value },
     cameraX: { value: camera.x.value },
     cameraY: { value: camera.y.value },
     pipes: { value: pipesR3.value },
@@ -202,7 +211,7 @@ onMounted(() => {
     fragmentShader,
     (newValue) => {
       loading.value = true;
-  
+
       // Disable calls to updateUniforms() and renderer.render in the middle of changing
       // polytwisters, as this can cause nondeterministic errors.
       renderingEnabled = false;
@@ -226,7 +235,6 @@ onMounted(() => {
     },
     { immediate: true },
   );
-
 
   // Timing information for requestAnimationFrame.
   let t: number = 0.0;
@@ -266,9 +274,9 @@ onMounted(() => {
 
     <div
       v-if="loading"
-      class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center">
-      <div
-        class="text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
+      class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center"
+    >
+      <div class="text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
         Compiling shader...
       </div>
     </div>
@@ -285,9 +293,9 @@ onMounted(() => {
       >
         <div class="material">warning</div>
         <p>
-          Your browser may freeze briefly when loading polytwisters while
-          the shader compiles. Unfortunately, there is no solution to this
-          except to use macOS or Linux instead of Windows.
+          Your browser may freeze briefly when loading polytwisters while the
+          shader compiles. Unfortunately, there is no solution to this except to
+          use macOS or Linux instead of Windows.
         </p>
         <div class="material text-sm!">close</div>
       </div>

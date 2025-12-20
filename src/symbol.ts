@@ -55,7 +55,7 @@ export class PolytwisterSymbol {
       ring: this.ring,
       twister1: this.twister1,
       twister2: this.twister2,
-      regular: this.regular
+      regular: this.regular,
     };
   }
 
@@ -132,6 +132,12 @@ export class PolytwisterSymbol {
       this.isRectifiedDyadic() ||
       this.isBloatedRectifiedDyadic()
     );
+  }
+
+  isBloated(): boolean {
+    return this.isRegular()
+      ? this.ring.n / this.ring.d < 2
+      : this.ring.n / this.ring.d < 1;
   }
 
   static parse(string: string): PolytwisterSymbol {

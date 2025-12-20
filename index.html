@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Polytwisters | Curved 4D shapes</title>
     <link rel="icon" href="/favicon.png" type="image/png" />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/material_icons.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/source-sans-3-v18-latin_latin-ext-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/source-sans-3-v18-latin_latin-ext-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <meta
       name="description"
       content="Polytwisters are a family of 4D curved shapes related to polyhedra. Explore them in your browser."
@@ -14,6 +35,17 @@
     <meta name="og:image" content="https://polytwisters.com/preview_card.png" />
   </head>
   <body>
+    <noscript>
+      <article>
+        <h1>Polytwisters</h1>
+        <aside>
+          To view the polytwisters renderer,
+          <a href="https://www.enable-javascript.com/">enable JavaScript</a>.
+          The article that follows is available in the application.
+        </aside>
+        <include src="src/article.html" />
+      </article>
+    </noscript>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
