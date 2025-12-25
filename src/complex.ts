@@ -344,4 +344,15 @@ export class C2 {
     const tmp = this.makeBReal();
     return [tmp.a.real, tmp.a.imag, tmp.b.real, 0];
   }
+
+  /**
+   * Given x in C2, return a y in C2 such that <y, x> = 0 and ||y|| = 1.
+   */
+  normalizedOrthogonal(): C2 {
+    const abs = this.abs();
+    return new C2(
+      this.b.conj().mulReal(-1 * abs),
+      this.a.conj().mulReal(abs),
+    );
+  }
 }
