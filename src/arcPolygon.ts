@@ -29,9 +29,9 @@ export function safeFloor(n: number): number {
 }
 
 export enum RegionMode {
-  Inner,
-  Outer,
-  Both,
+  Inner = "Inner",
+  Outer = "Outer",
+  Both = "Both",
 }
 
 export interface Region {
