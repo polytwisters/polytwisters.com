@@ -310,6 +310,7 @@ export class Polytwister {
       logs: this.logs.map((x) => x.toArray()),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
+      bloated: this.bloated,
       twisterFillings: Array(this.polyhedron.numFaceOrbits)
         .fill(null)
         .map((_ignore, i) => this.getTwisterFilling(i)),
