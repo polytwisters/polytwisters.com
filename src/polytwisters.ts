@@ -206,7 +206,7 @@ export class Polytwister {
     const pipe = this.logs[twisterIndex];
     const tmp = pipe.abs() * this.ringRadius();
     const k = 1 / Math.sqrt(tmp * tmp - 1);
-    return pipe.normalizedOrthogonal().mulReal(k);
+    return pipe.orthogonal().mulReal(k);
   }
 
   getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
@@ -330,13 +330,17 @@ export class Polytwister {
     return {
       polyhedron: this.polyhedron.export(),
       pipes: this.logs.map((x) => x.toArray()),
-      orthogonalPipes: this.logs.map((_, i) => this.getOrthogonalPipe(i).toArray()),
+      orthogonalPipes: this.logs.map((_, i) =>
+        this.getOrthogonalPipe(i).toArray(),
+      ),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
       bloated: this.bloated,
       twisterFillings: Array(this.polyhedron.numFaceOrbits)
         .fill(null)
-        .map((_ignore, i) => this.getTwisterFilling(i)),
+        .map((_, orbit) =>
+          this.getTwisterFilling(this.polyhedron.getFaceIndexFromOrbit(orbit)),
+        ),
     };
   }
 }

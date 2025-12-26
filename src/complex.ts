@@ -300,7 +300,7 @@ export class C2 {
    * is normalized to be a unit vector, and the output will always be a unit vector.
    *
    * The main use for this is to produce a quaternion that maps (0, 0, 1) to the input point.
-   * 
+   *
    * The convention used causes the following mappings:
    * h^-1(-1, 0, 0) = (0, 1)
    * h^-1( 1, 0, 0) = (1, 0)
@@ -346,13 +346,10 @@ export class C2 {
   }
 
   /**
-   * Given x in C2, return a y in C2 such that <y, x> = 0 and ||y|| = 1.
+   * Given x in C2, return a y in C2 such that <y, x> = 0 and ||y|| = ||x||.
    */
-  normalizedOrthogonal(): C2 {
+  orthogonal(): C2 {
     const abs = this.abs();
-    return new C2(
-      this.b.conj().mulReal(-1 * abs),
-      this.a.conj().mulReal(abs),
-    );
+    return new C2(this.b.conj().mulReal(-1), this.a.conj());
   }
 }
