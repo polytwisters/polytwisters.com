@@ -193,8 +193,20 @@ export class Polytwister {
    * in the filling.
    */
   getOrthogonalPipe(twisterIndex: number): C2 {
+    // Suppose y = (a, 0) so y' = (0, k) for real k. The intersection of y and y' comprises rings
+    // of constant radius R.
+    //
+    // R = sqrt(1 + (1 / k)^2) / |a|
+    //
+    // Solving for unknown k:
+    //
+    // k = 1 / sqrt((|a| R)^2 - 1)
+    //
+    // This works in the general case due to symmetry.
     const pipe = this.logs[twisterIndex];
-    return pipe.normalizedOrthogonal().mulReal(1 / this.ringRadius());
+    const tmp = pipe.abs() * this.ringRadius();
+    const k = 1 / Math.sqrt(tmp * tmp - 1);
+    return pipe.normalizedOrthogonal().mulReal(k);
   }
 
   getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
