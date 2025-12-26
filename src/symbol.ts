@@ -55,7 +55,7 @@ export class PolytwisterSymbol {
       ring: this.ring,
       twister1: this.twister1,
       twister2: this.twister2,
-      regular: this.regular
+      regular: this.regular,
     };
   }
 

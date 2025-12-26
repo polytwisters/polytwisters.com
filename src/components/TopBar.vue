@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { showHelpModal } from '@/globalState';
-import HelpModal from '@/components/HelpModal.vue';
-import Article from '@/components/Article.vue';
+import { showHelpModal } from "@/globalState";
+import HelpModal from "@/components/HelpModal.vue";
+import Article from "@/components/Article.vue";
 
 const version = import.meta.env.PACKAGE_VERSION;
 </script>
@@ -13,7 +13,10 @@ const version = import.meta.env.PACKAGE_VERSION;
       <h2 class="text-active">v{{ version }}</h2>
     </div>
     <div class="flex-1 flex flex-row items-center justify-end gap-2">
-      <button @click="showHelpModal" class="button cursor-pointer flex flex-row items-center gap-1">
+      <button
+        @click="showHelpModal"
+        class="button cursor-pointer flex flex-row items-center gap-1"
+      >
         <div class="material">help</div>
         <div>What is this?</div>
       </button>

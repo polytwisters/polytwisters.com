@@ -12,14 +12,18 @@ const rowElementsRef = useTemplateRef("row-elements");
 const outerRef = useTemplateRef("outer");
 
 onMounted(() => {
-  watch(globalState.polytwisterID, (id) => {
-    const outer = outerRef.value!;
-    for (let element of rowElementsRef.value!) {
-      if (element.dataset.id === id) {
-        outer.scrollTop = element.offsetTop - outer.clientHeight / 2;
+  watch(
+    globalState.polytwisterID,
+    (id) => {
+      const outer = outerRef.value!;
+      for (let element of rowElementsRef.value!) {
+        if (element.dataset.id === id) {
+          outer.scrollTop = element.offsetTop - outer.clientHeight / 2;
+        }
       }
-    }
-  }, { immediate: true });
+    },
+    { immediate: true },
+  );
 });
 </script>
 

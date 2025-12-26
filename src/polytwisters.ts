@@ -272,7 +272,7 @@ export class Polytwister {
        * antipodal pipe is P(0, c), and c is set so that the intersection of
        * P(a, 0) and P(0, c) comprises rings of radius r. This is done by
        * solving the equation r = sqrt(1 + (1/c)^2) / |a|.
-       * 
+       *
        * The call to .toFixed ensures the ring always has a decimal point. If it doesn't, GLSL will
        * produce a compile error.
        */
@@ -333,7 +333,9 @@ export class Polytwister {
       orthogonalPipes: this.logs.map((_, i) => this.getOrthogonalPipe(i).toArray()),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
-      twisterFillings: Array(this.polyhedron.numFaceOrbits).map((_ignore, i) => this.getTwisterFilling(i)),
+      twisterFillings: Array(this.polyhedron.numFaceOrbits).map((_ignore, i) =>
+        this.getTwisterFilling(i),
+      ),
     };
   }
 }

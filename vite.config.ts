@@ -12,7 +12,7 @@ import katex from "katex";
  * - find the HTML file that src="..." points to
  * - run KaTeX on anything between \( ... \) and \[ ... \] to render MathML output
  * - substitute the <include src="..." /> with the transformed code
- * 
+ *
  * This is used to include article.html in both the Article.vue component and the
  * fallback article that appears in the <noscript> block in index.html.
  */
@@ -35,11 +35,13 @@ function stupidHTMLKatex() {
   }
 
   function substituteKatex(code, isVue) {
-    return code.replace(/\\\(([\s\S]*?)\\\)/g, (ignore, src) => {
-      return runKatex(src, false, isVue);
-    }).replace(/\\\[([\s\S]*?)\\\]/g, (ignore, src) => {
-      return runKatex(src, true, isVue);
-    });
+    return code
+      .replace(/\\\(([\s\S]*?)\\\)/g, (ignore, src) => {
+        return runKatex(src, false, isVue);
+      })
+      .replace(/\\\[([\s\S]*?)\\\]/g, (ignore, src) => {
+        return runKatex(src, true, isVue);
+      });
   }
 
   function transform(code, isVue) {
@@ -53,7 +55,7 @@ function stupidHTMLKatex() {
   return {
     name: "polytwisters:stupid-html-katex",
     transformIndexHtml(html) {
-      return transform(html, false); 
+      return transform(html, false);
     },
     transform: {
       filter: {
@@ -67,19 +69,19 @@ function stupidHTMLKatex() {
         return {
           code: transformedCode,
           map: null,
-        }
-      }
-    }
+        };
+      },
+    },
   };
 }
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [stupidHTMLKatex(), vue(), tailwindcss(), /*VitePWA()*/],
+  plugins: [stupidHTMLKatex(), vue(), tailwindcss() /*VitePWA()*/],
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
-    }
+    },
   },
   build: {
     rollupOptions: {
@@ -89,6 +91,8 @@ export default defineConfig({
     },
   },
   define: {
-    "import.meta.env.PACKAGE_VERSION": JSON.stringify(process.env.npm_package_version)
-  }
+    "import.meta.env.PACKAGE_VERSION": JSON.stringify(
+      process.env.npm_package_version,
+    ),
+  },
 });
