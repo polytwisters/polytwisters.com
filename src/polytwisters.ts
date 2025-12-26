@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { PolytwisterDef } from "./polytwisterDefs";
 import { Polyhedron, symbolToPolyhedron } from "./wythoff";
 import { PolytwisterSymbol } from "./symbol";
-import { C2 } from "./complex";
+import { C2, Complex } from "./complex";
 import { square } from "./mathUtils";
 import * as arcPolygon from "./arcPolygon";
 
@@ -187,6 +187,28 @@ export class Polytwister {
     return this.scale(1 / radius);
   }
 
+  /**
+   * Given a twister T with containing pipe P(y), find the pipe P(y') so that <y, y'> = 0 and the
+   * rings of T are also on P(y'). This orthogonal pipe separates the "inner" from "outer" regions
+   * in the filling.
+   */
+  getOrthogonalPipe(twisterIndex: number): C2 {
+    // Suppose y = (a, 0) so y' = (0, k) for real k. The intersection of y and y' comprises rings
+    // of constant radius R.
+    //
+    // R = sqrt(1 + (1 / k)^2) / |a|
+    //
+    // Solving for unknown k:
+    //
+    // k = 1 / sqrt((|a| R)^2 - 1)
+    //
+    // This works in the general case due to symmetry.
+    const pipe = this.logs[twisterIndex];
+    const tmp = pipe.abs() * this.ringRadius();
+    const k = 1 / Math.sqrt(tmp * tmp - 1);
+    return pipe.normalizedOrthogonal().mulReal(k);
+  }
+
   getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
     const n = this.polyhedron.faces[twisterIndex].vertices.length;
     const symbol = this.polyhedron.faces[twisterIndex].symbol;
@@ -307,7 +329,8 @@ export class Polytwister {
   export() {
     return {
       polyhedron: this.polyhedron.export(),
-      logs: this.logs.map((x) => x.toArray()),
+      pipes: this.logs.map((x) => x.toArray()),
+      orthogonalPipes: this.logs.map((_, i) => this.getOrthogonalPipe(i).toArray()),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
       bloated: this.bloated,
