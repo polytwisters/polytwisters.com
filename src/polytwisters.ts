@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { PolytwisterDef } from "./polytwisterDefs";
 import { Polyhedron, symbolToPolyhedron } from "./wythoff";
 import { PolytwisterSymbol } from "./symbol";
-import { C2, Complex } from "./complex";
+import { C2 } from "./complex";
 import { square } from "./mathUtils";
 import * as arcPolygon from "./arcPolygon";
 

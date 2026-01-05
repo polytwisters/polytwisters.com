@@ -349,7 +349,6 @@ export class C2 {
    * Given x in C2, return a y in C2 such that <y, x> = 0 and ||y|| = ||x||.
    */
   orthogonal(): C2 {
-    const abs = this.abs();
     return new C2(this.b.conj().mulReal(-1), this.a.conj());
   }
 }
