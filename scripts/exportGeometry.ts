@@ -3,7 +3,7 @@ import * as polytwisters from "../src/polytwisters";
 import * as fs from "fs";
 
 function writeJSON(jsonObject: any, outputFile: string) {
-  fs.writeFile(outputFile, JSON.stringify(jsonObject, null, 4), () => {});
+  fs.writeFile(outputFile, JSON.stringify(jsonObject), () => {});
 }
 
 function main(argv) {
