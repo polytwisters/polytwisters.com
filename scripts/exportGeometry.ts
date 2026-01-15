@@ -20,7 +20,10 @@ function main(argv) {
     let jsonObject = {
       polytwisters: database.defs.map((def) => {
         const polytwister = polytwisters.Polytwister.fromDef(def);
-        return polytwister.export();
+        return {
+          def: def.asJSON(),
+          geometry: polytwister.export()
+        };
       })
     };
     writeJSON(jsonObject, outputFile);
