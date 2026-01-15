@@ -45,7 +45,7 @@ export const polytwisterDef = computed(() => {
 });
 
 export const polytwister: Ref<Polytwister> = computed(() =>
-  Polytwister.fromDef2(polytwisterDef.value).normalized(),
+  Polytwister.fromDef(polytwisterDef.value).normalized(),
 );
 export const polytwisterSymbol: Ref<PolytwisterSymbol> = computed(() =>
   PolytwisterSymbol.from(polytwisterDef.value.symbol),

@@ -61,7 +61,7 @@ export class Polytwister {
   /**
    * Convert a PolytwisterDef to a Polytwister using the Wythoff construction.
    */
-  static fromDef2(def: PolytwisterDef): Polytwister {
+  static fromDef(def: PolytwisterDef): Polytwister {
     const symbol: PolytwisterSymbol = def.symbol;
     const polyhedron = symbolToPolyhedron(symbol);
     const faces = polyhedron.faces;
