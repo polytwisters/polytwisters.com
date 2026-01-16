@@ -2,10 +2,6 @@ import { database } from "../src/polytwisterDefs";
 import * as polytwisters from "../src/polytwisters";
 import * as fs from "fs";
 
-function writeJSON(jsonObject: any, outputFile: string) {
-  fs.writeFile(outputFile, JSON.stringify(jsonObject), () => {});
-}
-
 function main(argv) {
   let numArgsExpected = 2;
   let numArgsPassed = argv.length - 2;
@@ -26,14 +22,17 @@ function main(argv) {
         };
       })
     };
-    writeJSON(jsonObject, outputFile);
+    // No indentation here as the output file is pretty big.
+    fs.writeFile(outputFile, JSON.stringify(jsonObject), () => {});
   } else {
     const def = database.findByID(process.argv[2]);
     if (typeof def === "undefined") {
       throw new Error("Can't find def");
     }
     const polytwister = polytwisters.Polytwister.fromDef(def);
-    writeJSON(polytwister.export(), outputFile);
+    const jsonObject = polytwister.export();
+    // Use 4-space indentation here.
+    fs.writeFile(outputFile, JSON.stringify(jsonObject, null, 4), () => {});
   }
 }
 
