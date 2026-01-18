@@ -77,7 +77,14 @@ function stupidHTMLKatex() {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [stupidHTMLKatex(), vue(), tailwindcss() /*VitePWA()*/],
+  plugins: [
+    stupidHTMLKatex(),
+    vue(),
+    tailwindcss(),
+    VitePWA({
+      selfDestroying: true,
+    }),
+  ],
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),
