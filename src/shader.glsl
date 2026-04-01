@@ -236,10 +236,20 @@ float specular(vec3 normal, vec3 light, vec3 viewer) {
   return tmp;
 }
 
+/// Assume normal is normalized.
 vec3 shadePhong(vec3 normal, vec3 viewer, vec3 baseColor) {
-  // Assume normal is normalized.
-  vec3 light1 = normalize(vec3(3.0, 1.0, 1.0));
-  vec3 light2 = normalize(vec3(-1.0, -1.0, -1.0));
+  vec3 light1RelativeToCamera = vec3(-3.0, 1.0, 1.0);
+  vec3 light2RelativeToCamera = vec3(-1.0, -1.0, -1.0);
+  vec3 light1 = normalize(
+    cameraPosition_ * light1RelativeToCamera.z
+    + cameraX * light1RelativeToCamera.x
+    + cameraY * light1RelativeToCamera.y
+  );
+  vec3 light2 = normalize(
+    cameraPosition_ * light2RelativeToCamera.z
+    + cameraX * light2RelativeToCamera.x
+    + cameraY * light2RelativeToCamera.y
+  );
 
   vec3 color = (
     baseColor * 0.2
@@ -250,7 +260,7 @@ vec3 shadePhong(vec3 normal, vec3 viewer, vec3 baseColor) {
   return color;
 }
 
-vec3 shadeDebug(vec3 normal, vec3 viewer) {
+vec3 shadeDebug(vec3 normal) {
   vec3 light = normalize(vec3(3.0, 1.0, 1.0));
   vec3 rainbowColor = vec3(0.5) + normal * 0.5;
   float intensity = max(dot(normal, light), 0.0);
@@ -317,7 +327,7 @@ vec4 render(Ray ray) {
   }
   vec3 viewer = ray.direction * -1.0;
   vec3 color = shading == SHADING_DEBUG ?
-    shadeDebug(normal, viewer)
+    shadeDebug(normal)
     : shadePhong(normal, viewer, pipeColor);
   return vec4(color, 1.0);
 }
