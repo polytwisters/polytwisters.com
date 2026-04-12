@@ -9,7 +9,7 @@ let pointerYLast: number | null = null;
 // Controls the rate at which camera orbit responds to mouse. Tuned by hand.
 const orbitSpeed = 8.0;
 
-export function pointerUp(_e: MouseEvent) {
+export function pointerUp() {
   pointerDown = false;
 }
 
@@ -54,25 +54,7 @@ export function canvasWheel(e: WheelEvent) {
   );
 }
 
-const nudge = (2 * Math.PI) / 50;
-const nudgeElevation = (2 * Math.PI) / 50;
 const nudgeDistance = 0.15;
-
-export function nudgeLeft() {
-  camera.setAzimuth(camera.azimuth.value - nudge);
-}
-
-export function nudgeRight() {
-  camera.setAzimuth(camera.azimuth.value + nudge);
-}
-
-export function nudgeUp() {
-  camera.setElevation(camera.elevation.value + nudgeElevation);
-}
-
-export function nudgeDown() {
-  camera.setElevation(camera.elevation.value - nudgeElevation);
-}
 
 export function zoomIn() {
   camera.distance.value = camera.distance.value - nudgeDistance;
@@ -89,24 +71,4 @@ export function zoomOut() {
 export function enablePointerEvents() {
   document.addEventListener("pointermove", pointerMove);
   document.addEventListener("pointerup", pointerUp);
-
-  document.addEventListener("keydown", (e) => {
-    if (e.shiftKey) {
-      if (e.key === "ArrowDown") {
-        zoomOut();
-      } else if (e.key === "ArrowUp") {
-        zoomIn();
-      }
-    } else {
-      if (e.key === "ArrowDown") {
-        nudgeDown();
-      } else if (e.key === "ArrowUp") {
-        nudgeUp();
-      } else if (e.key === "ArrowLeft") {
-        nudgeLeft();
-      } else if (e.key === "ArrowRight") {
-        nudgeRight();
-      }
-    }
-  });
 }

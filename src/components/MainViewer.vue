@@ -269,6 +269,7 @@ onMounted(() => {
       ref="canvas"
       class="block aspect-square w-full h-full object-contain"
       @pointerdown="cameraControls.canvasPointerDown"
+      @blur="cameraControls.pointerUp"
       @wheel.prevent="cameraControls.canvasWheel"
     ></canvas>
 
