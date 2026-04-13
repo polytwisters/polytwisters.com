@@ -49,7 +49,7 @@ function close() {
   <dialog
     ref="dialog"
     closedby="any"
-    class="fixed top-10 h-[calc(100vh-5rem)] w-[50rem] max-w-[calc(100vw-5rem)] left-[50vw] -translate-x-1/2 backdrop:bg-transparent backdrop:backdrop-blur-sm bg-(--color-primary) my-round text-white p-5 shadow-md oldschool:shadow-none"
+    class="fixed top-10 h-[calc(100vh-5rem)] w-[50rem] max-w-[calc(100vw-5rem)] left-[50vw] -translate-x-1/2 backdrop:bg-transparent backdrop:backdrop-blur-sm bg-(--color-modal-bg) my-round text-white p-5 shadow-md oldschool:shadow-none"
     @close="close"
   >
     <div class="absolute top-0 right-0">

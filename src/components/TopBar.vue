@@ -37,7 +37,7 @@ const version = import.meta.env.PACKAGE_VERSION;
         <div>Settings</div>
       </button>
       <Modal :show="showingSettingsModal" @close="closeSettingsModal">
-        <Settings />
+        <Settings @close="closeSettingsModal" />
       </Modal>
 
       <button

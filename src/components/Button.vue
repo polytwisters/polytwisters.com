@@ -12,6 +12,7 @@ import iconMinus from "@/assets/icons/minus.png";
 import iconHome from "@/assets/icons/home.png";
 import iconPlay from "@/assets/icons/play.png";
 import iconClose from "@/assets/icons/close.png";
+import iconCheck from "@/assets/icons/check.png";
 
 const map = new Map();
 map.set("home", iconHome);
@@ -28,6 +29,7 @@ map.set("play_arrow", iconPlay);
 map.set("pause", iconPause);
 map.set("repeat", iconCamera);
 map.set("close", iconClose);
+map.set("check", iconCheck);
 
 defineEmits<{ (e: "click"): void }>();
 const props = defineProps<{

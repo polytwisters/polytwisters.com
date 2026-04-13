@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { Theme, theme } from "@/globalState";
+import Button from "./Button.vue";
+
+defineEmits<{
+  (e: 'close'): void,
+}>();
 </script>
 
 <template>
@@ -15,5 +20,7 @@ import { Theme, theme } from "@/globalState";
         </select>
       </div>
     </div>
+
+    <Button icon="check" text="Done" @click="$emit('close')" />
   </article>
 </template>

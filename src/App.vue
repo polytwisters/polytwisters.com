@@ -64,15 +64,15 @@ const expandedView = globalState.expandedView;
         class="hidden md:grid grid-rows-[min-content_minmax(0,1fr)] relative"
       >
         <nav>
-          <ul class="flex flex-row">
+          <ul class="flex flex-row font-ui">
             <li
-              :class="{ active: tab === Tab.Navigation }"
+              :class="{ active: tab === Tab.Navigation, 'cursor-pointer': true }"
               @click="setTab(Tab.Navigation)"
             >
               Navigation
             </li>
             <li
-              :class="{ active: tab === Tab.Twisters }"
+              :class="{ active: tab === Tab.Twisters, 'cursor-pointer': true }"
               @click="setTab(Tab.Twisters)"
             >
               Twisters
