@@ -17,6 +17,10 @@ watch(showingHelpModal, (newValue) => {
 function onClose() {
   showingHelpModal.value = false;
 }
+
+function close() {
+  dialog.value?.close();
+}
 </script>
 
 <template>
@@ -45,6 +49,9 @@ function onClose() {
     backdrop:bg-transparent backdrop:backdrop-blur-sm
     bg-primary rounded-sm text-white p-5 shadow-md"
     @close="onClose">
+    <button class="material absolute top-0 right-0" @click="close">
+      close
+    </button>
     <div class="w-full h-full overflow-y-auto">
       <slot />
     </div>
