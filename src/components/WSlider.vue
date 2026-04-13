@@ -118,7 +118,7 @@ requestAnimationFrame(tick);
         @pointerdown="pause"
       />
     </div>
-    <div class="hidden md:grid grid-rows-1 grid-cols-1 w-full">
+    <div class="hidden md:grid grid-rows-1 grid-cols-3 w-full">
       <div class="flex flex-row justify-start items-center gap-2">
         <div>Cross section <em>w</em></div>
         <div>=</div>
