@@ -25,7 +25,7 @@ p {
 
 a:link,
 a:visited {
-  @apply text-sky-400 hover:text-sky-300;
+  @apply text-link;
 }
 
 ul {

@@ -134,7 +134,7 @@ requestAnimationFrame(tick);
         <div><span class="hidden md:inline">Cross section</span> <em>w</em></div>
         <div>=</div>
         <input
-          class="hidden md:block bg-primary p-1 rounded-sm text-center"
+          class="hidden md:block bg-primary p-1 my-round text-center"
           type="number"
           v-model.number="model"
           min="-1"

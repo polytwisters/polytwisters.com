@@ -10,7 +10,7 @@ const version = import.meta.env.PACKAGE_VERSION;
   <div class="flex flex-row items-center">
     <div class="flex flex-row gap-4 items-center">
       <h1>Polytwisters</h1>
-      <h2 class="text-active">v{{ version }}</h2>
+      <h2 class="text-text-light">v{{ version }}</h2>
     </div>
     <div class="flex-1 flex flex-row items-center justify-end gap-2">
       <button

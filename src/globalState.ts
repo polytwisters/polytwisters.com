@@ -108,3 +108,10 @@ export function expandView() {
 export function exitExpandedView() {
   expandedView.value = false;
 }
+
+export enum Theme {
+  Default,
+  Oldschool
+}
+
+export const theme: Ref<Theme> = ref(Theme.Oldschool);

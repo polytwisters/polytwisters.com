@@ -5,7 +5,6 @@ defineProps<{
   icon?: string;
   text?: string;
   help?: string;
-  square?: boolean;
   wide?: boolean;
 }>();
 </script>
@@ -14,7 +13,7 @@ defineProps<{
   <div class="h-8">
     <button
       :class="{
-        square,
+        square: !text,
         active,
         flex: true,
         'gap-1': true,

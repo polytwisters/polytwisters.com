@@ -277,7 +277,7 @@ onMounted(() => {
       v-if="loading"
       class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center"
     >
-      <div class="text-sm bg-primary p-2 shadow-lg/50 rounded-sm">
+      <div class="text-sm bg-primary p-2 shadow-lg/50 my-round">
         Compiling shader...
       </div>
     </div>
@@ -289,7 +289,7 @@ onMounted(() => {
     >
       <div
         v-if="showWindowsMessage"
-        class="absolute text-sm top-8 left-8 w-100 p-2 bg-primary flex flex-row gap-2 rounded-sm shadow-lg/50 cursor-pointer"
+        class="absolute text-sm top-8 left-8 w-100 p-2 bg-primary flex flex-row gap-2 my-round shadow-lg/50 cursor-pointer"
         @click="dismissWindowsMessage"
       >
         <div class="material">warning</div>

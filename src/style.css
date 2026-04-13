@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "katex/dist/katex.css";
 
+@custom-variant theme-default (&:where(.theme-default, .theme-default *));
 @custom-variant oldschool (&:where(.oldschool, .oldschool *));
 
 /* source-sans-3-regular - latin_latin-ext */
@@ -32,14 +33,8 @@
 }
 
 body {
-  font-family: "Source Sans 3", sans-serif;
-  font-size: 17px;
-}
-
-@layer base {
-  * {
-    @apply text-white oldschool:text-black;
-  }
+  font-size: var(--body-font-size);
+  background-color: var(--color-body-bg);
 }
 
 h1 {
@@ -50,7 +45,7 @@ h1 {
   font-family: "Material Symbols Rounded";
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
+  font-size: var(--material-icon-font-size);
   line-height: 1;
   letter-spacing: normal;
   text-transform: none;
@@ -68,17 +63,51 @@ h1 {
 }
 
 @theme inline {
+  --color-text: var(--color-slate-100);
+  --color-text-light: var(--color-slate-500);
+  --color-body-bg: var(--color-black);
   --color-primary: var(--color-gray-800);
   --color-light-primary: var(--color-gray-700);
   --color-active: var(--color-gray-600);
   --color-link: var(--color-sky-200);
+  --color-my-red: var(--color-red-900);
+  --color-my-blue: var(--color-blue-900);
+  --color-my-green: var(--color-green-900);
+  --body-font-size: 17px;
+  --material-icon-font-size: 24px;
+  --default-font-family: "Source Sans 3", sans-serif;
+}
 
-  --color-os-gray: #ddd;
-  --color-os-light: #eee;
+.oldschool, .oldschool * {
+  @theme inline {
+    --color-text: #333;
+    --color-text-light: #666;
+    --color-body-bg: #fff;
+    --color-primary: #ddd;
+    --color-light-primary: #eee;
+    --color-active: #eee;
+    --color-link: #00a;
+    --color-my-red: #f00;
+    --color-my-blue: #00f;
+    --color-my-green: #0f0;
+    --body-font-size: 14px;
+    --material-icon-font-size: 20px;
+    --default-font-family: "Arial", sans-serif;
+  }
+}
+
+@utility my-round {
+  @apply rounded-sm oldschool:rounded-none;
+}
+
+@layer base {
+  * {
+    @apply text-text;
+  }
 }
 
 input[type="text"] {
-  @apply bg-primary rounded-sm h-8 p-1;
+  @apply bg-primary my-round h-8 p-1;
 }
 
 input[type="text"]:disabled {
@@ -91,21 +120,18 @@ input[type="text"].error {
 
 button,
 .button {
-  @apply bg-primary rounded-sm h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary
-    oldschool:rounded-none
-    oldschool:bg-os-gray
-    oldschool:border-os-light
-    oldschool:border-3
-    oldschool:[border-style:outset]
-    oldschool:hover:bg-os-light;
-}
-
-.square {
-  @apply size-8;
+  @apply bg-primary my-round h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary;
+  @variant oldschool {
+    @apply border-[3px] [border-style:outset] active:[border-style:inset] border-light-primary;
+  }
 }
 
 button.active {
   @apply bg-gray-600;
+}
+
+.square {
+  @apply size-8;
 }
 
 input[type="range"] {

@@ -31,7 +31,7 @@ onMounted(() => {
   <div class="overflow-y-scroll scroll-auto h-full" ref="outer">
     <table class="w-full relative">
       <thead>
-        <tr class="text-left sticky top-0 bg-black">
+        <tr class="text-left sticky top-0 bg-body-bg">
           <th class="text-center">#</th>
           <th>Name</th>
           <th>Acronym</th>

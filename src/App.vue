@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import * as globalState from "@/globalState";
+import { Theme } from "@/globalState";
 
 import MainViewer from "@/components/MainViewer.vue";
 import PolytwisterTable from "@/components/PolytwisterTable.vue";
@@ -10,7 +11,15 @@ import MainViewerControls from "@/components/MainViewerControls.vue";
 import TwisterCrossSections from "@/components/TwisterCrossSections.vue";
 import InfoBox from "@/components/InfoBox.vue";
 
-document.body.classList.add("oldschool");
+watch(globalState.theme, (newValue) => {
+  if (newValue === Theme.Oldschool) {
+    document.body.classList.remove("theme-default");
+    document.body.classList.add("oldschool");
+  } else {
+    document.body.classList.remove("oldschool");
+    document.body.classList.add("theme-default");
+  }
+}, { immediate: true });
 
 const crossSectionW = globalState.crossSectionW;
 
@@ -30,7 +39,7 @@ const expandedView = globalState.expandedView;
 
 <template>
   <div
-    class="w-screen h-screen text-slate-100 grid grid-rows-[min-content_minmax(0,1fr)] panel"
+    class="w-screen h-screen text-text grid grid-rows-[min-content_minmax(0,1fr)] panel"
     v-if="expandedView"
   >
     <MainViewerControls />
@@ -38,7 +47,7 @@ const expandedView = globalState.expandedView;
     <WSlider v-model="crossSectionW" />
   </div>
   <div
-    class="w-screen h-screen text-slate-100 grid grid-cols-1 grid-rows-[min-content_min-content_minmax(0,1fr)] md:grid-cols-2 md:grid-rows-[min-content_minmax(0,1fr)]"
+    class="w-screen h-screen text-text grid grid-cols-1 grid-rows-[min-content_min-content_minmax(0,1fr)] md:grid-cols-2 md:grid-rows-[min-content_minmax(0,1fr)]"
     v-else
   >
     <div class="panel md:col-span-2">

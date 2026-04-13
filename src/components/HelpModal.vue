@@ -47,7 +47,7 @@ function close() {
     closedby="any"
     class="fixed top-10 h-[calc(100vh-5rem)] w-min-[50rem] w-max-[calc(100vw-10rem)] left-[50vw] -translate-x-1/2
     backdrop:bg-transparent backdrop:backdrop-blur-sm
-    bg-primary rounded-sm text-white p-5 shadow-md"
+    bg-primary my-round text-white p-5 shadow-md oldschool:shadow-none"
     @close="onClose">
     <button class="material absolute top-0 right-0" @click="close">
       close
