@@ -24,6 +24,12 @@
     format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
 
+@font-face {
+  font-display: swap;
+  font-family: "W95FA";
+  src: url("./assets/fonts/w95fa.woff2") format("woff2");
+}
+
 /* fallback */
 @font-face {
   font-family: "Material Symbols Rounded";
@@ -100,6 +106,10 @@ h1 {
   @apply rounded-sm oldschool:rounded-none;
 }
 
+@utility font-ui {
+  @apply oldschool:font-[W95FA] oldschool:text-[14px];
+}
+
 @layer base {
   * {
     @apply text-text;
@@ -120,7 +130,7 @@ input[type="text"].error {
 
 button,
 .button {
-  @apply bg-primary my-round h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary;
+  @apply bg-primary my-round h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary font-ui;
   @variant oldschool {
     @apply border-[3px] [border-style:outset] active:[border-style:inset] border-light-primary;
   }
