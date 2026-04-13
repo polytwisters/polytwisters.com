@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "katex/dist/katex.css";
 
+@custom-variant oldschool (&:where(.oldschool, .oldschool *));
+
 /* source-sans-3-regular - latin_latin-ext */
 @font-face {
   font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
@@ -34,6 +36,12 @@ body {
   font-size: 17px;
 }
 
+@layer base {
+  * {
+    @apply text-white oldschool:text-black;
+  }
+}
+
 h1 {
   @apply text-2xl font-bold;
 }
@@ -64,6 +72,9 @@ h1 {
   --color-light-primary: var(--color-gray-700);
   --color-active: var(--color-gray-600);
   --color-link: var(--color-sky-200);
+
+  --color-os-gray: #ddd;
+  --color-os-light: #eee;
 }
 
 input[type="text"] {
@@ -80,7 +91,13 @@ input[type="text"].error {
 
 button,
 .button {
-  @apply bg-primary rounded-sm h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary;
+  @apply bg-primary rounded-sm h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary
+    oldschool:rounded-none
+    oldschool:bg-os-gray
+    oldschool:border-os-light
+    oldschool:border-3
+    oldschool:[border-style:outset]
+    oldschool:hover:bg-os-light;
 }
 
 .square {
@@ -89,4 +106,52 @@ button,
 
 button.active {
   @apply bg-gray-600;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+input[type="range"]::-moz-range-track {
+  @apply bg-primary h-2 rounded-full;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply bg-primary h-2 rounded-full;
+}
+
+input[type="range"]::-moz-range-thumb {
+  @apply bg-gray-200 size-4 rounded-full border-none cursor-pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  @apply bg-gray-200 size-4 rounded-full border-none cursor-pointer -mt-1;
+  -webkit-appearance: none;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.toolbar {
+  @apply z-20;
+}
+
+nav li {
+  @apply py-2 px-3 bg-primary;
+}
+
+nav li.active {
+  @apply py-2 px-3 bg-active;
+}
+
+.panel {
+  @apply p-2;
 }
