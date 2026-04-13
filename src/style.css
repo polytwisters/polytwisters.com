@@ -1,74 +1,12 @@
 @import "tailwindcss";
 @import "katex/dist/katex.css";
+@import "./fonts.css";
 
 @custom-variant theme-default (&:where(.theme-default, .theme-default *));
 @custom-variant oldschool (&:where(.oldschool, .oldschool *));
 
-/* source-sans-3-regular - latin_latin-ext */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "Source Sans 3";
-  font-style: normal;
-  font-weight: 400;
-  src: url("./assets/fonts/source-sans-3-v18-latin_latin-ext-regular.woff2")
-    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
-
-/* source-sans-3-700 - latin_latin-ext */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: "Source Sans 3";
-  font-style: normal;
-  font-weight: 700;
-  src: url("./assets/fonts/source-sans-3-v18-latin_latin-ext-700.woff2")
-    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
-}
-
-@font-face {
-  font-display: swap;
-  font-family: "W95FA";
-  src: url("./assets/fonts/w95fa.woff2") format("woff2");
-}
-
-/* fallback */
-@font-face {
-  font-family: "Material Symbols Rounded";
-  font-style: normal;
-  font-weight: 100 700;
-  src: url("./assets/fonts/material_icons.woff2") format("woff2");
-}
-
-body {
-  font-size: var(--body-font-size);
-  background-color: var(--color-body-bg);
-}
-
-h1 {
-  @apply text-2xl font-bold;
-}
-
-.material {
-  font-family: "Material Symbols Rounded";
-  font-weight: normal;
-  font-style: normal;
-  font-size: var(--material-icon-font-size);
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -moz-font-feature-settings: "liga";
-  -moz-osx-font-smoothing: grayscale;
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 300,
-    "GRAD" -25,
-    "opsz" 24;
-}
-
-@theme inline {
+.theme-default,
+.theme-default * {
   --color-text: var(--color-slate-100);
   --color-text-light: var(--color-slate-500);
   --color-body-bg: var(--color-black);
@@ -84,22 +22,29 @@ h1 {
   --default-font-family: "Source Sans 3", sans-serif;
 }
 
-.oldschool, .oldschool * {
-  @theme inline {
-    --color-text: #000;
-    --color-text-light: #666;
-    --color-body-bg: #fff;
-    --color-primary: #ddd;
-    --color-light-primary: #eee;
-    --color-active: #eee;
-    --color-link: #00a;
-    --color-my-red: #f00;
-    --color-my-blue: #00f;
-    --color-my-green: #0f0;
-    --body-font-size: 14px;
-    --material-icon-font-size: 20px;
-    --default-font-family: "Arial", sans-serif;
-  }
+.oldschool,
+.oldschool * {
+  --color-text: #000;
+  --color-text-light: #666;
+  --color-body-bg: #fff;
+  --color-primary: #ddd;
+  --color-light-primary: #eee;
+  --color-active: #eee;
+  --color-link: #00a;
+  --color-my-red: #f00;
+  --color-my-blue: #00f;
+  --color-my-green: #0f0;
+  --body-font-size: 14px;
+  --material-icon-font-size: 20px;
+  --default-font-family: "Arial", sans-serif;
+}
+
+body {
+  @apply font-(--body-font-size) font-(family-name:--default-font-family) bg-(--color-body-bg);
+}
+
+h1 {
+  @apply text-2xl font-bold;
 }
 
 @utility my-round {
@@ -112,12 +57,12 @@ h1 {
 
 @layer base {
   * {
-    @apply text-text;
+    @apply text-(--color-text);
   }
 }
 
 input[type="text"] {
-  @apply bg-primary my-round h-8 p-1;
+  @apply bg-(--color-primary) my-round h-8 p-1;
 }
 
 input[type="text"]:disabled {
@@ -130,14 +75,17 @@ input[type="text"].error {
 
 button,
 .button {
-  @apply bg-primary my-round h-8 p-1 cursor-pointer active:bg-active hover:bg-light-primary font-ui;
+  @apply bg-(--color-primary) my-round h-8 p-1 cursor-pointer active:bg-(--color-active) hover:bg-(--color-light-primary) font-ui;
   @variant oldschool {
-    @apply border-[3px] [border-style:outset] active:[border-style:inset] border-light-primary;
+    @apply border-[2px] [border-style:outset] active:[border-style:inset] border-(--color-light-primary);
   }
 }
 
 button.active {
-  @apply bg-gray-600;
+  @apply bg-(--color-light-primary);
+  @variant oldschool {
+    @apply [border-style:inset];
+  }
 }
 
 .square {
@@ -150,11 +98,11 @@ input[type="range"] {
 }
 
 .theme-default input[type="range"]::-moz-range-track {
-  @apply bg-primary h-2 rounded-full;
+  @apply bg-(--color-primary) h-2 rounded-full;
 }
 
 .theme-default input[type="range"]::-webkit-slider-runnable-track {
-  @apply bg-primary h-2 rounded-full;
+  @apply bg-(--color-primary) h-2 rounded-full;
 }
 
 .theme-default input[type="range"]::-moz-range-thumb {
@@ -171,7 +119,7 @@ input[type="range"] {
 }
 
 .oldschool input[type="range"]::-moz-range-thumb {
-  @apply bg-[#ddd] [border-style:outset] border-[2px] border-active size-4 border-none cursor-pointer rounded-none;
+  @apply bg-[#ddd] [border-style:outset] border-[2px] border-(--color-active) size-4 border-none cursor-pointer rounded-none;
 }
 
 input[type="number"] {
@@ -189,11 +137,11 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 nav li {
-  @apply py-2 px-3 oldschool:p-1 bg-primary;
+  @apply py-2 px-3 oldschool:p-1 bg-(--color-primary);
 }
 
 nav li.active {
-  @apply py-2 px-3 oldschool:p-1 bg-active;
+  @apply py-2 px-3 oldschool:p-1 bg-(--color-active);
 }
 
 .panel {

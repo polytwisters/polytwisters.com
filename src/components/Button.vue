@@ -10,6 +10,8 @@ import iconPause from "@/assets/icons/pause.png";
 import iconPlus from "@/assets/icons/plus.png";
 import iconMinus from "@/assets/icons/minus.png";
 import iconHome from "@/assets/icons/home.png";
+import iconPlay from "@/assets/icons/play.png";
+import iconClose from "@/assets/icons/close.png";
 
 const map = new Map();
 map.set("home", iconHome);
@@ -22,9 +24,10 @@ map.set("chevron_left", iconLeft);
 map.set("chevron_right", iconRight);
 map.set("casino", iconRandom);
 map.set("stop", iconStop);
-map.set("play_arrow", iconRight);
+map.set("play_arrow", iconPlay);
 map.set("pause", iconPause);
 map.set("repeat", iconCamera);
+map.set("close", iconClose);
 
 defineEmits<{ (e: "click"): void }>();
 const props = defineProps<{
@@ -42,25 +45,28 @@ const iconSource = map.get(props.icon ?? "stop");
   <div class="h-8">
     <button
       :class="{
-        square: !text,
+        square: !text && !wide,
         active,
         flex: true,
         'gap-1': true,
-        'align-middle': true,
+        'items-center': true,
         'justify-center': true,
         'w-24': wide,
       }"
       @click="$emit('click')"
     >
-      <span v-if="icon" class="material theme-default:inline-block! oldschool:hidden!">
+      <div
+        v-if="icon"
+        class="material theme-default:inline-block! oldschool:hidden!"
+      >
         {{ icon }}
-      </span>
-      <span v-if="icon" class="theme-default:hidden oldschool:inline">
-        <img :src="iconSource">
-      </span>
-      <span v-if="text">
+      </div>
+      <div v-if="icon" class="theme-default:hidden oldschool:inline size-fit">
+        <img :src="iconSource" class="block" />
+      </div>
+      <div v-if="text">
         {{ text }}
-      </span>
+      </div>
     </button>
   </div>
 </template>

@@ -18,12 +18,15 @@ enum PlayMode {
   Loop = "loop",
   Bounce = "bounce",
   AutoplayNext = "autoplay_next",
-  AutoplayRandom = "autoplay_random"
-};
+  AutoplayRandom = "autoplay_random",
+}
 const playMode: Ref<PlayMode> = ref(PlayMode.Loop);
 
 function toggleAutoplay() {
-  if (playMode.value === PlayMode.AutoplayNext || playMode.value === PlayMode.AutoplayRandom) {
+  if (
+    playMode.value === PlayMode.AutoplayNext ||
+    playMode.value === PlayMode.AutoplayRandom
+  ) {
     playMode.value = PlayMode.Loop;
   } else {
     playMode.value = PlayMode.AutoplayNext;
@@ -131,10 +134,12 @@ requestAnimationFrame(tick);
     </div>
     <div class="grid grid-rows-1 grid-cols-3 w-full">
       <div class="flex flex-row justify-start items-center gap-2">
-        <div><span class="hidden md:inline">Cross section</span> <em>w</em></div>
+        <div>
+          <span class="hidden md:inline">Cross section</span> <em>w</em>
+        </div>
         <div>=</div>
         <input
-          class="hidden md:block bg-primary p-1 my-round text-center"
+          class="hidden md:block bg-(--color-primary) p-1 my-round text-center"
           type="number"
           v-model.number="model"
           min="-1"
@@ -146,11 +151,7 @@ requestAnimationFrame(tick);
         </div>
       </div>
       <div class="flex-1 flex justify-center items-center gap-2">
-        <Button
-          @click="stop()"
-          icon="stop"
-          help="Stop"
-        />
+        <Button @click="stop()" icon="stop" help="Stop" />
         <Button
           :active="playing"
           @click="togglePlay"
@@ -161,7 +162,10 @@ requestAnimationFrame(tick);
         <Button @click="pause" icon="pause" help="Pause" />
       </div>
 
-      <select v-model="playMode" class="hidden md:block button text-center justify-self-end">
+      <select
+        v-model="playMode"
+        class="hidden md:block button text-center justify-self-end"
+      >
         <!--
         Ideally this would be e.g. :value="PlayMode.Loop" but this caused a strange bug where
         the dropdown would lock up, flicker, and the entire app would freeze if the play mode was
@@ -176,7 +180,7 @@ requestAnimationFrame(tick);
 
       <div class="md:hidden justify-self-end">
         <Button
-          :active="playMode === PlayMode.Loop" 
+          :active="playMode === PlayMode.Loop"
           @click="toggleAutoplay"
           icon="repeat"
         />

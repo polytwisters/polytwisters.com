@@ -6,15 +6,13 @@ defineProps<{ fields: PolytwisterFields }>();
 
 <template>
   <div class="flex flex-row gap-1 text-sm font-normal">
-    <div v-if="fields.regular" class="bg-my-red property-tag">
+    <div v-if="fields.regular" class="bg-(--color-my-red) property-tag">
       regular
     </div>
-    <div v-if="fields.convex" class="bg-my-blue property-tag">
+    <div v-if="fields.convex" class="bg-(--color-my-blue) property-tag">
       convex
     </div>
-    <div v-if="fields.bug" class="bg-my-green property-tag">
-      bug
-    </div>
+    <div v-if="fields.bug" class="bg-(--color-my-green) property-tag">bug</div>
   </div>
 </template>
 
@@ -22,6 +20,6 @@ defineProps<{ fields: PolytwisterFields }>();
 @import "@/style.css";
 
 .property-tag {
-  @apply text-white my-round theme-default:p-1 oldschool:p-0.5;
+  @apply text-white my-round theme-default:p-1;
 }
 </style>

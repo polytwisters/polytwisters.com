@@ -25,7 +25,7 @@ p {
 
 a:link,
 a:visited {
-  @apply text-link;
+  @apply text-(--color-link);
 }
 
 ul {

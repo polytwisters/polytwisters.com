@@ -11,15 +11,19 @@ import MainViewerControls from "@/components/MainViewerControls.vue";
 import TwisterCrossSections from "@/components/TwisterCrossSections.vue";
 import InfoBox from "@/components/InfoBox.vue";
 
-watch(globalState.theme, (newValue) => {
-  if (newValue === Theme.Oldschool) {
-    document.body.classList.remove("theme-default");
-    document.body.classList.add("oldschool");
-  } else {
-    document.body.classList.remove("oldschool");
-    document.body.classList.add("theme-default");
-  }
-}, { immediate: true });
+watch(
+  globalState.theme,
+  (newValue) => {
+    if (newValue === Theme.Oldschool) {
+      document.body.classList.remove("theme-default");
+      document.body.classList.add("oldschool");
+    } else {
+      document.body.classList.remove("oldschool");
+      document.body.classList.add("theme-default");
+    }
+  },
+  { immediate: true },
+);
 
 const crossSectionW = globalState.crossSectionW;
 
@@ -39,7 +43,7 @@ const expandedView = globalState.expandedView;
 
 <template>
   <div
-    class="w-screen h-screen text-text grid grid-rows-[min-content_minmax(0,1fr)] panel"
+    class="w-screen h-screen grid grid-rows-[min-content_minmax(0,1fr)] panel"
     v-if="expandedView"
   >
     <MainViewerControls />
@@ -47,10 +51,10 @@ const expandedView = globalState.expandedView;
     <WSlider v-model="crossSectionW" />
   </div>
   <div
-    class="w-screen h-screen text-text grid grid-cols-1 grid-rows-[min-content_min-content_minmax(0,1fr)] md:grid-cols-2 md:grid-rows-[min-content_minmax(0,1fr)]"
+    class="w-screen h-screen grid grid-cols-1 grid-rows-[min-content_min-content_minmax(0,1fr)] md:grid-cols-2 md:grid-rows-[min-content_minmax(0,1fr)]"
     v-else
   >
-    <div class="panel md:col-span-2 oldschool:bg-active oldschool:[border-bottom:1px_solid_black]">
+    <div class="panel md:col-span-2 oldschool:bg-(--color-active)">
       <TopBar />
     </div>
 

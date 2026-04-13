@@ -1,25 +1,29 @@
 <script setup lang="ts">
-import { useTemplateRef, watch } from 'vue';
-import * as globalState from "@/globalState";
+import Button from "./Button.vue";
+import { useTemplateRef, watch } from "vue";
 
 const dialog = useTemplateRef<HTMLDialogElement>("dialog");
 
-const showingHelpModal = globalState.showingHelpModal;
+const emit = defineEmits<{
+  (e: "close"): void;
+}>();
 
-// If showingHelpModal flips from false to true, show the modal.
-watch(showingHelpModal, (newValue) => {
-  if (newValue) {
-    dialog.value?.showModal();
-  }
-});
+const { show } = defineProps<{ show: boolean }>();
 
-// When the modal closes, update the showingHelpModal ref to reflect this.
-function onClose() {
-  showingHelpModal.value = false;
-}
+// If show flips from false to true, show the modal.
+watch(
+  () => show,
+  (newValue) => {
+    if (newValue) {
+      dialog.value?.showModal();
+    } else {
+      dialog.value?.close();
+    }
+  },
+);
 
 function close() {
-  dialog.value?.close();
+  emit("close");
 }
 </script>
 
@@ -39,19 +43,18 @@ function close() {
   backdrop.
 
   So I can't use CSS grid to center the dialog box in the viewport. Instead I set the height to
-  100vh - 10rem and the width between 50rem and 100vw - 10rem, and a standard "translate" trick is
+  100vh - 10rem and the width between 100rem and 100vw - 10rem, and a standard "translate" trick is
   used for horizontal centering.
   -->
   <dialog
     ref="dialog"
     closedby="any"
-    class="fixed top-10 h-[calc(100vh-5rem)] w-min-[50rem] w-max-[calc(100vw-10rem)] left-[50vw] -translate-x-1/2
-    backdrop:bg-transparent backdrop:backdrop-blur-sm
-    bg-primary my-round text-white p-5 shadow-md oldschool:shadow-none"
-    @close="onClose">
-    <button class="material absolute top-0 right-0" @click="close">
-      close
-    </button>
+    class="fixed top-10 h-[calc(100vh-5rem)] w-[50rem] max-w-[calc(100vw-5rem)] left-[50vw] -translate-x-1/2 backdrop:bg-transparent backdrop:backdrop-blur-sm bg-(--color-primary) my-round text-white p-5 shadow-md oldschool:shadow-none"
+    @close="close"
+  >
+    <div class="absolute top-0 right-0">
+      <Button icon="close" @click="close()" />
+    </div>
     <div class="w-full h-full overflow-y-auto">
       <slot />
     </div>

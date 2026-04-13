@@ -97,9 +97,7 @@ export function takeScreenshot() {
 }
 
 export const showingHelpModal: Ref<boolean> = ref(false);
-export function showHelpModal() {
-  showingHelpModal.value = true;
-}
+export const showingSettingsModal: Ref<boolean> = ref(false);
 
 export const expandedView: Ref<boolean> = ref(false);
 export function expandView() {
@@ -111,7 +109,7 @@ export function exitExpandedView() {
 
 export enum Theme {
   Default,
-  Oldschool
+  Oldschool,
 }
 
-export const theme: Ref<Theme> = ref(Theme.Oldschool);
+export const theme: Ref<Theme> = ref(Theme.Default);
