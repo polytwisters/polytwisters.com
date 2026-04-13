@@ -17,7 +17,7 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
           'font-bold',
           'md:text-2xl',
           'text-center',
-          'md:text-right',
+          'md:text-left',
           polytwisterDef.name.length > 30 ? 'tracking-tight' : '',
         ]"
       >
