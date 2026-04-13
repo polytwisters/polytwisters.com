@@ -25,7 +25,7 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
       <SmallNavigation />
     </div>
   
-    <div class="grid grid-cols-3 items-start">
+    <div class="hidden md:grid grid-cols-3 items-start">
       <dl>
         <dt>Symbol</dt>
         <dd>{{ polytwisterDef.symbol.toString_() }}</dd>

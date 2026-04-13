@@ -118,7 +118,7 @@ requestAnimationFrame(tick);
         @pointerdown="pause"
       />
     </div>
-    <div class="grid grid-rows-1 grid-cols-3 w-full">
+    <div class="hidden md:grid grid-rows-1 grid-cols-1 w-full">
       <div class="flex flex-row justify-start items-center gap-2">
         <div>Cross section <em>w</em></div>
         <div>=</div>
@@ -146,7 +146,7 @@ requestAnimationFrame(tick);
         <Button @click="pause" icon="pause" help="Pause" />
       </div>
 
-      <select v-model="playMode" class="button text-center justify-self-end">
+      <select v-model="playMode" class="hidden md:block button text-center justify-self-end">
         <!--
         Ideally this would be e.g. :value="PlayMode.Loop" but this caused a strange bug where
         the dropdown would lock up, flicker, and the entire app would freeze if the play mode was
@@ -158,6 +158,15 @@ requestAnimationFrame(tick);
         <option value="autoplay_next">Autoplay next</option>
         <option value="autoplay_random">Autoplay random</option>
       </select>
+    </div>
+
+    <div class="flex justify-center md:hidden">
+      <Button
+        :active="playing"
+        @click="togglePlay"
+        icon="play_arrow"
+        :wide="true"
+      />
     </div>
   </div>
 </template>

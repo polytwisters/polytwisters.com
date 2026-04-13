@@ -6,13 +6,22 @@ defineProps<{
   text?: string;
   help?: string;
   square?: boolean;
+  wide?: boolean;
 }>();
 </script>
 
 <template>
   <div class="h-8">
     <button
-      :class="{ square, active, flex: true, 'gap-1': true, 'align-middle': true }"
+      :class="{
+        square,
+        active,
+        flex: true,
+        'gap-1': true,
+        'align-middle': true,
+        'justify-center': true,
+        'w-24': wide,
+      }"
       @click="$emit('click')"
     >
       <span v-if="icon" class="material">
