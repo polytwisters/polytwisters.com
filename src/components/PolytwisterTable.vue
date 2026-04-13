@@ -69,7 +69,7 @@ onMounted(() => {
 
 td,
 th {
-  @apply p-1;
+  @apply theme-default:p-1;
 }
 
 tr.active {

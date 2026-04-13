@@ -80,7 +80,7 @@ h1 {
 
 .oldschool, .oldschool * {
   @theme inline {
-    --color-text: #333;
+    --color-text: #000;
     --color-text-light: #666;
     --color-body-bg: #fff;
     --color-primary: #ddd;
@@ -139,21 +139,29 @@ input[type="range"] {
   background: transparent;
 }
 
-input[type="range"]::-moz-range-track {
+.theme-default input[type="range"]::-moz-range-track {
   @apply bg-primary h-2 rounded-full;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
+.theme-default input[type="range"]::-webkit-slider-runnable-track {
   @apply bg-primary h-2 rounded-full;
 }
 
-input[type="range"]::-moz-range-thumb {
+.theme-default input[type="range"]::-moz-range-thumb {
   @apply bg-gray-200 size-4 rounded-full border-none cursor-pointer;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+.theme-default input[type="range"]::-webkit-slider-thumb {
   @apply bg-gray-200 size-4 rounded-full border-none cursor-pointer -mt-1;
   -webkit-appearance: none;
+}
+
+.oldschool input[type="range"]::-moz-range-track {
+  @apply bg-[#eee] h-2;
+}
+
+.oldschool input[type="range"]::-moz-range-thumb {
+  @apply bg-[#ddd] [border-style:outset] border-[2px] border-active size-4 border-none cursor-pointer rounded-none;
 }
 
 input[type="number"] {
@@ -171,11 +179,11 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 nav li {
-  @apply py-2 px-3 bg-primary;
+  @apply py-2 px-3 oldschool:p-1 bg-primary;
 }
 
 nav li.active {
-  @apply py-2 px-3 bg-active;
+  @apply py-2 px-3 oldschool:p-1 bg-active;
 }
 
 .panel {

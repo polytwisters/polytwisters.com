@@ -31,7 +31,7 @@ const exitExpandedView = globalState.exitExpandedView;
         help="Zoom in"
       />
       <div
-        class="size-8 py-1 -mx-1 text-center material text-text-light select-none"
+        class="size-8 py-1 -mx-1 text-center material text-text-light select-none oldschool:hidden!"
       >
         search
       </div>

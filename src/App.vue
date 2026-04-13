@@ -50,7 +50,7 @@ const expandedView = globalState.expandedView;
     class="w-screen h-screen text-text grid grid-cols-1 grid-rows-[min-content_min-content_minmax(0,1fr)] md:grid-cols-2 md:grid-rows-[min-content_minmax(0,1fr)]"
     v-else
   >
-    <div class="panel md:col-span-2">
+    <div class="panel md:col-span-2 oldschool:bg-active oldschool:[border-bottom:1px_solid_black]">
       <TopBar />
     </div>
 

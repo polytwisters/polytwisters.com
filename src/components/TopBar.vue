@@ -17,7 +17,8 @@ const version = import.meta.env.PACKAGE_VERSION;
         @click="showHelpModal"
         class="button cursor-pointer flex flex-row items-center gap-1"
       >
-        <div class="material">help</div>
+        <div class="material oldschool:hidden!">help</div>
+        <img class="theme-default:hidden" src="@/assets/icons/help.png">
         <div>What is this?</div>
       </button>
       <HelpModal>
@@ -29,7 +30,8 @@ const version = import.meta.env.PACKAGE_VERSION;
         class="hidden md:flex button flex-row items-center gap-2"
       >
         <div>Bowers' page</div>
-        <div class="text-base! material">open_in_new</div>
+        <div class="text-base! material oldschool:hidden!">open_in_new</div>
+        <img class="theme-default:hidden" src="@/assets/icons/external.png">
       </a>
       <a
         target="_blank"
@@ -37,7 +39,8 @@ const version = import.meta.env.PACKAGE_VERSION;
         class="hidden md:flex button flex-row items-center gap-2"
       >
         <div>Source code</div>
-        <div class="text-base! material">open_in_new</div>
+        <div class="text-base! material oldschool:hidden!">open_in_new</div>
+        <img class="theme-default:hidden" src="@/assets/icons/external.png">
       </a>
     </div>
   </div>

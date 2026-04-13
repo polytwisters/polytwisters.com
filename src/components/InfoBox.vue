@@ -72,7 +72,7 @@ dl {
 }
 
 dd, dt {
-  @apply py-1;
+  @apply theme-default:py-1;
 }
 
 dt {
