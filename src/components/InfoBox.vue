@@ -15,14 +15,22 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
       <h2
         :class="[
           'font-bold',
-          'text-2xl',
+          'md:text-2xl',
+          'text-center',
+          'md:text-right',
           polytwisterDef.name.length > 30 ? 'tracking-tight' : '',
         ]"
       >
+        <span
+          class="md:hidden font-normal"
+          v-if="polytwisterDef.index"
+        >{{ polytwisterDef.index }}.</span>
         {{ polytwisterDef.name }}
       </h2>
 
-      <SmallNavigation />
+      <div class="hidden md:block">
+        <SmallNavigation />
+      </div>
     </div>
   
     <div class="hidden md:grid grid-cols-3 items-start">

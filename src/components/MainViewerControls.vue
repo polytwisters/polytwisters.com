@@ -73,5 +73,8 @@ const exitExpandedView = globalState.exitExpandedView;
         text="Return"
       />
     </div>
+    <div class="md:hidden">
+      <SmallNavigation />
+    </div>
   </div>
 </template>

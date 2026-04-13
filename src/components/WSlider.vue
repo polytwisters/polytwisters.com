@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
+import _ from "lodash";
+import { ref, computed, type Ref } from "vue";
 import * as mathUtils from "@/mathUtils";
 import * as globalState from "@/globalState";
 import Button from "@/components/Button.vue";
 
 const model = defineModel<number>({ required: true });
+
+const wString = computed(() => _.round(model.value, 2));
 
 const playing = ref(false);
 let reverse = false;
@@ -18,6 +21,14 @@ enum PlayMode {
   AutoplayRandom = "autoplay_random"
 };
 const playMode: Ref<PlayMode> = ref(PlayMode.Loop);
+
+function toggleAutoplay() {
+  if (playMode.value === PlayMode.AutoplayNext || playMode.value === PlayMode.AutoplayRandom) {
+    playMode.value = PlayMode.Loop;
+  } else {
+    playMode.value = PlayMode.AutoplayNext;
+  }
+}
 
 let lastTime = 0;
 function play() {
@@ -118,18 +129,21 @@ requestAnimationFrame(tick);
         @pointerdown="pause"
       />
     </div>
-    <div class="hidden md:grid grid-rows-1 grid-cols-3 w-full">
+    <div class="grid grid-rows-1 grid-cols-3 w-full">
       <div class="flex flex-row justify-start items-center gap-2">
-        <div>Cross section <em>w</em></div>
+        <div><span class="hidden md:inline">Cross section</span> <em>w</em></div>
         <div>=</div>
         <input
-          class="bg-primary p-1 rounded-sm text-center"
+          class="hidden md:block bg-primary p-1 rounded-sm text-center"
           type="number"
           v-model.number="model"
           min="-1"
           max="1"
           step="0.01"
         />
+        <div class="w-10 md:hidden">
+          {{ wString }}
+        </div>
       </div>
       <div class="flex-1 flex justify-center items-center gap-2">
         <Button
@@ -142,6 +156,7 @@ requestAnimationFrame(tick);
           @click="togglePlay"
           icon="play_arrow"
           help="Play"
+          :wide="true"
         />
         <Button @click="pause" icon="pause" help="Pause" />
       </div>
@@ -158,15 +173,14 @@ requestAnimationFrame(tick);
         <option value="autoplay_next">Autoplay next</option>
         <option value="autoplay_random">Autoplay random</option>
       </select>
-    </div>
 
-    <div class="flex justify-center md:hidden">
-      <Button
-        :active="playing"
-        @click="togglePlay"
-        icon="play_arrow"
-        :wide="true"
-      />
+      <div class="md:hidden justify-self-end">
+        <Button
+          :active="playMode === PlayMode.Loop" 
+          @click="toggleAutoplay"
+          icon="repeat"
+        />
+      </div>
     </div>
   </div>
 </template>

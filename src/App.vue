@@ -39,25 +39,19 @@ const expandedView = globalState.expandedView;
   </div>
   <div class="
   w-screen h-screen text-slate-100
-  grid grid-cols-1
-  lg:grid-cols-2 lg:grid-rows-[min-content_minmax(0,1fr)]
+  grid
+  grid-cols-1
+  grid-rows-[min-content_min-content_minmax(0,1fr)]
+  md:grid-cols-2
+  md:grid-rows-[min-content_minmax(0,1fr)]
   " v-else>
-    <!-- Row 1 -->
-    <div class="panel col-span-full">
+    <div class="panel md:col-span-2">
       <TopBar />
     </div>
-
-    <!-- Row 2 -->
-    <div class="panel row-span-2 grid grid-cols-1 grid-rows-[min-content_minmax(0,1fr)_min-content]">
-      <MainViewerControls />
-      <MainViewer />
-      <WSlider v-model="crossSectionW" />
-    </div>
   
-    <!-- Row 2, right side -->
-    <div class="panel grid grid-rows-[min-content_minmax(0,1fr)]">
+    <div class="panel md:order-3 grid grid-rows-[min-content_minmax(0,1fr)]">
       <InfoBox />
-      <div class="hidden lg:grid grid-rows-[min-content_minmax(0,1fr)] relative">
+      <div class="hidden md:grid grid-rows-[min-content_minmax(0,1fr)] relative">
         <nav>
           <ul class="flex flex-row">
             <li :class="{ active: tab === Tab.Navigation }" @click="setTab(Tab.Navigation)">Navigation</li>
@@ -67,6 +61,12 @@ const expandedView = globalState.expandedView;
         <TwisterCrossSections v-if="tab === Tab.Twisters" />
         <PolytwisterTable v-if="tab === Tab.Navigation" />
       </div>
+    </div>
+
+    <div class="panel md:row-span-2 grid grid-cols-1 grid-rows-[min-content_minmax(0,1fr)_min-content]">
+      <MainViewerControls />
+      <MainViewer />
+      <WSlider v-model="crossSectionW" />
     </div>
   </div>
 </template>
