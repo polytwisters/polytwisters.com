@@ -36,16 +36,6 @@ const experimentalMode = false;
 
 const fullscreen = false;
 
-const isWindows = navigator.userAgent.indexOf("Windows") !== -1;
-const dismissedMessage =
-  localStorage.getItem("dismissedWindowsMessage") !== null;
-const showWindowsMessage = ref(isWindows && !dismissedMessage);
-
-function dismissWindowsMessage() {
-  localStorage.setItem("dismissedWindowsMessage", "1");
-  showWindowsMessage.value = false;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
 
@@ -281,26 +271,6 @@ onMounted(() => {
         Compiling shader...
       </div>
     </div>
-
-    <Transition
-      leave-active-class="duration-200"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div
-        v-if="showWindowsMessage"
-        class="absolute text-sm top-8 left-8 w-100 p-2 bg-(--color-primary) flex flex-row gap-2 my-round shadow-lg/50 cursor-pointer"
-        @click="dismissWindowsMessage"
-      >
-        <div class="material">warning</div>
-        <p>
-          Your browser may freeze briefly when loading polytwisters while the
-          shader compiles. Unfortunately, there is no solution to this except to
-          use macOS or Linux instead of Windows.
-        </p>
-        <div class="material text-sm!">close</div>
-      </div>
-    </Transition>
 
     <div
       :class="[
