@@ -257,7 +257,7 @@ onMounted(() => {
   <div class="relative w-full min-h-0 min-w-0 oldschool:bg-[#aaa]">
     <canvas
       ref="canvas"
-      class="block aspect-square w-full h-full object-contain"
+      class="block aspect-square w-full h-full object-contain cursor-grab active:cursor-grabbing"
       @pointerdown="cameraControls.canvasPointerDown"
       @blur="cameraControls.pointerUp"
       @wheel.prevent="cameraControls.canvasWheel"
