@@ -43,7 +43,7 @@ const expandedView = globalState.expandedView;
 
 <template>
   <div
-    class="w-screen h-screen grid grid-rows-[min-content_minmax(0,1fr)] panel"
+    class="w-screen h-screen grid grid-rows-[min-content_minmax(0,1fr)] panel gap-1"
     v-if="expandedView"
   >
     <MainViewerControls />
@@ -85,7 +85,7 @@ const expandedView = globalState.expandedView;
     </div>
 
     <div
-      class="panel md:row-span-2 grid grid-cols-1 grid-rows-[min-content_minmax(0,1fr)_min-content]"
+      class="panel md:row-span-2 grid grid-cols-1 grid-rows-[min-content_minmax(0,1fr)_min-content] gap-1"
     >
       <MainViewerControls />
       <MainViewer />

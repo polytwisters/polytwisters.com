@@ -59,17 +59,44 @@
   }
 }
 
+/* Basic typography */
+
 body {
   @apply font-(--body-font-size) font-(family-name:--default-font-family) bg-(--color-body-bg)
 }
 
-:root {
-  @apply text-(--color-text);
+@layer base {
+  * {
+    @apply text-(--color-text);
+  }
 }
 
 h1 {
   @apply text-2xl font-bold;
 }
+
+/* Navigation */
+
+.square {
+  @apply size-8;
+}
+.toolbar {
+  @apply z-20;
+}
+
+nav li {
+  @apply py-2 px-3 oldschool:p-1 bg-(--color-primary);
+}
+
+nav li.active {
+  @apply py-2 px-3 oldschool:p-1 bg-(--color-active);
+}
+
+.panel {
+  @apply p-2;
+}
+
+/* Form inputs */
 
 input[type="text"] {
   @apply bg-(--color-primary) my-round h-8 p-1;
@@ -94,10 +121,6 @@ button.active {
   @variant oldschool {
     @apply [border-style:inset];
   }
-}
-
-.square {
-  @apply size-8;
 }
 
 input[type="range"] {
@@ -139,20 +162,4 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-.toolbar {
-  @apply z-20;
-}
-
-nav li {
-  @apply py-2 px-3 oldschool:p-1 bg-(--color-primary);
-}
-
-nav li.active {
-  @apply py-2 px-3 oldschool:p-1 bg-(--color-active);
-}
-
-.panel {
-  @apply p-2;
 }
