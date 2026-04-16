@@ -15,11 +15,11 @@ watch(
   globalState.theme,
   (newValue) => {
     if (newValue === Theme.Oldschool) {
-      document.body.classList.remove("theme-default");
-      document.body.classList.add("oldschool");
+      document.documentElement.classList.remove("theme-default");
+      document.documentElement.classList.add("oldschool");
     } else {
-      document.body.classList.remove("oldschool");
-      document.body.classList.add("theme-default");
+      document.documentElement.classList.remove("oldschool");
+      document.documentElement.classList.add("theme-default");
     }
   },
   { immediate: true },

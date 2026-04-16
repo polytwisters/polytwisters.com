@@ -41,26 +41,34 @@
   --default-font-family: "Arial", sans-serif;
 }
 
-body {
-  @apply font-(--body-font-size) font-(family-name:--default-font-family) bg-(--color-body-bg);
-}
-
-h1 {
-  @apply text-2xl font-bold;
-}
-
 @utility my-round {
-  @apply rounded-sm oldschool:rounded-none;
+  @apply theme-default:rounded-sm;
+}
+
+@utility my-shadow {
+  @apply theme-default:shadow-md;
 }
 
 @utility font-ui {
   @apply oldschool:font-[W95FA] oldschool:text-[14px];
 }
 
-@layer base {
-  * {
-    @apply text-(--color-text);
+@utility oldschool-border {
+  @variant oldschool {
+    @apply border-[2px] [border-style:outset] active:[border-style:inset] border-(--color-light-primary);
   }
+}
+
+body {
+  @apply font-(--body-font-size) font-(family-name:--default-font-family) bg-(--color-body-bg)
+}
+
+:root {
+  @apply text-(--color-text);
+}
+
+h1 {
+  @apply text-2xl font-bold;
 }
 
 input[type="text"] {
@@ -78,9 +86,7 @@ input[type="text"].error {
 button,
 .button {
   @apply bg-(--color-primary) my-round h-8 p-1 cursor-pointer active:bg-(--color-active) hover:bg-(--color-light-primary) font-ui;
-  @variant oldschool {
-    @apply border-[2px] [border-style:outset] active:[border-style:inset] border-(--color-light-primary);
-  }
+  @apply oldschool-border;
 }
 
 button.active {

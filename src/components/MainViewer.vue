@@ -267,7 +267,7 @@ onMounted(() => {
       v-if="loading"
       class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center"
     >
-      <div class="text-sm bg-(--color-primary) p-2 shadow-lg/50 my-round">
+      <div class="text-sm bg-(--color-primary) p-2 my-shadow my-round oldschool-border">
         Compiling shader...
       </div>
     </div>
@@ -288,10 +288,6 @@ onMounted(() => {
       <pre v-if="shaderError">{{ shaderLog }}</pre>
     </div>
 
-    <!--
-    Axes are hidden in fullscreen out of pure laziness. They don't
-    position properly with the position:fixed parent.
-    -->
     <Axes
       :cameraX="cameraX"
       :cameraY="cameraY"
