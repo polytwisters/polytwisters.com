@@ -10,7 +10,7 @@
   --color-text: var(--color-slate-100);
   --color-text-light: var(--color-slate-500);
   --color-body-bg: var(--color-black);
-  --color-modal-bg: var(--color-gray-900);
+  --color-modal-bg: var(--color-gray-950);
   --color-primary: var(--color-gray-800);
   --color-light-primary: var(--color-gray-700);
   --color-active: var(--color-gray-600);
@@ -28,7 +28,7 @@
   --color-text: #000;
   --color-text-light: #666;
   --color-body-bg: #fff;
-  --color-modal-bg: #ddd;
+  --color-modal-bg: #eee;
   --color-primary: #ddd;
   --color-light-primary: #eee;
   --color-active: #eee;
@@ -155,7 +155,7 @@ input[type="range"] {
 
 input[type="number"] {
   -moz-appearance: textfield;
-  @apply font-ui;
+  @apply font-ui bg-(--color-primary) p-1 my-round text-center;
 }
 
 input[type="number"]::-webkit-outer-spin-button,

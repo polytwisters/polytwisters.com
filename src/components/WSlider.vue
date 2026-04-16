@@ -3,6 +3,7 @@ import _ from "lodash";
 import { ref, computed, type Ref } from "vue";
 import * as mathUtils from "@/mathUtils";
 import * as globalState from "@/globalState";
+import { animationDuration } from "@/globalState";
 import Button from "@/components/Button.vue";
 
 const model = defineModel<number>({ required: true });
@@ -88,7 +89,7 @@ function tick(timestamp: number) {
   }
 
   if (playing.value) {
-    let newValue = model.value + deltaInSeconds * 0.5 * (reverse ? -1 : 1);
+    let newValue = model.value + deltaInSeconds * (2.0 / animationDuration.value) * (reverse ? -1 : 1);
     if (playMode.value === PlayMode.Loop) {
       newValue = wrap(newValue);
     } else if (playMode.value === PlayMode.Bounce) {
@@ -137,7 +138,7 @@ requestAnimationFrame(tick);
         <em>w</em>
         <div>=</div>
         <input
-          class="hidden md:block bg-(--color-primary) p-1 my-round text-center"
+          class="hidden md:block"
           type="number"
           v-model.number="model"
           min="-1"
