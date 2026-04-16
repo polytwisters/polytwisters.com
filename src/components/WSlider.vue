@@ -134,9 +134,7 @@ requestAnimationFrame(tick);
     </div>
     <div class="grid grid-rows-1 grid-cols-3 w-full">
       <div class="flex flex-row justify-start items-center gap-2">
-        <div>
-          <span class="hidden md:inline">Cross section</span> <em>w</em>
-        </div>
+        <em>w</em>
         <div>=</div>
         <input
           class="hidden md:block bg-(--color-primary) p-1 my-round text-center"

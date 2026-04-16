@@ -126,6 +126,7 @@ input[type="range"] {
 
 input[type="number"] {
   -moz-appearance: textfield;
+  @apply font-ui;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
