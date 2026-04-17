@@ -17,11 +17,6 @@ import Button from "@/components/Button.vue";
       icon="chevron_right"
       help="Next"
     />
-    <Button
-      @click="globalState.random"
-      material
-      icon="casino"
-      help="Random"
-    />
+    <Button @click="globalState.random" material icon="casino" help="Random" />
   </div>
 </template>

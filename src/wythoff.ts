@@ -61,23 +61,24 @@ export class Polyhedron {
   rotate(quaternion: Quaternion): Polyhedron {
     return new Polyhedron(
       this.vertices.map((vertex) => ({
-        position: vertex.position.clone().applyQuaternion(quaternion)
+        position: vertex.position.clone().applyQuaternion(quaternion),
       })),
       this.edges.map((edge) => ({
         ...edge,
-        position: edge.position.clone().applyQuaternion(quaternion)
+        position: edge.position.clone().applyQuaternion(quaternion),
       })),
       this.faces.map((face) => ({
         ...face,
-        center: face.center.clone().applyQuaternion(quaternion)
+        center: face.center.clone().applyQuaternion(quaternion),
       })),
-      this.numFaceOrbits
-    )
+      this.numFaceOrbits,
+    );
   }
 
   rotateVertexFirst(): Polyhedron {
     const rotation = new Quaternion().setFromUnitVectors(
-      this.vertices[0].position.clone().normalize(), new Vector3(1, 0, 0)
+      this.vertices[0].position.clone().normalize(),
+      new Vector3(1, 0, 0),
     );
     return this.rotate(rotation);
   }
@@ -85,7 +86,8 @@ export class Polyhedron {
   rotateFaceFirst(orbit: number): Polyhedron {
     const index = this.getFaceIndexFromOrbit(orbit);
     const rotation = new Quaternion().setFromUnitVectors(
-      this.faces[index].center.clone().normalize(), new Vector3(1, 0, 0)
+      this.faces[index].center.clone().normalize(),
+      new Vector3(1, 0, 0),
     );
     return this.rotate(rotation);
   }
@@ -541,7 +543,12 @@ export class SymmetryGroup {
 
     const numFaceOrbits = regular ? 1 : 2;
 
-    return new Polyhedron(vertices, edges, faces, numFaceOrbits).rotateVertexFirst();
+    return new Polyhedron(
+      vertices,
+      edges,
+      faces,
+      numFaceOrbits,
+    ).rotateVertexFirst();
   }
 }
 

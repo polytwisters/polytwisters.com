@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "export-defs": "tsx scripts/exportDefs.ts",
-    "export-geometry": "tsx scripts/exportGeometry.ts"
+    "export-geometry": "tsx scripts/exportGeometry.ts",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@types/katex": "^0.16.7",
@@ -32,6 +33,7 @@
     "vue-tsc": "^2.1.10"
   },
   "lint-staged": {
-    "*.{ts,vue,js,css,md,html}": "prettier --write"
+    "*.{ts,vue,js,css,md,html}": "prettier --write",
+    "*.{js,css,md}": "prettier --write"
   }
 }

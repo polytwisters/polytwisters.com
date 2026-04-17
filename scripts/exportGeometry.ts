@@ -18,9 +18,9 @@ function main(argv) {
         const polytwister = polytwisters.Polytwister.fromDef(def);
         return {
           def: def.asJSON(),
-          geometry: polytwister.export()
+          geometry: polytwister.export(),
         };
-      })
+      }),
     };
     // No indentation here as the output file is pretty big.
     fs.writeFile(outputFile, JSON.stringify(jsonObject), () => {});

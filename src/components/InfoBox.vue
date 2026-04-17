@@ -6,7 +6,9 @@ import SmallNavigation from "@/components/SmallNavigation.vue";
 
 const polytwisterDef = globalState.polytwisterDef;
 const polytwister = globalState.polytwister;
-const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmetrySymbol());
+const symmetrySymbol = computed(() =>
+  globalState.polytwisterSymbol.value.symmetrySymbol(),
+);
 </script>
 
 <template>
@@ -21,10 +23,9 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
           polytwisterDef.name.length > 30 ? 'tracking-tight' : '',
         ]"
       >
-        <span
-          class="md:hidden font-normal"
-          v-if="polytwisterDef.index"
-        >{{ polytwisterDef.index }}.</span>
+        <span class="md:hidden font-normal" v-if="polytwisterDef.index"
+          >{{ polytwisterDef.index }}.</span
+        >
         {{ polytwisterDef.name }}
       </h2>
 
@@ -32,7 +33,7 @@ const symmetrySymbol = computed(() => globalState.polytwisterSymbol.value.symmet
         <SmallNavigation />
       </div>
     </div>
-  
+
     <div class="hidden md:grid grid-cols-3 items-start">
       <dl>
         <dt>Symbol</dt>
@@ -71,12 +72,12 @@ dl {
   @apply grid grid-cols-2 my-2 w-50;
 }
 
-dd, dt {
+dd,
+dt {
   @apply theme-default:py-1;
 }
 
 dt {
   @apply font-bold;
 }
-
 </style>

@@ -66,7 +66,10 @@ const expandedView = globalState.expandedView;
         <nav>
           <ul class="flex flex-row font-ui">
             <li
-              :class="{ active: tab === Tab.Navigation, 'cursor-pointer': true }"
+              :class="{
+                active: tab === Tab.Navigation,
+                'cursor-pointer': true,
+              }"
               @click="setTab(Tab.Navigation)"
             >
               Navigation

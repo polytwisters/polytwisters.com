@@ -35,15 +35,7 @@ function close() {
   <dialog
     ref="dialog"
     closedby="any"
-    class="
-      fixed
-      max-h-[calc(100vh-5rem)] top-[50vh] -translate-y-1/2
-      w-[50rem] max-w-[calc(100vw-5rem)] left-[50vw] -translate-x-1/2
-      p-5
-      theme-default:backdrop:bg-transparent
-      theme-default:backdrop:backdrop-blur-sm
-      bg-(--color-modal-bg) my-round my-shadow
-    "
+    class="fixed max-h-[calc(100vh-5rem)] top-[50vh] -translate-y-1/2 w-[50rem] max-w-[calc(100vw-5rem)] left-[50vw] -translate-x-1/2 p-5 theme-default:backdrop:bg-transparent theme-default:backdrop:backdrop-blur-sm bg-(--color-modal-bg) my-round my-shadow"
     @close="close"
   >
     <div class="absolute top-0 right-0">

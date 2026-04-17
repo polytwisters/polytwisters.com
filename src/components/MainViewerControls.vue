@@ -18,12 +18,7 @@ const exitExpandedView = globalState.exitExpandedView;
 <template>
   <div class="toolbar flex flex-row">
     <div class="flex flex-row gap-2 flex-1">
-      <Button
-        @click="camera.reset"
-        material
-        icon="home"
-        help="Reset camera"
-      />
+      <Button @click="camera.reset" material icon="home" help="Reset camera" />
       <Button
         @click="cameraControls.zoomIn"
         material
@@ -43,7 +38,9 @@ const exitExpandedView = globalState.exitExpandedView;
       />
     </div>
     <div v-if="expandedView" class="flex flex-row gap-2 flex-1 justify-center">
-      <h1 class="text-center text-xl!">{{ globalState.polytwisterDef.value.name }}</h1>
+      <h1 class="text-center text-xl!">
+        {{ globalState.polytwisterDef.value.name }}
+      </h1>
     </div>
     <div class="hidden md:flex flex-1 flex-row justify-end gap-2">
       <SmallNavigation v-if="expandedView" />

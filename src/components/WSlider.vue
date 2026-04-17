@@ -91,7 +91,9 @@ function tick(timestamp: number) {
   }
 
   if (playing.value) {
-    let newValue = model.value + deltaInSeconds * (2.0 / animationDuration.value) * (reverse ? -1 : 1);
+    let newValue =
+      model.value +
+      deltaInSeconds * (2.0 / animationDuration.value) * (reverse ? -1 : 1);
     if (playMode.value === PlayMode.Loop) {
       newValue = wrap(newValue);
     } else if (playMode.value === PlayMode.Bounce) {

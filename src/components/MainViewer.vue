@@ -278,7 +278,9 @@ onUnmounted(() => {
       v-if="loading && !hideCompilingShader"
       class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center"
     >
-      <div class="text-sm bg-(--color-primary) p-2 my-shadow my-round oldschool-border">
+      <div
+        class="text-sm bg-(--color-primary) p-2 my-shadow my-round oldschool-border"
+      >
         Compiling shader...
       </div>
     </div>

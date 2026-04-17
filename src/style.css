@@ -62,7 +62,7 @@
 /* Basic typography */
 
 body {
-  @apply font-(--body-font-size) font-(family-name:--default-font-family) bg-(--color-body-bg)
+  @apply font-(--body-font-size) font-(family-name:--default-font-family) bg-(--color-body-bg);
 }
 
 @layer base {
