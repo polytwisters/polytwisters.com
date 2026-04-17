@@ -7,6 +7,7 @@ import {
   onMounted,
   watch,
   nextTick,
+  onUnmounted,
 } from "vue";
 
 import * as polytwisters from "@/polytwisters";
@@ -155,6 +156,8 @@ function tickFPSTimer() {
 
 let renderingEnabled = true;
 
+let animationFrame: null | number = null;
+
 onMounted(() => {
   cameraControls.enablePointerEvents();
 
@@ -247,9 +250,16 @@ onMounted(() => {
       window.open(screenshot);
       globalState.takingScreenshot.value = false;
     }
-    requestAnimationFrame(update);
+    animationFrame = requestAnimationFrame(update);
   }
-  requestAnimationFrame(update);
+  animationFrame = requestAnimationFrame(update);
+});
+
+// Clean up to prevent leaks in Vite hot reload.
+onUnmounted(() => {
+  if (animationFrame !== null) {
+    cancelAnimationFrame(animationFrame);
+  }
 });
 </script>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import _ from "lodash";
-import { ref, computed, type Ref } from "vue";
+import { ref, computed, type Ref, onUnmounted } from "vue";
 import * as mathUtils from "@/mathUtils";
 import * as globalState from "@/globalState";
 import { animationDuration } from "@/globalState";
@@ -74,6 +74,8 @@ function fold(value: number): number {
   return newValue;
 }
 
+let animationFrame: number | null = null;
+
 function tick(timestamp: number) {
   let deltaInSeconds = (timestamp - lastTime) / 1000;
 
@@ -115,9 +117,17 @@ function tick(timestamp: number) {
     model.value = newValue;
   }
   lastTime = timestamp;
-  requestAnimationFrame(tick);
+  animationFrame = requestAnimationFrame(tick);
 }
-requestAnimationFrame(tick);
+
+animationFrame = requestAnimationFrame(tick);
+
+// Clean up to prevent leaks in Vite hot reload.
+onUnmounted(() => {
+  if (animationFrame !== null) {
+    cancelAnimationFrame(animationFrame);
+  }
+});
 </script>
 
 <template>
