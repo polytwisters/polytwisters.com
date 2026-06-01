@@ -44,6 +44,7 @@ const fullscreen = false;
 const polytwister = globalState.polytwister;
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
+const orthogonalPipesR3 = computed(() => polytwister.value.orthogonalPipesR3());
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
@@ -124,6 +125,7 @@ function getUniforms(): { [key: string]: any } {
     cameraX: { value: camera.x.value },
     cameraY: { value: camera.y.value },
     pipes: { value: pipesR3.value },
+    orthogonalPipes: { value: orthogonalPipesR3.value },
     ringDots: { value: ringDotsPadded.value },
     shading: { value: shading.value },
     showRings: { value: showRings.value },

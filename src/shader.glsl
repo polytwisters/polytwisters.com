@@ -21,6 +21,7 @@ uniform float crossSectionW;
 
 // Geometry parameters.
 uniform vec3 pipes[NUM_PIPES];
+uniform vec3 orthogonalPipes[NUM_PIPES];
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform vec3 colors[NUM_PIPES];
 uniform float radius;
@@ -127,20 +128,6 @@ bool Pipe_contains(Pipe pipe, vec3 p) {
   float y = p.y;
   float z = p.z;
   float tmp = square(a * x + b * y + c * z) + square(-b * x + a * y + c * w);
-  return tmp <= 1.0;
-}
-
-bool Pipe_antipode_contains(Pipe pipe, vec3 p) {
-  // <(a, b) | (-b^*, a^*)> = 0
-  float a = -pipe.p.z;
-  float b = 0.0;
-  float c = pipe.p.x;
-  float d = -pipe.p.y;
-  float w = pipe.w;
-  float x = p.x;
-  float y = p.y;
-  float z = p.z;
-  float tmp = square(a * x + b * y + c * z + d * w) + square(-b * x + a * y + c * w + -d * z);
   return tmp <= 1.0;
 }
 

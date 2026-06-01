@@ -188,11 +188,13 @@ export class Polytwister {
   }
 
   /**
-   * Given a twister T with containing pipe P(y), find the pipe P(y') so that <y, y'> = 0 and the
-   * rings of T are also on P(y'). This orthogonal pipe separates the "inner" from "outer" regions
-   * in the filling.
+   * Given a regular twister T with containing pipe P(y), its orthogonal pipe P(y') is so that
+   * <y, y'> = 0 and the rings of T are also on P(y'). This orthogonal pipe separates the "inner"
+   * from "outer" regions in the filling.
+   * 
+   * This method computes the orthogonal pipes for all the twisters.
    */
-  getOrthogonalPipe(twisterIndex: number): C2 {
+  orthogonalPipes(): C2[] {
     // Suppose y = (a, 0) so y' = (0, k) for real k. The intersection of y and y' comprises rings
     // of constant radius R.
     //
@@ -203,10 +205,18 @@ export class Polytwister {
     // k = 1 / sqrt((|a| R)^2 - 1)
     //
     // This works in the general case due to symmetry.
-    const pipe = this.logs[twisterIndex];
-    const tmp = pipe.abs() * this.ringRadius();
-    const k = 1 / Math.sqrt(tmp * tmp - 1);
-    return pipe.orthogonal().mulReal(k);
+    return this.logs.map((pipe) => {
+      const tmp = pipe.abs() * this.ringRadius();
+      const k = 1 / Math.sqrt(tmp * tmp - 1);
+      return pipe.orthogonal().mulReal(k);
+    });
+  }
+
+  /**
+   * Like orthogonalPipes() but rotate all C2 vectors so their w-coordinate is zero.
+   */
+  orthogonalPipesR3(): Vector3[] {
+    return this.orthogonalPipes().map((pipe) => pipe.toVector3W0());
   }
 
   getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
@@ -280,10 +290,8 @@ export class Polytwister {
         vec3 point = Ray_at(ray, t);
         int n = ${n};
         int d = ${d};
-        float ringRadius = ${this.rings[0].abs().toFixed(10)};
-        float cutoffRadius = 1.0 / sqrt(square(ringRadius * length(pipes[${twisterIndex}])) - 1.0);
-        bool inner = Pipe_antipode_contains(
-          Pipe(pipes[${twisterIndex}] * cutoffRadius, crossSectionW), point
+        bool inner = Pipe_contains(
+          Pipe(orthogonalPipes[${twisterIndex}], crossSectionW), point
         );
         bool outer = !inner;
         int order = 0;
@@ -330,8 +338,8 @@ export class Polytwister {
     return {
       polyhedron: this.polyhedron.export(),
       pipes: this.logs.map((x) => x.toArray()),
-      orthogonalPipes: this.logs.map((_, i) =>
-        this.getOrthogonalPipe(i).toArray(),
+      orthogonalPipes: this.orthogonalPipes().map((pipe) =>
+        pipe.toArray(),
       ),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
