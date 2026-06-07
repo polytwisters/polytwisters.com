@@ -30,7 +30,7 @@ defineEmits<{
 
     <div class="my-5 flex gap-5">
       <label class="text-bold" for="theme-selector">UI theme:</label>
-      <div>
+      <div class="flex gap-1">
         <input
           type="radio"
           id="modern"
@@ -39,7 +39,7 @@ defineEmits<{
         />
         <label for="modern">Modern</label>
       </div>
-      <div>
+      <div class="flex gap-1">
         <input
           type="radio"
           id="oldschool"
