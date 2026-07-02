@@ -8,15 +8,10 @@ import Button from "@/components/Button.vue";
     <Button
       @click="globalState.previous"
       material
-      icon="chevron_left"
+      icon="skip_previous"
       help="Previous"
     />
-    <Button
-      @click="globalState.next"
-      material
-      icon="chevron_right"
-      help="Next"
-    />
+    <Button @click="globalState.next" material icon="skip_next" help="Next" />
     <Button @click="globalState.random" material icon="casino" help="Random" />
   </div>
 </template>

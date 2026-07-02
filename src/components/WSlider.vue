@@ -162,6 +162,12 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="flex-1 flex justify-center items-center gap-2">
+        <Button
+          @click="globalState.previous"
+          material
+          icon="skip_previous"
+          help="Previous"
+        />
         <Button @click="stop()" icon="stop" help="Stop" />
         <Button
           :active="playing"
@@ -171,6 +177,12 @@ onUnmounted(() => {
           :wide="true"
         />
         <Button @click="pause" icon="pause" help="Pause" />
+        <Button
+          @click="globalState.next"
+          material
+          icon="skip_next"
+          help="Next"
+        />
       </div>
 
       <select
