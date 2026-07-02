@@ -5,6 +5,23 @@
   four-dimensional space.
 </p>
 
+<ul>
+  <li>
+    Jonathan Bowers. "<a
+      href="https://www.polytope.net/hedrondude/twisters.htm"
+      target="_blank"
+      >Polytwisters</a
+    >." The original Web page.
+  </li>
+  <li>
+    Nathan Ho. "<a
+      href="https://archive.bridgesmathart.org/2026/"
+      target="_blank"
+      >Polytwisters: 4D Curved Shapes from Polyhedra and Hopf Fibration</a
+    >." Bridges 2026.
+  </li>
+</ul>
+
 <h2>What are polytwisters?</h2>
 
 <p>
@@ -75,115 +92,20 @@
   polytwister's equivalent of a polygonal face.
 </p>
 
-<h2>Mathematical definition of polytwisters</h2>
-
 <p>
-  A major part of this project was establishing a formal definition of
-  polytwisters for the first time. I have a paper, "Polytwisters: 4D Curved
-  Shapes from Polyhedra and Hopf Fibration" pending publication in the
-  <a href="https://www.bridgesmathart.org/b2026/">2026 Bridges Conference</a>.
-  This section defines convex polytwisters, and less formally describes strips,
-  twisters, and nonconvex polytwisters.
-</p>
-
-<p>
-  Equate \(\mathbb{R}^4\) and \(\mathbb{C}^2\) with \((a, b, c,
-  d)_{\mathbb{R}^4} \equiv (a + bi, c + di)_{\mathbb{C}^2}\). Define the
-  equivalence relation \(x \sim y\) on \(\mathbb{C}^2\) as true
-  <abbr title="if and only if">iff</abbr> there exists \(k \in \mathbb{C},\, |k|
-  = 1\) such that \(y = kx\), i.e. \(y\) is a <em>phase rotation</em> of \(x\).
-  The partition \(\mathbb{C}^2 / \sim\) divides the space into <em>fibers</em>.
-  Reinterpreted in \(\mathbb{R}^4\), fibers are geometric circles centered on
-  the origin, except for one <em>trivial fiber</em> comprising the origin; the
-  rest we refer to as <em>nontrivial fibers</em>.
-</p>
-
-<p>
-  Taking only the fibers of unit radius gives us the Hopf fibration,
-  partitioning the 3-sphere into infinitely many great circles. The Hopf map is
-  actually not necessary to understand or define polytwisters, so I will not
-  discuss it here.
-</p>
-
-<p>
-  Given \(y \in \mathbb{C}^2 \backslash \{0\}\) define a <em>log</em> and a
-  <em>pipe</em> respectively as:
-</p>
-
-<p>
-  \[ \begin{align*} L(y) = L(y_1, y_2) &amp;= \{ x \in \mathbb{C}^2 : |\langle
-  x, y \rangle| \leq 1\} \\ P(y) = P(y_1, y_2) &amp;= \{ x \in \mathbb{C}^2 :
-  |\langle x, y \rangle| = 1\} \\ \end{align*} \]
-</p>
-
-<p>
-  where \(\langle (x_1, x_2), (y_1, y_2) \rangle = x_1 y_1^* + x_2 y_2^*\). The
-  pipe \(P(1, 0)\) viewed in \(\mathbb{R}^4\) is the Cartesian product of a unit
-  circle and a plane, and the log \(L(1, 0)\) is the Cartesian product of a
-  closed unit disk and a plane. All other pipes and logs are respectively of the
-  form \(k\mathbf{U}P(1, 0)\) and \(k\mathbf{U}L(1, 0)\) where \(\mathbf{U} \in
-  \text{SU}(2)\) and \(k\) is a positive real number. Crucially, all logs and
-  pipes are unions of fibers.
-</p>
-
-<p>We can now define a convex polytwister:</p>
-
-<p>
-  <strong>Definition.</strong> A convex polytwister is an intersection of a
-  finite set of three or more logs, but not equal to the intersection of fewer
-  than three logs.
-</p>
-
-<p>
-  The key to this is the analogy to the definition of
-  "\(\mathcal{H}\)-polytopes," which may be defined as the bounded intersection
-  of finitely many closed half-spaces. (See Ziegler's
-  <em>Lectures on polytopes</em> for an introduction.) The polytwister
-  equivalent of a closed half-space is a log, and the equivalent of a hyperplane
-  is a pipe.
-</p>
-
-<p>
-  Just as two planes in general position in 3D space intersect at lines and
-  three planes intersect at a point, the intersection of pipes allows us to
-  produce lower-dimensional shapes. An important fact, although not an obvious
-  one at all, is that three pipes in general position intersect at exactly two
-  nontrivial fibers (sometimes zero or one, but those cases are irrelevant to
-  polytwisters). You can see a visual of this in the order 3 dyadic twister,
-  which is the simplest convex polytwister; the solid is the intersection of
-  exactly three logs \(L(y_1) \cap L(y_2) \cap L(y_3)\). The two fibers in the
-  set \(P(y_1) \cap P(y_2) \cap P(y_3)\) appear as "vertices" on the boundary of
-  the figure, which we properly call rings.
-</p>
-
-<p>
-  Taking further set operations on pipes and logs gives us the face lattice of
-  the polytwister. A strip can be formed as the intersection of two pipes and at
-  least one log, such as \(P(y_1) \cap P(y_2) \cap L(y_3)\). In \(\mathbb{R}^4\)
-  it is an embedding of the cylinder, and its topological boundary is two
-  fibers. Unlike line segments, strips are not uniquely determined by their
-  boundary: there are infinitely many strips between a pair of fibers, and they
-  bow out in different amounts depending on the orienation of the pipes.
-  Finally, a twister (2-face) is formed by the intersection of one pipe and two
-  or more logs, such as \(L(y_1) \cap L(y_2) \cap P(y_3)\), and its boundary is
-  a set of two or more strips. (I am being informal here and leaving out some
-  degeneracy conditions.)
-</p>
-
-<p>
-  Nonconvex polytwisters are defined roughly as
-  <a href="https://en.wikipedia.org/wiki/Abstract_polytope">
-    abstract 3-polytopes
-  </a>
-  with a realization that maps each facet (twister) to a pipe called its
-  "containing pipe," each edge to a strip, and each vertex to a ring (fiber),
-  such that each strip's incident rings are precisely its boundary, and each
-  twister's incident strips are subsets of its containing pipe.
-</p>
-
-<p>
-  All polytwisters shown in this application are <em>uniform</em>, which means
-  their symmetry group acts transitively on their rings and on their strips.
+  A formal definition of polytwisters is given in my paper, "<a
+    href="https://archive.bridgesmathart.org/2026/"
+    target="_blank"
+    >Polytwisters: 4D Curved Shapes from Polyhedra and Hopf Fibration</a
+  >," published in
+  <a href="https://archive.bridgesmathart.org/2026/" target="_blank"
+    >Bridges 2026</a
+  >
+  (open access). The paper requires undergraduate-level understanding of linear
+  algebra and complex numbers, but with that background the definition is quite
+  natural and straightforward. There were many things about polytwisters that I
+  couldn't discuss due to space limitations, and I plan to expand on the paper
+  on this website.
 </p>
 
 <h2>About the application</h2>
@@ -195,11 +117,10 @@
 
 <p>
   The renderer is a GLSL fragment shader which implements a classical raytracer,
-  using closed-form expressions to compute intersections of rays and logs. A
-  cross-section of a log is an affine transformation of an infinite cylinder,
-  and polytwisters are formed by Boolean operations on logs, so rendering
-  polytwisters is no more difficult than raytracing cylinders. No meshes are
-  used here, although I have written a separate tool for that called
+  using closed-form expressions to compute intersections of rays with the
+  figure. Raytracing a polytwister cross section reduces to raytracing Boolean
+  operations on affine transformations of cylinders. No meshes are used here,
+  although I have written a separate tool for that called
   <a href="https://github.com/polytwisters/polytwister-mesher"
     >Polytwister Mesher</a
   >.
