@@ -41,7 +41,7 @@ const fullscreen = false;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
 
-const maxNumPipes = 32;
+const maxNumPipes = 50;
 
 const polytwister = globalState.polytwister;
 const numPipes = computed(() => polytwister.value.numLogs);

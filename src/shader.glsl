@@ -260,12 +260,12 @@ vec3 shadeDebug(vec3 normal) {
 
 
 Pipe getPipe(int index, float crossSectionW) {
-  vec3 pipeR3 = texture(pipesTexture, vec2(float(index) / float(MAX_NUM_PIPES), 0)).xyz;
+  vec3 pipeR3 = texelFetch(pipesTexture, ivec2(index, 0), 0).xyz;
   return Pipe(pipeR3, crossSectionW);
 }
 
 Pipe getOrthogonalPipe(int index, float crossSectionW) {
-  vec3 pipeR3 = texture(orthogonalPipesTexture, vec2(float(index) / float(MAX_NUM_PIPES), 0)).xyz;
+  vec3 pipeR3 = texelFetch(orthogonalPipesTexture, ivec2(index, 0), 0).xyz;
   return Pipe(pipeR3, crossSectionW);
 }
 
