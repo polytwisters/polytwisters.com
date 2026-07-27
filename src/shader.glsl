@@ -1,3 +1,5 @@
+out vec4 outColor;
+
 // These constants are defined in TypeScript and substituted at runtime.
 #define MAX_NUM_RING_DOTS $maxNumRingDots
 #define NUM_PIPES $numPipes
@@ -29,6 +31,8 @@ uniform float radius;
 // Display options.
 uniform int shading;
 uniform bool showRings;
+
+uniform sampler2D texture1;
 
 const float FAR = 1e3;
 const float EPSILON = 1e-4;
@@ -320,5 +324,7 @@ vec4 render(Ray ray) {
 }
 
 void main() {
-  gl_FragColor = render(getCameraRay());
+  // outColor = render(getCameraRay());
+  vec2 positionUnipolar = gl_FragCoord.xy / iResolution;
+  outColor = texture(texture1, positionUnipolar);
 }

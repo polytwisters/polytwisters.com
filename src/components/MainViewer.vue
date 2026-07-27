@@ -115,6 +115,24 @@ void main() {
 
 const loading = ref(false);
 
+const texture = new THREE.DataTexture(
+  /*
+  new Uint8Array([
+    255, 255, 255, 255, 255, 255, 255, 255,
+    180, 155, 105, 255, 155, 255, 255, 255,
+  ]),
+  */
+  new Float32Array([
+    1.0, 0.2, 0.3, 1.0, 1.0, 0.2, 0.9, 1.0, 0.5, 0.5, 0.3, 1.0, 1.0, 0.9, 0.3,
+    1.0,
+  ]),
+  2,
+  2,
+  THREE.RGBAFormat,
+  THREE.FloatType,
+);
+texture.needsUpdate = true;
+
 function getUniforms(): { [key: string]: any } {
   return {
     iResolution: { value: [canvasSize.value, canvasSize.value] },
@@ -131,6 +149,8 @@ function getUniforms(): { [key: string]: any } {
     showRings: { value: showRings.value },
     colors: { value: twisterColors.value },
     radius: { value: radius },
+
+    texture1: { value: texture },
   };
 }
 
@@ -222,6 +242,7 @@ onMounted(() => {
             uniforms: getUniforms(),
             vertexShader: vertexShader,
             fragmentShader: newValue,
+            glslVersion: THREE.GLSL3,
           });
           mesh.material = material;
           loading.value = false;
