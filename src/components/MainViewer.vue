@@ -114,48 +114,43 @@ void main() {
 `;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Loading stuff into textures
+// Textures, uniforms
 
 function writeVector3sToTexture(
   texture: THREE.DataTexture,
   vectors: THREE.Vector3[],
 ) {
+  let data = texture.image.data as Float32Array;
   for (let i = 0; i < texture.image.width * 4; i++) {
-    texture.image.data[i] = 0;
+    data[i] = 0;
   }
   for (const [index, vector] of vectors.entries()) {
     let offset = index * 4;
-    texture.image.data[offset] = vector.x;
-    texture.image.data[offset + 1] = vector.y;
-    texture.image.data[offset + 2] = vector.z;
-    texture.image.data[offset + 3] = 1.0;
-    // texture.image.data[offset + 0] = 1.0;
-    // texture.image.data[offset + 1] = 0.3;
-    // texture.image.data[offset + 2] = 0.2;
-    // texture.image.data[offset + 3] = 1.0;
+    data[offset] = vector.x;
+    data[offset + 1] = vector.y;
+    data[offset + 2] = vector.z;
+    data[offset + 3] = 1.0;
   }
   texture.needsUpdate = true;
 }
+
+function makeDataTexture(size: number) {
+  return new THREE.DataTexture(
+    new Float32Array(size * 4),
+    size,
+    1,
+    THREE.RGBAFormat,
+    THREE.FloatType,
+  );
+}
+
+const pipesTexture = makeDataTexture(maxNumPipes);
+const orthogonalPipesTexture = makeDataTexture(maxNumPipes);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 
 const loading = ref(false);
-
-const pipesTexture = new THREE.DataTexture(
-  new Float32Array(maxNumPipes * 4),
-  maxNumPipes,
-  1,
-  THREE.RGBAFormat,
-  THREE.FloatType,
-);
-const orthogonalPipesTexture = new THREE.DataTexture(
-  new Float32Array(maxNumPipes * 4),
-  maxNumPipes,
-  1,
-  THREE.RGBAFormat,
-  THREE.FloatType,
-);
 
 function getUniforms(): { [key: string]: any } {
   return {
@@ -166,8 +161,6 @@ function getUniforms(): { [key: string]: any } {
     cameraFocalLength: { value: camera.focalLength.value },
     cameraX: { value: camera.x.value },
     cameraY: { value: camera.y.value },
-    pipes: { value: pipesR3.value },
-    orthogonalPipes: { value: orthogonalPipesR3.value },
     ringDots: { value: ringDotsPadded.value },
     shading: { value: shading.value },
     showRings: { value: showRings.value },
