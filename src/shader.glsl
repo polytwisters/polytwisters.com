@@ -25,7 +25,6 @@ uniform float crossSectionW;
 // Geometry parameters.
 uniform sampler2D pipesTexture;
 uniform sampler2D orthogonalPipesTexture;
-uniform vec3 orthogonalPipes[NUM_PIPES];
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform vec3 colors[NUM_PIPES];
 uniform float radius;
@@ -337,4 +336,7 @@ vec4 render(Ray ray) {
 
 void main() {
   outColor = render(getCameraRay());
+  // float y = gl_FragCoord.y / iResolution.y;
+  // int index = int(y * float(MAX_NUM_PIPES));
+  // outColor = vec4(getPipe(index, 0.0).p, 1.0);
 }

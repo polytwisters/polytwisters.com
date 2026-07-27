@@ -269,29 +269,14 @@ export class Polytwister {
   twisterCode(): string {
     const parts = [];
     for (const [twisterIndex, face] of this.polyhedron.faces.entries()) {
-      const n = face.vertices.length;
-
       const tmp = [];
-      const d = face.symbol.d;
       const adjacentTwisterIndices =
         this.polyhedron.getAdjacentFaceIndices(twisterIndex);
 
-      /**
-       * The formula below defines a pipe antipodal to the containing pipe for
-       * this twister. If the containing pipe is of the form P(a, 0), the
-       * antipodal pipe is P(0, c), and c is set so that the intersection of
-       * P(a, 0) and P(0, c) comprises rings of radius r. This is done by
-       * solving the equation r = sqrt(1 + (1/c)^2) / |a|.
-       *
-       * The call to .toFixed ensures the ring always has a decimal point. If it doesn't, GLSL will
-       * produce a compile error.
-       */
       tmp.push(`
         vec3 point = Ray_at(ray, t);
-        int n = ${n};
-        int d = ${d};
         bool inner = Pipe_contains(
-          Pipe(orthogonalPipes[${twisterIndex}], crossSectionW), point
+          getOrthogonalPipe(${twisterIndex}, crossSectionW), point
         );
         bool outer = !inner;
         int order = 0;

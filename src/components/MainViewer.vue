@@ -120,6 +120,9 @@ function writeVector3sToTexture(
   texture: THREE.DataTexture,
   vectors: THREE.Vector3[],
 ) {
+  for (let i = 0; i < texture.image.width * 4; i++) {
+    texture.image.data[i] = 0;
+  }
   for (const [index, vector] of vectors.entries()) {
     let offset = index * 4;
     texture.image.data[offset] = vector.x;
@@ -131,7 +134,7 @@ function writeVector3sToTexture(
     // texture.image.data[offset + 2] = 0.2;
     // texture.image.data[offset + 3] = 1.0;
   }
-  pipesTexture.needsUpdate = true;
+  texture.needsUpdate = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
