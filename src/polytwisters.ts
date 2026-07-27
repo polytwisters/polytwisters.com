@@ -191,7 +191,7 @@ export class Polytwister {
    * Given a regular twister T with containing pipe P(y), its orthogonal pipe P(y') is so that
    * <y, y'> = 0 and the rings of T are also on P(y'). This orthogonal pipe separates the "inner"
    * from "outer" regions in the filling.
-   * 
+   *
    * This method computes the orthogonal pipes for all the twisters.
    */
   orthogonalPipes(): C2[] {
@@ -298,7 +298,7 @@ export class Polytwister {
       `);
       for (let adjacentTwisterIndex of adjacentTwisterIndices) {
         tmp.push(`
-          if (Pipe_contains(Pipe(pipes[${adjacentTwisterIndex}], crossSectionW), point)) {
+          if (Pipe_contains(getPipe(${adjacentTwisterIndex}, crossSectionW), point)) {
             order++;
           }
         `);
@@ -338,9 +338,7 @@ export class Polytwister {
     return {
       polyhedron: this.polyhedron.export(),
       pipes: this.logs.map((x) => x.toArray()),
-      orthogonalPipes: this.orthogonalPipes().map((pipe) =>
-        pipe.toArray(),
-      ),
+      orthogonalPipes: this.orthogonalPipes().map((pipe) => pipe.toArray()),
       rings: this.rings.map((x) => x.toArray()),
       outerRings: this.outerRings,
       bloated: this.bloated,

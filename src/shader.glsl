@@ -3,6 +3,7 @@ out vec4 outColor;
 // These constants are defined in TypeScript and substituted at runtime.
 #define MAX_NUM_RING_DOTS $maxNumRingDots
 #define NUM_PIPES $numPipes
+#define MAX_NUM_PIPES $maxNumPipes
 
 // Constants duplicated TypeScript.
 #define SHADING_PHONG 0
@@ -22,7 +23,8 @@ uniform float cameraFocalLength;
 uniform float crossSectionW;
 
 // Geometry parameters.
-uniform vec3 pipes[NUM_PIPES];
+uniform sampler2D pipesTexture;
+uniform sampler2D orthogonalPipesTexture;
 uniform vec3 orthogonalPipes[NUM_PIPES];
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform vec3 colors[NUM_PIPES];
@@ -31,8 +33,6 @@ uniform float radius;
 // Display options.
 uniform int shading;
 uniform bool showRings;
-
-uniform sampler2D texture1;
 
 const float FAR = 1e3;
 const float EPSILON = 1e-4;
@@ -259,6 +259,18 @@ vec3 shadeDebug(vec3 normal) {
   return color;
 }
 
+
+Pipe getPipe(int index, float crossSectionW) {
+  vec3 pipeR3 = texture(pipesTexture, vec2(float(index) / float(MAX_NUM_PIPES), 0)).xyz;
+  return Pipe(pipeR3, crossSectionW);
+}
+
+Pipe getOrthogonalPipe(int index, float crossSectionW) {
+  vec3 pipeR3 = texture(orthogonalPipesTexture, vec2(float(index) / float(MAX_NUM_PIPES), 0)).xyz;
+  return Pipe(pipeR3, crossSectionW);
+}
+
+
 vec4 render(Ray ray) {
   Sphere containingSphere = Sphere(vec3(0.0), radius);
   Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
@@ -273,7 +285,7 @@ vec4 render(Ray ray) {
   // Cast a ray onto each pipe and find the intervals of intersection.
   Interval intervals[NUM_PIPES];
   for (int i = 0; i < NUM_PIPES; i++) {
-    Pipe pipe = Pipe(pipes[i], crossSectionW);
+    Pipe pipe = getPipe(i, crossSectionW);
     intervals[i] = intersectRayPipe(ray, pipe);
   }
 
@@ -304,7 +316,7 @@ vec4 render(Ray ray) {
   vec3 pipeColor;
   for (int i = 0; i < NUM_PIPES; i++) {
     if (tmin == intervals[i].x || tmin == intervals[i].y) {
-      pipe = Pipe(pipes[i], crossSectionW);
+      pipe = getPipe(i, crossSectionW);
       pipeColor = colors[i]; 
       if (tmin == intervals[i].y) {
         invert = true;
@@ -324,7 +336,5 @@ vec4 render(Ray ray) {
 }
 
 void main() {
-  // outColor = render(getCameraRay());
-  vec2 positionUnipolar = gl_FragCoord.xy / iResolution;
-  outColor = texture(texture1, positionUnipolar);
+  outColor = render(getCameraRay());
 }

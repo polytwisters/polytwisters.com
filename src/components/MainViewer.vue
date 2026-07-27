@@ -41,6 +41,8 @@ const fullscreen = false;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Geometry
 
+const maxNumPipes = 32;
+
 const polytwister = globalState.polytwister;
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
@@ -101,6 +103,7 @@ const fragmentShader = computed(() =>
   fragmentShaderTemplate
     .replace("$maxNumRingDots", maxNumRingDots.value.toString())
     .replace("$numPipes", numPipes.value.toString())
+    .replace("$maxNumPipes", maxNumPipes.toString())
     .replace("$twisterCode", polytwister.value.twisterCode()),
 );
 
@@ -111,27 +114,45 @@ void main() {
 `;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Loading stuff into textures
+
+function writeVector3sToTexture(
+  texture: THREE.DataTexture,
+  vectors: THREE.Vector3[],
+) {
+  for (const [index, vector] of vectors.entries()) {
+    let offset = index * 4;
+    texture.image.data[offset] = vector.x;
+    texture.image.data[offset + 1] = vector.y;
+    texture.image.data[offset + 2] = vector.z;
+    texture.image.data[offset + 3] = 1.0;
+    // texture.image.data[offset + 0] = 1.0;
+    // texture.image.data[offset + 1] = 0.3;
+    // texture.image.data[offset + 2] = 0.2;
+    // texture.image.data[offset + 3] = 1.0;
+  }
+  pipesTexture.needsUpdate = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 
 const loading = ref(false);
 
-const texture = new THREE.DataTexture(
-  /*
-  new Uint8Array([
-    255, 255, 255, 255, 255, 255, 255, 255,
-    180, 155, 105, 255, 155, 255, 255, 255,
-  ]),
-  */
-  new Float32Array([
-    1.0, 0.2, 0.3, 1.0, 1.0, 0.2, 0.9, 1.0, 0.5, 0.5, 0.3, 1.0, 1.0, 0.9, 0.3,
-    1.0,
-  ]),
-  2,
-  2,
+const pipesTexture = new THREE.DataTexture(
+  new Float32Array(maxNumPipes * 4),
+  maxNumPipes,
+  1,
   THREE.RGBAFormat,
   THREE.FloatType,
 );
-texture.needsUpdate = true;
+const orthogonalPipesTexture = new THREE.DataTexture(
+  new Float32Array(maxNumPipes * 4),
+  maxNumPipes,
+  1,
+  THREE.RGBAFormat,
+  THREE.FloatType,
+);
 
 function getUniforms(): { [key: string]: any } {
   return {
@@ -149,8 +170,8 @@ function getUniforms(): { [key: string]: any } {
     showRings: { value: showRings.value },
     colors: { value: twisterColors.value },
     radius: { value: radius },
-
-    texture1: { value: texture },
+    pipesTexture: { value: pipesTexture },
+    orthogonalPipesTexture: { value: orthogonalPipesTexture },
   };
 }
 
@@ -204,9 +225,11 @@ onMounted(() => {
   });
   let material: THREE.ShaderMaterial | null = null;
 
-  function updateUniforms() {
+  function updateUniformsAndTextures() {
     if (material) {
       const newUniforms = getUniforms();
+      writeVector3sToTexture(pipesTexture, pipesR3.value);
+      writeVector3sToTexture(orthogonalPipesTexture, orthogonalPipesR3.value);
       for (let key of Object.keys(newUniforms)) {
         material.uniforms[key].value = newUniforms[key].value;
       }
@@ -217,7 +240,7 @@ onMounted(() => {
     globalState.canvasSize,
     (newCanvasSize) => {
       renderer.setSize(newCanvasSize, newCanvasSize, false);
-      updateUniforms();
+      updateUniformsAndTextures();
       renderer.render(scene, threeCamera);
     },
     { immediate: true },
@@ -264,7 +287,7 @@ onMounted(() => {
     tickFPSTimer();
 
     if (renderingEnabled) {
-      updateUniforms();
+      updateUniformsAndTextures();
       renderer.render(scene, threeCamera);
     }
 
