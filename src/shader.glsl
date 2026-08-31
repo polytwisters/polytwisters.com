@@ -239,10 +239,10 @@ vec3 shadePhong(vec3 normal, vec3 viewer, vec3 baseColor) {
   );
 
   vec3 color = (
-    baseColor * 0.2
+    baseColor * vec3(0.05, 0.06, 0.08)
     + lambert(normal, light1) * baseColor * 0.9
-    + specular(normal, light1, viewer) * vec3(1.0) * 0.4
     + lambert(normal, light2) * baseColor * 0.2
+    + specular(normal, light1, viewer) * vec3(1.2, 1.13, 1.0) * 0.8
   );
   return color;
 }
@@ -320,5 +320,8 @@ vec4 render(Ray ray) {
 }
 
 void main() {
-  gl_FragColor = render(getCameraRay());
+  vec4 color = render(getCameraRay());
+  float gamma = 0.65;
+  color = pow(color, vec4(vec3(gamma), 1.0));
+  gl_FragColor = color;
 }
