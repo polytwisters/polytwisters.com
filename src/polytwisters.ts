@@ -5,6 +5,7 @@ import { PolytwisterSymbol } from "./symbol";
 import { C2 } from "./complex";
 import { square } from "./mathUtils";
 import * as arcPolygon from "./arcPolygon";
+import _ from "lodash";
 
 export function getTorusMaxRadius(p1: C2, p2: C2): number {
   // Transform the pair (p1, p2) so that p2 = (1, 0).
@@ -317,6 +318,12 @@ export class Polytwister {
       `);
     }
     return parts.join("\n");
+  }
+
+  twisterNeighbors(): number[][] {
+    return _.range(this.polyhedron.faces.length).map((faceIndex) =>
+      this.polyhedron.getAdjacentFaceIndices(faceIndex),
+    );
   }
 
   export() {

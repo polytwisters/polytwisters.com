@@ -42,11 +42,18 @@ const fullscreen = false;
 // Geometry
 
 const maxNumPipes = 50;
+const maxNeighbors = 6;
+const maxNumRegions = 8;
 
 const polytwister = globalState.polytwister;
 const numPipes = computed(() => polytwister.value.numLogs);
 const pipesR3 = computed(() => polytwister.value.logsR3());
 const orthogonalPipesR3 = computed(() => polytwister.value.orthogonalPipesR3());
+
+const twisterNeighborIndices = computed(() =>
+  polytwister.value.twisterNeighbors(),
+);
+
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
@@ -116,14 +123,32 @@ void main() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Textures, uniforms
 
+function write2DIntsToTexture(
+  lengthTexture: THREE.DataTexture,
+  valuesTexture: THREE.DataTexture,
+  values: number[][],
+) {
+  let lengthData = lengthTexture.image.data as Uint8Array;
+  let valueData = valuesTexture.image.data as Uint8Array;
+  let rowStride = valuesTexture.image.height;
+  lengthData.fill(0);
+  valueData.fill(0);
+  for (const [index, row] of values.entries()) {
+    lengthData[index] = row.length;
+    for (const [j, value] of row.entries()) {
+      valueData[index * rowStride + j] = value;
+    }
+  }
+  lengthTexture.needsUpdate = true;
+  valuesTexture.needsUpdate = true;
+}
+
 function writeVector3sToTexture(
   texture: THREE.DataTexture,
   vectors: THREE.Vector3[],
 ) {
   let data = texture.image.data as Float32Array;
-  for (let i = 0; i < texture.image.width * 4; i++) {
-    data[i] = 0;
-  }
+  data.fill(0);
   for (const [index, vector] of vectors.entries()) {
     let offset = index * 4;
     data[offset] = vector.x;
@@ -134,7 +159,7 @@ function writeVector3sToTexture(
   texture.needsUpdate = true;
 }
 
-function makeDataTexture(size: number) {
+function makeFloatTexture(size: number) {
   return new THREE.DataTexture(
     new Float32Array(size * 4),
     size,
@@ -144,8 +169,38 @@ function makeDataTexture(size: number) {
   );
 }
 
-const pipesTexture = makeDataTexture(maxNumPipes);
-const orthogonalPipesTexture = makeDataTexture(maxNumPipes);
+const pipesTexture = makeFloatTexture(maxNumPipes);
+const orthogonalPipesTexture = makeFloatTexture(maxNumPipes);
+const numNeighborsTexture = new THREE.DataTexture(
+  new Uint8Array(maxNumPipes),
+  maxNumPipes,
+  1,
+  THREE.RedIntegerFormat,
+  THREE.UnsignedByteType,
+);
+// Indexing: [neighbor, pipe]
+const neighborsTexture = new THREE.DataTexture(
+  new Uint8Array(maxNumPipes * maxNeighbors),
+  maxNeighbors,
+  maxNumPipes,
+  THREE.RedIntegerFormat,
+  THREE.UnsignedByteType,
+);
+
+const numRegionsTexture = new THREE.DataTexture(
+  new Uint8Array(maxNumPipes),
+  maxNumPipes,
+  1,
+  THREE.RedIntegerFormat,
+  THREE.UnsignedByteType,
+);
+const regionsTexture = new THREE.DataTexture(
+  new Uint8Array(maxNumPipes * maxNumRegions),
+  maxNumRegions,
+  maxNumPipes,
+  THREE.RedIntegerFormat,
+  THREE.UnsignedByteType,
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -166,8 +221,11 @@ function getUniforms(): { [key: string]: any } {
     showRings: { value: showRings.value },
     colors: { value: twisterColors.value },
     radius: { value: radius },
+
     pipesTexture: { value: pipesTexture },
     orthogonalPipesTexture: { value: orthogonalPipesTexture },
+    numNeighborsTexture: { value: numNeighborsTexture },
+    neighborsTexture: { value: neighborsTexture },
   };
 }
 
@@ -226,6 +284,11 @@ onMounted(() => {
       const newUniforms = getUniforms();
       writeVector3sToTexture(pipesTexture, pipesR3.value);
       writeVector3sToTexture(orthogonalPipesTexture, orthogonalPipesR3.value);
+      write2DIntsToTexture(
+        numNeighborsTexture,
+        neighborsTexture,
+        twisterNeighborIndices.value,
+      );
       for (let key of Object.keys(newUniforms)) {
         material.uniforms[key].value = newUniforms[key].value;
       }
