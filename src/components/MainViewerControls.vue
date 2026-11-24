@@ -4,6 +4,9 @@ import * as camera from "@/camera";
 import * as cameraControls from "@/cameraControls";
 import Button from "@/components/Button.vue";
 import SmallNavigation from "./SmallNavigation.vue";
+import { FillingMethod } from "@/arcPolygon";
+
+const fillingMethod = globalState.fillingMethod;
 
 const takeScreenshot = globalState.takeScreenshot;
 const canvasSize = globalState.canvasSize;
@@ -36,6 +39,16 @@ const exitExpandedView = globalState.exitExpandedView;
         icon="remove"
         help="Zoom out"
       />
+
+      <select
+        v-model="fillingMethod"
+        class="hidden md:block button text-center justify-self-end"
+      >
+        <option :value="FillingMethod.Binary" class="flex gap-1">
+          Binary filling
+        </option>
+        <option :value="FillingMethod.Solid">Solid filling</option>
+      </select>
     </div>
     <div v-if="expandedView" class="flex flex-row gap-2 flex-1 justify-center">
       <h1 class="text-center text-xl!">
