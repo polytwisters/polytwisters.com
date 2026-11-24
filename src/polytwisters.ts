@@ -277,7 +277,7 @@ export class Polytwister {
           getOrthogonalPipe(${twisterIndex}, crossSectionW), point
         );
         bool outer = !inner;
-        int order = 0;
+        uint order = 0u;
 
         int numNeighbors = int(getNumNeighbors(${twisterIndex}));
         for (int neighborIndex = 0; neighborIndex < MAX_NEIGHBORS; neighborIndex++) {
@@ -290,21 +290,19 @@ export class Polytwister {
           }
         }
 
-        int numRegions = int(getNumRegions(${twisterIndex}));
+        uint numRegions = getNumRegions(${twisterIndex});
         bool fill = false;
-        for (int regionIndex = 0; regionIndex < MAX_REGIONS; regionIndex++) {
+        for (uint regionIndex = 0u; regionIndex < uint(MAX_REGIONS); regionIndex++) {
           if (regionIndex >= numRegions) {
             break;
           }
-          uint regionInfo = getRegion(${twisterIndex}, regionIndex);
-          int regionOrder = int(regionInfo >> uint(2));
-          int regionMode = int(regionInfo & uint(3));
+          uvec2 regionInfo = getRegion(${twisterIndex}, int(regionIndex));
+          uint regionOrder = regionInfo.x;
+          uint regionMode = regionInfo.y;
           if (regionOrder == order) {
-            if (regionMode == 0 && inner) {
-              fill = true;
+            if (regionMode == 0u && inner) {
               break;
-            } else if (regionMode == 1 && outer) {
-              fill = true;
+            } else if (regionMode == 1u && outer) {
               break;
             } else {
               fill = true;
@@ -346,10 +344,10 @@ export class Polytwister {
     );
   }
 
-  /// Return an array of the neighbor indices for each twister.
-  encodedRegions(): number[][] {
+  /// Return an array of Regions for each twister.
+  regions(): arcPolygon.Region[][] {
     return _.range(this.polyhedron.faces.length).map((twisterIndex) =>
-      this.getTwisterFilling(twisterIndex).map(arcPolygon.encodeRegion),
+      this.getTwisterFilling(twisterIndex),
     );
   }
 
