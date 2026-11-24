@@ -4,6 +4,7 @@ out vec4 outColor;
 #define MAX_NUM_RING_DOTS $maxNumRingDots
 #define NUM_PIPES $numPipes
 #define MAX_NUM_PIPES $maxNumPipes
+#define MAX_NEIGHBORS $maxNeighbors
 
 // Constants duplicated TypeScript.
 #define SHADING_PHONG 0
@@ -25,6 +26,10 @@ uniform float crossSectionW;
 // Geometry parameters.
 uniform sampler2D pipesTexture;
 uniform sampler2D orthogonalPipesTexture;
+
+uniform usampler2D numNeighborsTexture;
+uniform usampler2D neighborsTexture;
+
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform vec3 colors[NUM_PIPES];
 uniform float radius;
@@ -267,6 +272,14 @@ Pipe getPipe(int index, float crossSectionW) {
 Pipe getOrthogonalPipe(int index, float crossSectionW) {
   vec3 pipeR3 = texelFetch(orthogonalPipesTexture, ivec2(index, 0), 0).xyz;
   return Pipe(pipeR3, crossSectionW);
+}
+
+uint getNumNeighbors(int index) {
+  return texelFetch(numNeighborsTexture, ivec2(index, 0), 0).x;
+}
+
+uint getNeighbor(int pipeIndex, int neighborIndex) {
+  return texelFetch(neighborsTexture, ivec2(neighborIndex, pipeIndex), 0).x;
 }
 
 

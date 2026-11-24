@@ -111,6 +111,7 @@ const fragmentShader = computed(() =>
     .replace("$maxNumRingDots", maxNumRingDots.value.toString())
     .replace("$numPipes", numPipes.value.toString())
     .replace("$maxNumPipes", maxNumPipes.toString())
+    .replace("$maxNeighbors", maxNeighbors.toString())
     .replace("$twisterCode", polytwister.value.twisterCode()),
 );
 
@@ -171,6 +172,7 @@ function makeFloatTexture(size: number) {
 
 const pipesTexture = makeFloatTexture(maxNumPipes);
 const orthogonalPipesTexture = makeFloatTexture(maxNumPipes);
+
 const numNeighborsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes),
   maxNumPipes,
@@ -178,7 +180,11 @@ const numNeighborsTexture = new THREE.DataTexture(
   THREE.RedIntegerFormat,
   THREE.UnsignedByteType,
 );
-// Indexing: [neighbor, pipe]
+
+// A 2D texture where each row corresponds to one pipe and each cell in the row gives the index
+// of a neighboring log.
+//
+// Dimensions: y = pipe index, x = neighbor index
 const neighborsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes * maxNeighbors),
   maxNeighbors,
@@ -187,6 +193,7 @@ const neighborsTexture = new THREE.DataTexture(
   THREE.UnsignedByteType,
 );
 
+// A 1D texture where each cell corresponds to one pipe and each value is the number of regions.
 const numRegionsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes),
   maxNumPipes,
@@ -194,6 +201,9 @@ const numRegionsTexture = new THREE.DataTexture(
   THREE.RedIntegerFormat,
   THREE.UnsignedByteType,
 );
+
+// A 2D texture where each row contains region information.
+// Dimensions: y = pipe index, x = region index
 const regionsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes * maxNumRegions),
   maxNumRegions,

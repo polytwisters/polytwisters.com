@@ -271,9 +271,6 @@ export class Polytwister {
     const parts = [];
     for (const [twisterIndex, face] of this.polyhedron.faces.entries()) {
       const tmp = [];
-      const adjacentTwisterIndices =
-        this.polyhedron.getAdjacentFaceIndices(twisterIndex);
-
       tmp.push(`
         vec3 point = Ray_at(ray, t);
         bool inner = Pipe_contains(
@@ -281,14 +278,18 @@ export class Polytwister {
         );
         bool outer = !inner;
         int order = 0;
-      `);
-      for (let adjacentTwisterIndex of adjacentTwisterIndices) {
-        tmp.push(`
-          if (Pipe_contains(getPipe(${adjacentTwisterIndex}, crossSectionW), point)) {
+
+        int numNeighbors = int(getNumNeighbors(${twisterIndex}));
+        for (int neighborIndex = 0; neighborIndex < MAX_NEIGHBORS; neighborIndex++) {
+          if (neighborIndex >= numNeighbors) {
+            break;
+          }
+          uint neighborPipeIndex = getNeighbor(${twisterIndex}, neighborIndex);
+          if (Pipe_contains(getPipe(int(neighborPipeIndex), crossSectionW), point)) {
             order++;
           }
-        `);
-      }
+        }
+      `);
 
       const fillingCode = this.getTwisterFillingCode(twisterIndex);
       tmp.push(`bool fill = ${fillingCode};`);
@@ -320,6 +321,7 @@ export class Polytwister {
     return parts.join("\n");
   }
 
+  /// Return an array of the neighbor indices for each twister.
   twisterNeighbors(): number[][] {
     return _.range(this.polyhedron.faces.length).map((faceIndex) =>
       this.polyhedron.getAdjacentFaceIndices(faceIndex),
