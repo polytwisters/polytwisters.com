@@ -12,7 +12,6 @@ import {
 
 import * as polytwisters from "@/polytwisters";
 import * as globalState from "@/globalState";
-import { hideCompilingShader } from "@/globalState";
 import { faceSymbolToColor } from "@/colors";
 import fragmentShaderTemplate from "@/shader.glsl?raw";
 
@@ -45,6 +44,7 @@ const fullscreen = false;
 const maxNumPipes = 50;
 const maxNeighbors = 8;
 const maxNumRegions = 8;
+const maxNumRingDots = 200;
 
 const polytwister = globalState.polytwister;
 const numPipes = computed(() => polytwister.value.numLogs);
@@ -60,15 +60,13 @@ const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
 );
-const numRings = computed(() => Math.max(rings.value.length, 1));
-const maxNumRingDots = computed(() => numRings.value * 2);
 
 // The fragment shader requires an array of fixed size. ringDotsPadded is a version of ringDots
 // extended to always have exactly maxNumRingDots Vec3's. Dots are made "nonexistent" by setting
 // their location to something large.
 const ringDotsPadded: Ref<Vector3[]> = computed(() => {
   const result = ringDots.value.slice();
-  while (result.length <= maxNumRingDots.value) {
+  while (result.length <= maxNumRingDots) {
     result.push(new Vector3(10e3, 10e3, 1e3));
   }
   return result;
@@ -112,7 +110,7 @@ const shaderLog: Ref<string> = ref("");
 
 const fragmentShader = computed(() =>
   fragmentShaderTemplate
-    .replace("$maxNumRingDots", maxNumRingDots.value.toString())
+    .replace("$maxNumRingDots", maxNumRingDots.toString())
     .replace("$maxNumPipes", maxNumPipes.toString())
     .replace("$maxNeighbors", maxNeighbors.toString())
     .replace("$maxNumRegions", maxNumRegions.toString()),
@@ -420,17 +418,6 @@ onUnmounted(() => {
       @blur="cameraControls.pointerUp"
       @wheel.prevent="cameraControls.canvasWheel"
     ></canvas>
-
-    <div
-      v-if="loading && !hideCompilingShader"
-      class="absolute top-0 left-0 w-full h-full grid grid-cols-1 grid-rows-1 place-items-center"
-    >
-      <div
-        class="text-sm bg-(--color-primary) p-2 my-shadow my-round oldschool-border"
-      >
-        Compiling shader...
-      </div>
-    </div>
 
     <div
       :class="[

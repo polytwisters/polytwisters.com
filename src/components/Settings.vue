@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  Theme,
-  theme,
-  hideCompilingShader,
-  animationDuration,
-} from "@/globalState";
+import { Theme, theme, animationDuration } from "@/globalState";
 import Button from "./Button.vue";
 
 defineEmits<{
@@ -48,11 +43,6 @@ defineEmits<{
         />
         <label for="oldschool">Oldschool</label>
       </div>
-    </div>
-
-    <div class="my-5 flex gap-2">
-      <input type="checkbox" id="hide-message" v-model="hideCompilingShader" />
-      <label for="hide-message">Hide "Compiling shader" message</label>
     </div>
 
     <Button icon="check" text="Done" @click="$emit('close')" />

@@ -114,5 +114,4 @@ export enum Theme {
 
 export const theme: Ref<Theme> = ref(Theme.Default);
 
-export const hideCompilingShader: Ref<boolean> = ref(false);
 export const animationDuration: Ref<number> = ref(3);
