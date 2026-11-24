@@ -112,6 +112,7 @@ export enum Theme {
   Oldschool,
 }
 
+// Settings.
 export const theme: Ref<Theme> = ref(Theme.Default);
-
 export const animationDuration: Ref<number> = ref(3);
+export const devMode: Ref<boolean> = ref(false);

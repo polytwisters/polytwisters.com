@@ -33,7 +33,7 @@ const cameraDirection = camera.direction;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // UI
 
-const experimentalMode = false;
+const devMode = globalState.devMode;
 
 const fullscreen = false;
 
@@ -318,21 +318,14 @@ onMounted(() => {
 
   const geometry = new THREE.PlaneGeometry(2, 2);
 
-  let mesh: THREE.Mesh = new THREE.Mesh(
-    geometry,
-    new THREE.MeshBasicMaterial({
-      color: new THREE.Color().setHex(0x000000),
-    }),
-  );
-  scene.add(mesh);
-
   const material = new THREE.ShaderMaterial({
     uniforms: getUniforms(),
     vertexShader,
     fragmentShader,
     glslVersion: THREE.GLSL3,
   });
-  mesh.material = material;
+  let mesh: THREE.Mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
 
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas.value!,
@@ -340,11 +333,9 @@ onMounted(() => {
   });
 
   function updateUniforms() {
-    if (material) {
-      const newUniforms = getUniforms();
-      for (let key of Object.keys(newUniforms)) {
-        material.uniforms[key].value = newUniforms[key].value;
-      }
+    const newUniforms = getUniforms();
+    for (let key of Object.keys(newUniforms)) {
+      material.uniforms[key].value = newUniforms[key].value;
     }
   }
 
@@ -422,9 +413,9 @@ onUnmounted(() => {
       :cameraX="cameraX"
       :cameraY="cameraY"
       :cameraDirection="cameraDirection"
-      v-if="!fullscreen && experimentalMode"
+      v-if="!fullscreen && devMode"
     />
-    <div class="absolute right-0 bottom-0" v-if="experimentalMode">
+    <div class="absolute right-0 bottom-0" v-if="devMode">
       {{ Math.round(fps) }}FPS
     </div>
   </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Theme, theme, animationDuration } from "@/globalState";
+import { Theme, theme, animationDuration, devMode } from "@/globalState";
 import Button from "./Button.vue";
 
 defineEmits<{
@@ -43,6 +43,11 @@ defineEmits<{
         />
         <label for="oldschool">Oldschool</label>
       </div>
+    </div>
+
+    <div class="my-5 flex gap-2">
+      <input type="checkbox" id="dev-mode" v-model="devMode" />
+      <label for="dev-mode"> Enable development features </label>
     </div>
 
     <Button icon="check" text="Done" @click="$emit('close')" />
