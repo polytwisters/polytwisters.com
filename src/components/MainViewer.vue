@@ -23,7 +23,6 @@ import Axes from "@/Axes.vue";
 
 import * as THREE from "three";
 import { Vector3 } from "three";
-import * as arcPolygon from "@/arcPolygon";
 
 // Copy some imports to global namespace so they can be used in template.
 const canvasSize = globalState.canvasSize;
@@ -54,7 +53,7 @@ const orthogonalPipesR3 = computed(() => polytwister.value.orthogonalPipesR3());
 const twisterNeighborIndices = computed(() =>
   polytwister.value.twisterNeighbors(),
 );
-const regions = computed(() => polytwister.value.regions());
+const encodedRegions = computed(() => polytwister.value.encodedRegions());
 
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
@@ -187,7 +186,7 @@ const numNeighborsTexture = new THREE.DataTexture(
 // A 2D texture where each row corresponds to one pipe and each cell in the row gives the index
 // of a neighboring log.
 //
-// Layout: Y = pipe index, X = neighbor index
+// Dimensions: y = pipe index, x = neighbor index
 const neighborsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes * maxNeighbors),
   maxNeighbors,
@@ -206,33 +205,14 @@ const numRegionsTexture = new THREE.DataTexture(
 );
 
 // A 2D texture where each row contains region information.
-// Layout: Y = pipe index, X = region
-// Output: X = region order, Y = region mode
+// Dimensions: y = pipe index, x = region index
 const regionsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes * maxNumRegions),
   maxNumRegions,
   maxNumPipes,
-  THREE.RGIntegerFormat,
+  THREE.RedIntegerFormat,
   THREE.UnsignedByteType,
 );
-
-function writeRegionsToTextures(values: arcPolygon.Region[][]) {
-  let lengthData = numRegionsTexture.image.data as Uint8Array;
-  let valueData = regionsTexture.image.data as Uint8Array;
-  let rowStride = regionsTexture.image.width;
-  lengthData.fill(0);
-  valueData.fill(0);
-  for (const [index, row] of values.entries()) {
-    lengthData[index] = row.length;
-    for (const [j, region] of row.entries()) {
-      let offset = (index * rowStride + j) * 2;
-      valueData[offset] = region.order;
-      valueData[offset + 1] = arcPolygon.encodeRegionMode(region.mode);
-    }
-  }
-  numRegionsTexture.needsUpdate = true;
-  regionsTexture.needsUpdate = true;
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -323,7 +303,11 @@ onMounted(() => {
         neighborsTexture,
         twisterNeighborIndices.value,
       );
-      writeRegionsToTextures(regions.value);
+      write2DIntsToTexture(
+        numRegionsTexture,
+        regionsTexture,
+        encodedRegions.value,
+      );
       for (let key of Object.keys(newUniforms)) {
         material.uniforms[key].value = newUniforms[key].value;
       }

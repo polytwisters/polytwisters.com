@@ -289,8 +289,8 @@ uint getNumRegions(int index) {
   return texelFetch(numRegionsTexture, ivec2(index, 0), 0).x;
 }
 
-uvec2 getRegion(int pipeIndex, int regionIndex) {
-  return texelFetch(regionsTexture, ivec2(regionIndex, pipeIndex), 0).xy;
+uint getRegion(int pipeIndex, int regionIndex) {
+  return texelFetch(regionsTexture, ivec2(regionIndex, pipeIndex), 0).x;
 }
 
 
