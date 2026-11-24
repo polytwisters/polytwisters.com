@@ -51,4 +51,7 @@
     "wght" 300,
     "GRAD" -25,
     "opsz" 24;
+
+  /* Prevent huge text width before font is completely loaded */
+  width: 1em;
 }
