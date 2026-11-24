@@ -191,7 +191,7 @@ Interval intersectRayPipe(Ray ray, Pipe pipe) {
   );
 }
 
-Ray getCameraRay() {
+Ray getCameraRay(vec2 pixel) {
   Camera camera = Camera(
     cameraPosition_, // position
     cameraDirection, // direction
@@ -201,7 +201,7 @@ Ray getCameraRay() {
   );
 
   // Normalized 0 to 1. Y-axis is up.
-  vec2 positionUnipolar = gl_FragCoord.xy / iResolution;
+  vec2 positionUnipolar = pixel / iResolution;
   // Normalized -1 to 1 in both axes.
   vec2 positionBipolar = positionUnipolar * 2.0 - 1.0;
   float aspectRatio = iResolution.x / iResolution.y;
@@ -424,9 +424,22 @@ vec4 render(Ray ray) {
   return vec4(color, 1.0);
 }
 
-void main() {
-  vec4 color = render(getCameraRay());
+vec4 renderGamma(Ray ray) {
+  vec4 color = render(ray);
   float gamma = 0.65;
   color = pow(color, vec4(vec3(gamma), 1.0));
-  outColor = color;
+  return color;
+}
+
+#define AA 2
+void main() {
+  vec2 pixel = gl_FragCoord.xy - 0.5;
+  vec4 color = vec4(0.0);
+  for (int i = 0; i < AA; i++) {
+    for (int j = 0; j < AA; j++) {
+      vec2 pixelAA = pixel + vec2(float(i), float(j)) / float(AA);
+      color += renderGamma(getCameraRay(pixelAA));
+    }
+  }
+  outColor = color / float(AA * AA);
 }
