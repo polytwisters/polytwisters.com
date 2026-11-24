@@ -252,22 +252,6 @@ export class Polytwister {
     return filling;
   }
 
-  getTwisterFillingCode(twisterIndex: number): string {
-    const regions = this.getTwisterFilling(twisterIndex);
-    const parts = [];
-    for (let { order, mode } of regions) {
-      const tmp = `order == ${order}`;
-      if (mode === arcPolygon.RegionMode.Both) {
-        parts.push(tmp);
-      } else if (mode === arcPolygon.RegionMode.Inner) {
-        parts.push(`(${tmp} && inner)`);
-      } else if (mode === arcPolygon.RegionMode.Outer) {
-        parts.push(`(${tmp} && outer)`);
-      }
-    }
-    return parts.join(" || ");
-  }
-
   /// Return an array of the neighbor indices for each twister.
   twisterNeighbors(): number[][] {
     return _.range(this.polyhedron.faces.length).map((faceIndex) =>
