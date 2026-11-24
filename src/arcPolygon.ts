@@ -40,7 +40,7 @@ export interface Region {
 }
 
 export function encodeRegionMode(mode: RegionMode) {
-  return mode === RegionMode.Inner ? 0 : mode === RegionMode.Outer ? 1 : 2;
+  return mode === RegionMode.Inner ? 1 : mode === RegionMode.Outer ? 2 : 3;
 }
 
 /**

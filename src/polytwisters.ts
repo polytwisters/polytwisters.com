@@ -301,13 +301,16 @@ export class Polytwister {
           int regionOrder = int(regionInfo.x);
           int regionMode = int(regionInfo.y);
           if (regionOrder == order) {
-            if (regionMode == 0 && inner) {
+            if (regionMode == 0) {
+              break; // I don't know why we have to do this.
+            }
+            if (regionMode == 1 && inner) {
               fill = true;
               break;
-            } else if (regionMode == 1 && outer) {
+            } else if (regionMode == 2 && outer) {
               fill = true;
               break;
-            } else {
+            } else if (regionMode == 3) {
               fill = true;
               break;
             }
