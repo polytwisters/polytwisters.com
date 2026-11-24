@@ -2,7 +2,6 @@ out vec4 outColor;
 
 // These constants are defined in TypeScript and substituted at runtime.
 #define MAX_NUM_RING_DOTS $maxNumRingDots
-#define NUM_PIPES $numPipes
 #define MAX_NUM_PIPES $maxNumPipes
 #define MAX_NEIGHBORS $maxNeighbors
 #define MAX_REGIONS $maxNumRegions
@@ -28,6 +27,7 @@ uniform float crossSectionW;
 uniform int numPipes;
 uniform sampler2D pipesTexture;
 uniform sampler2D orthogonalPipesTexture;
+uniform sampler2D twisterColorsTexture;
 
 uniform usampler2D numNeighborsTexture;
 uniform usampler2D neighborsTexture;
@@ -35,7 +35,6 @@ uniform usampler2D numRegionsTexture;
 uniform usampler2D regionsTexture;
 
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
-uniform vec3 colors[MAX_NUM_PIPES];
 uniform float radius;
 
 // Display options.
@@ -278,6 +277,10 @@ Pipe getOrthogonalPipe(int index, float crossSectionW) {
   return Pipe(pipeR3, crossSectionW);
 }
 
+vec3 getTwisterColor(int index) {
+  return texelFetch(twisterColorsTexture, ivec2(index, 0), 0).xyz;
+}
+
 uint getNumNeighbors(int index) {
   return texelFetch(numNeighborsTexture, ivec2(index, 0), 0).x;
 }
@@ -352,19 +355,47 @@ vec4 render(Ray ray) {
 
   float dotRadius = 0.04;
 
-  // Cast a ray onto each pipe and find the intervals of intersection.
-  Interval intervals[MAX_NUM_PIPES];
+  // Cast a ray onto each twister and collect the following information about the intersection:
+  //
+  // tmin: the t value in the ray.
+  // point: the 3D point of intersection.
+  // twisterIndex: the index of the twister we hit.
+  // normal: the normal vector.
+  // invert: if true, we're hitting a pipe from its interior, and the normal should be flipped.
+  float tmin = FAR;
+  vec3 point = vec3(FAR, FAR, FAR);
+  int twisterIndex = 0;
+  bool invert = false;
+  vec3 normal = vec3(0.0, 0.0, 0.0);
   for (int i = 0; i < MAX_NUM_PIPES; i++) {
-    if (i >= NUM_PIPES) {
+    if (i >= numPipes) {
       break;
     }
     Pipe pipe = getPipe(i, crossSectionW);
-    intervals[i] = intersectRayPipe(ray, pipe);
+    Interval interval = intersectRayPipe(ray, pipe);
+
+    if (interval.x > 100.0) {
+      continue;
+    }
+
+    vec3 p1 = Ray_at(ray, interval.x);
+    if (interval.x < tmin && pointInTwister(i, p1)) {
+      tmin = interval.x;
+      point = p1;
+      invert = false;
+      twisterIndex = i;
+      normal = Pipe_normal(pipe, p1);
+    }
+
+    vec3 p2 = Ray_at(ray, interval.y);
+    if (interval.y < tmin && pointInTwister(i, p2)) {
+      tmin = interval.y;
+      point = p2;
+      invert = true;
+      twisterIndex = i;
+      normal = Pipe_normal(pipe, p2);
+    }
   }
-
-  float tmin = FAR;
-
-  $twisterCode
 
   if (showRings) {
     for (int i = 0; i < MAX_NUM_RING_DOTS; i++) {
@@ -382,32 +413,14 @@ vec4 render(Ray ray) {
     return vec4(0.0, 0.0, 0.0, 0.0);
   }
 
-  // We only have the distance of intersection, not the actual pipe we hit, but we can easily
-  // determine that by just looking for the pipe whose intersection interval matches that tmin.
-  Pipe pipe;
-  bool invert = false;
-  vec3 pipeColor;
-  for (int i = 0; i < MAX_NUM_PIPES; i++) {
-    if (i >= NUM_PIPES) {
-      break;
-    }
-    if (tmin == intervals[i].x || tmin == intervals[i].y) {
-      pipe = getPipe(i, crossSectionW);
-      pipeColor = colors[i]; 
-      if (tmin == intervals[i].y) {
-        invert = true;
-      }
-    }
-  }
-  vec3 x = Ray_at(ray, tmin);
-  vec3 normal = Pipe_normal(pipe, x);
+  vec3 twisterColor = getTwisterColor(twisterIndex);
   if (invert) {
     normal *= -1.0;
   }
   vec3 viewer = ray.direction * -1.0;
   vec3 color = shading == SHADING_DEBUG ?
     shadeDebug(normal)
-    : shadePhong(normal, viewer, pipeColor);
+    : shadePhong(normal, viewer, twisterColor);
   return vec4(color, 1.0);
 }
 

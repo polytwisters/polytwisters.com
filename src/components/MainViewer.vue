@@ -87,10 +87,12 @@ enum Shading {
   Debug = 1,
 }
 
-const twisterColors: Ref<THREE.Color[]> = computed(
+const twisterColors: Ref<THREE.Vector3[]> = computed(
   () =>
-    polytwister.value.polyhedron?.faces.map(
-      (face) => new THREE.Color(faceSymbolToColor(face.symbol)),
+    polytwister.value.polyhedron?.faces.map((face) =>
+      new THREE.Vector3().setFromColor(
+        new THREE.Color(faceSymbolToColor(face.symbol)),
+      ),
     ) || [],
 );
 
@@ -106,15 +108,13 @@ const shaderError: Ref<boolean> = ref(false);
 const shaderLog: Ref<string> = ref("");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shader codegen
+// Shader
 
 const fragmentShader = computed(() =>
   fragmentShaderTemplate
     .replace("$maxNumRingDots", maxNumRingDots.value.toString())
-    .replace("$numPipes", numPipes.value.toString())
     .replace("$maxNumPipes", maxNumPipes.toString())
     .replace("$maxNeighbors", maxNeighbors.toString())
-    .replace("$twisterCode", polytwister.value.twisterCode())
     .replace("$maxNumRegions", maxNumRegions.toString()),
 );
 
@@ -175,6 +175,7 @@ function makeFloatTexture(size: number) {
 
 const pipesTexture = makeFloatTexture(maxNumPipes);
 const orthogonalPipesTexture = makeFloatTexture(maxNumPipes);
+const twisterColorsTexture = makeFloatTexture(maxNumPipes);
 
 const numNeighborsTexture = new THREE.DataTexture(
   new Uint8Array(maxNumPipes),
@@ -254,13 +255,13 @@ function getUniforms(): { [key: string]: any } {
     ringDots: { value: ringDotsPadded.value },
     shading: { value: shading.value },
     showRings: { value: showRings.value },
-    colors: { value: twisterColors.value },
     radius: { value: radius },
 
     numPipes: { value: numPipes.value },
 
     pipesTexture: { value: pipesTexture },
     orthogonalPipesTexture: { value: orthogonalPipesTexture },
+    twisterColorsTexture: { value: twisterColorsTexture },
     numNeighborsTexture: { value: numNeighborsTexture },
     neighborsTexture: { value: neighborsTexture },
     numRegionsTexture: { value: numRegionsTexture },
@@ -323,6 +324,7 @@ onMounted(() => {
       const newUniforms = getUniforms();
       writeVector3sToTexture(pipesTexture, pipesR3.value);
       writeVector3sToTexture(orthogonalPipesTexture, orthogonalPipesR3.value);
+      writeVector3sToTexture(twisterColorsTexture, twisterColors.value);
       write2DIntsToTexture(
         numNeighborsTexture,
         neighborsTexture,

@@ -268,40 +268,6 @@ export class Polytwister {
     return parts.join(" || ");
   }
 
-  twisterCode(): string {
-    const parts = [];
-    for (const [twisterIndex, face] of this.polyhedron.faces.entries()) {
-      const tmp = [];
-      tmp.push(`
-        vec3 point = Ray_at(ray, t);
-        bool fill = pointInTwister(${twisterIndex}, point);
-
-        if (fill) {
-          tmin = min(tmin, t);
-        }
-      `);
-
-      parts.push(`
-      {
-        int pipeIndex = ${twisterIndex};
-        // Test the min point of the interval.
-        float t = intervals[pipeIndex].x;
-        ${tmp.join("\n")}
-      }
-      `);
-
-      parts.push(`
-      {
-        int pipeIndex = ${twisterIndex};
-        // Test the max point of the interval.
-        float t = intervals[pipeIndex].y;
-        ${tmp.join("\n")}
-      }
-      `);
-    }
-    return parts.join("\n");
-  }
-
   /// Return an array of the neighbor indices for each twister.
   twisterNeighbors(): number[][] {
     return _.range(this.polyhedron.faces.length).map((faceIndex) =>
