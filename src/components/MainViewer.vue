@@ -23,6 +23,7 @@ import Axes from "@/Axes.vue";
 
 import * as THREE from "three";
 import { Vector3 } from "three";
+import { encodeRegionMode, type Region } from "@/arcPolygon";
 
 // Copy some imports to global namespace so they can be used in template.
 const canvasSize = globalState.canvasSize;
@@ -53,7 +54,7 @@ const orthogonalPipesR3 = computed(() => polytwister.value.orthogonalPipesR3());
 const twisterNeighborIndices = computed(() =>
   polytwister.value.twisterNeighbors(),
 );
-const encodedRegions = computed(() => polytwister.value.encodedRegions());
+const regions = computed(() => polytwister.value.regions());
 
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
@@ -207,12 +208,34 @@ const numRegionsTexture = new THREE.DataTexture(
 // A 2D texture where each row contains region information.
 // Dimensions: y = pipe index, x = region index
 const regionsTexture = new THREE.DataTexture(
-  new Uint8Array(maxNumPipes * maxNumRegions),
+  new Uint8Array(maxNumPipes * maxNumRegions * 2),
   maxNumRegions,
   maxNumPipes,
-  THREE.RedIntegerFormat,
+  THREE.RGIntegerFormat,
   THREE.UnsignedByteType,
 );
+
+function writeRegionsToTextures(
+  lengthTexture: THREE.DataTexture,
+  valuesTexture: THREE.DataTexture,
+  values: Region[][],
+) {
+  let lengthData = lengthTexture.image.data as Uint8Array;
+  let valueData = valuesTexture.image.data as Uint8Array;
+  let rowStride = valuesTexture.image.width;
+  lengthData.fill(0);
+  valueData.fill(0);
+  for (const [index, row] of values.entries()) {
+    lengthData[index] = row.length;
+    for (const [j, region] of row.entries()) {
+      const offset = (index * rowStride + j) * 2;
+      valueData[offset] = region.order;
+      valueData[offset + 1] = encodeRegionMode(region.mode);
+    }
+  }
+  lengthTexture.needsUpdate = true;
+  valuesTexture.needsUpdate = true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -303,11 +326,7 @@ onMounted(() => {
         neighborsTexture,
         twisterNeighborIndices.value,
       );
-      write2DIntsToTexture(
-        numRegionsTexture,
-        regionsTexture,
-        encodedRegions.value,
-      );
+      writeRegionsToTextures(numRegionsTexture, regionsTexture, regions.value);
       for (let key of Object.keys(newUniforms)) {
         material.uniforms[key].value = newUniforms[key].value;
       }

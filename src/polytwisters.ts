@@ -6,6 +6,7 @@ import { C2 } from "./complex";
 import { square } from "./mathUtils";
 import * as arcPolygon from "./arcPolygon";
 import _ from "lodash";
+import { type Region } from "./arcPolygon";
 
 export function getTorusMaxRadius(p1: C2, p2: C2): number {
   // Transform the pair (p1, p2) so that p2 = (1, 0).
@@ -296,9 +297,9 @@ export class Polytwister {
           if (regionIndex >= numRegions) {
             break;
           }
-          uint regionInfo = getRegion(${twisterIndex}, regionIndex);
-          int regionOrder = int(regionInfo >> uint(2));
-          int regionMode = int(regionInfo & uint(3));
+          uvec2 regionInfo = getRegion(${twisterIndex}, regionIndex);
+          int regionOrder = int(regionInfo.x);
+          int regionMode = int(regionInfo.y);
           if (regionOrder == order) {
             if (regionMode == 0 && inner) {
               fill = true;
@@ -347,9 +348,9 @@ export class Polytwister {
   }
 
   /// Return an array of the neighbor indices for each twister.
-  encodedRegions(): number[][] {
+  regions(): Region[][] {
     return _.range(this.polyhedron.faces.length).map((twisterIndex) =>
-      this.getTwisterFilling(twisterIndex).map(arcPolygon.encodeRegion),
+      this.getTwisterFilling(twisterIndex),
     );
   }
 

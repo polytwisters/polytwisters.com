@@ -39,14 +39,8 @@ export interface Region {
   mode: RegionMode;
 }
 
-export function encodeRegion(region: Region) {
-  const lowerBits =
-    region.mode === RegionMode.Inner
-      ? 0
-      : region.mode === RegionMode.Outer
-        ? 1
-        : 2;
-  return region.order * 4 + lowerBits;
+export function encodeRegionMode(mode: RegionMode) {
+  return mode === RegionMode.Inner ? 0 : mode === RegionMode.Outer ? 1 : 2;
 }
 
 /**
