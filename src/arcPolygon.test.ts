@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 import * as arcPolygon from "./arcPolygon";
 
-const cases: Array<[[number, number, number, string, string], string]> = [
+const binaryCases: Array<[[number, number, number, string, string], string]> = [
   // (n, q, d, v, i), regions inner to outer
   [[2, Infinity, 1, "-", "-"], "[2]"],
   [[2, Infinity, 1, "-", "+"], "[2] [1]"],
@@ -37,13 +37,13 @@ const cases: Array<[[number, number, number, string, string], string]> = [
   [[5, Infinity, 2, "+", "+"], "[1]"],
 ];
 
-test.each(cases)(
+test.each(binaryCases)(
   "binary filling",
   (spec: [number, number, number, string, string], filling: string) => {
     const [n, q, d, vString, iString] = spec;
     const verticesOuter = vString === "+";
     const arcsOuter = iString === "+";
-    const regions = arcPolygon.regions(n, q, d, verticesOuter, arcsOuter);
+    const regions = arcPolygon.binaryFill(n, q, d, verticesOuter, arcsOuter);
     const regionsString = arcPolygon.regionsToString(regions);
     expect(regionsString).toBe(filling);
   },
