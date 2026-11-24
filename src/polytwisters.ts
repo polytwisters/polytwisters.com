@@ -289,12 +289,30 @@ export class Polytwister {
             order++;
           }
         }
-      `);
 
-      const fillingCode = this.getTwisterFillingCode(twisterIndex);
-      tmp.push(`bool fill = ${fillingCode};`);
+        int numRegions = int(getNumRegions(${twisterIndex}));
+        bool fill = false;
+        for (int regionIndex = 0; regionIndex < MAX_REGIONS; regionIndex++) {
+          if (regionIndex >= numRegions) {
+            break;
+          }
+          uint regionInfo = getRegion(${twisterIndex}, regionIndex);
+          int regionOrder = int(regionInfo >> uint(2));
+          int regionMode = int(regionInfo & uint(3));
+          if (regionOrder == order) {
+            if (regionMode == 0 && inner) {
+              fill = true;
+              break;
+            } else if (regionMode == 1 && outer) {
+              fill = true;
+              break;
+            } else {
+              fill = true;
+              break;
+            }
+          }
+        }
 
-      tmp.push(`
         if (fill) {
           tmin = min(tmin, t);
         }

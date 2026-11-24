@@ -5,6 +5,7 @@ out vec4 outColor;
 #define NUM_PIPES $numPipes
 #define MAX_NUM_PIPES $maxNumPipes
 #define MAX_NEIGHBORS $maxNeighbors
+#define MAX_REGIONS $maxNumRegions
 
 // Constants duplicated TypeScript.
 #define SHADING_PHONG 0
@@ -29,6 +30,8 @@ uniform sampler2D orthogonalPipesTexture;
 
 uniform usampler2D numNeighborsTexture;
 uniform usampler2D neighborsTexture;
+uniform usampler2D numRegionsTexture;
+uniform usampler2D regionsTexture;
 
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform vec3 colors[NUM_PIPES];
@@ -280,6 +283,14 @@ uint getNumNeighbors(int index) {
 
 uint getNeighbor(int pipeIndex, int neighborIndex) {
   return texelFetch(neighborsTexture, ivec2(neighborIndex, pipeIndex), 0).x;
+}
+
+uint getNumRegions(int index) {
+  return texelFetch(numRegionsTexture, ivec2(index, 0), 0).x;
+}
+
+uint getRegion(int pipeIndex, int regionIndex) {
+  return texelFetch(regionsTexture, ivec2(regionIndex, pipeIndex), 0).x;
 }
 
 

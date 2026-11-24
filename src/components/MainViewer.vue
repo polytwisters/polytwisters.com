@@ -113,7 +113,8 @@ const fragmentShader = computed(() =>
     .replace("$numPipes", numPipes.value.toString())
     .replace("$maxNumPipes", maxNumPipes.toString())
     .replace("$maxNeighbors", maxNeighbors.toString())
-    .replace("$twisterCode", polytwister.value.twisterCode()),
+    .replace("$twisterCode", polytwister.value.twisterCode())
+    .replace("$maxNumRegions", maxNumRegions.toString()),
 );
 
 const vertexShader = `
@@ -237,6 +238,8 @@ function getUniforms(): { [key: string]: any } {
     orthogonalPipesTexture: { value: orthogonalPipesTexture },
     numNeighborsTexture: { value: numNeighborsTexture },
     neighborsTexture: { value: neighborsTexture },
+    numRegionsTexture: { value: numRegionsTexture },
+    regionsTexture: { value: regionsTexture },
   };
 }
 
