@@ -53,6 +53,7 @@ const orthogonalPipesR3 = computed(() => polytwister.value.orthogonalPipesR3());
 const twisterNeighborIndices = computed(() =>
   polytwister.value.twisterNeighbors(),
 );
+const encodedRegions = computed(() => polytwister.value.encodedRegions());
 
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
@@ -298,6 +299,11 @@ onMounted(() => {
         numNeighborsTexture,
         neighborsTexture,
         twisterNeighborIndices.value,
+      );
+      write2DIntsToTexture(
+        numRegionsTexture,
+        regionsTexture,
+        encodedRegions.value,
       );
       for (let key of Object.keys(newUniforms)) {
         material.uniforms[key].value = newUniforms[key].value;

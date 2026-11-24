@@ -328,6 +328,13 @@ export class Polytwister {
     );
   }
 
+  /// Return an array of the neighbor indices for each twister.
+  encodedRegions(): number[][] {
+    return _.range(this.polyhedron.faces.length).map((twisterIndex) =>
+      this.getTwisterFilling(twisterIndex).map(arcPolygon.encodeRegion),
+    );
+  }
+
   export() {
     return {
       polyhedron: this.polyhedron.export(),

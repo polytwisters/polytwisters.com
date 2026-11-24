@@ -39,6 +39,16 @@ export interface Region {
   mode: RegionMode;
 }
 
+export function encodeRegion(region: Region) {
+  const lowerBits =
+    region.mode === RegionMode.Inner
+      ? 0
+      : region.mode === RegionMode.Outer
+        ? 1
+        : 2;
+  return region.order * 4 + lowerBits;
+}
+
 /**
  * Compute the binary filling of an arc-polygon. The curve is specified by the
  * following parameters:
