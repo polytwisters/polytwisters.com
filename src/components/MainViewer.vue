@@ -42,7 +42,7 @@ const fullscreen = false;
 // Geometry
 
 const maxNumPipes = 50;
-const maxNeighbors = 6;
+const maxNeighbors = 8;
 const maxNumRegions = 8;
 
 const polytwister = globalState.polytwister;
@@ -131,7 +131,7 @@ function write2DIntsToTexture(
 ) {
   let lengthData = lengthTexture.image.data as Uint8Array;
   let valueData = valuesTexture.image.data as Uint8Array;
-  let rowStride = valuesTexture.image.height;
+  let rowStride = valuesTexture.image.width;
   lengthData.fill(0);
   valueData.fill(0);
   for (const [index, row] of values.entries()) {
