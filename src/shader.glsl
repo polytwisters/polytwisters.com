@@ -25,6 +25,7 @@ uniform float cameraFocalLength;
 uniform float crossSectionW;
 
 // Geometry parameters.
+uniform int numPipes;
 uniform sampler2D pipesTexture;
 uniform sampler2D orthogonalPipesTexture;
 
@@ -34,7 +35,7 @@ uniform usampler2D numRegionsTexture;
 uniform usampler2D regionsTexture;
 
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
-uniform vec3 colors[NUM_PIPES];
+uniform vec3 colors[MAX_NUM_PIPES];
 uniform float radius;
 
 // Display options.
@@ -352,8 +353,11 @@ vec4 render(Ray ray) {
   float dotRadius = 0.04;
 
   // Cast a ray onto each pipe and find the intervals of intersection.
-  Interval intervals[NUM_PIPES];
-  for (int i = 0; i < NUM_PIPES; i++) {
+  Interval intervals[MAX_NUM_PIPES];
+  for (int i = 0; i < MAX_NUM_PIPES; i++) {
+    if (i >= NUM_PIPES) {
+      break;
+    }
     Pipe pipe = getPipe(i, crossSectionW);
     intervals[i] = intersectRayPipe(ray, pipe);
   }
@@ -383,7 +387,10 @@ vec4 render(Ray ray) {
   Pipe pipe;
   bool invert = false;
   vec3 pipeColor;
-  for (int i = 0; i < NUM_PIPES; i++) {
+  for (int i = 0; i < MAX_NUM_PIPES; i++) {
+    if (i >= NUM_PIPES) {
+      break;
+    }
     if (tmin == intervals[i].x || tmin == intervals[i].y) {
       pipe = getPipe(i, crossSectionW);
       pipeColor = colors[i]; 

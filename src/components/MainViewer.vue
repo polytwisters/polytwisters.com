@@ -257,6 +257,8 @@ function getUniforms(): { [key: string]: any } {
     colors: { value: twisterColors.value },
     radius: { value: radius },
 
+    numPipes: { value: numPipes.value },
+
     pipesTexture: { value: pipesTexture },
     orthogonalPipesTexture: { value: orthogonalPipesTexture },
     numNeighborsTexture: { value: numNeighborsTexture },
