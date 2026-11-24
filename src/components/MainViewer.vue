@@ -233,7 +233,6 @@ function writeRegionsToTextures(
       valueData[offset + 1] = encodeRegionMode(region.mode);
     }
   }
-  console.log(values);
   lengthTexture.needsUpdate = true;
   valuesTexture.needsUpdate = true;
 }

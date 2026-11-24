@@ -274,48 +274,7 @@ export class Polytwister {
       const tmp = [];
       tmp.push(`
         vec3 point = Ray_at(ray, t);
-        bool inner = Pipe_contains(
-          getOrthogonalPipe(${twisterIndex}, crossSectionW), point
-        );
-        bool outer = !inner;
-        int order = 0;
-
-        int numNeighbors = int(getNumNeighbors(${twisterIndex}));
-        for (int neighborIndex = 0; neighborIndex < MAX_NEIGHBORS; neighborIndex++) {
-          if (neighborIndex >= numNeighbors) {
-            break;
-          }
-          uint neighborPipeIndex = getNeighbor(${twisterIndex}, neighborIndex);
-          if (Pipe_contains(getPipe(int(neighborPipeIndex), crossSectionW), point)) {
-            order++;
-          }
-        }
-
-        int numRegions = int(getNumRegions(${twisterIndex}));
-        bool fill = false;
-        for (int regionIndex = 0; regionIndex < MAX_REGIONS; regionIndex++) {
-          if (regionIndex >= numRegions) {
-            break;
-          }
-          uvec2 regionInfo = getRegion(${twisterIndex}, regionIndex);
-          int regionOrder = int(regionInfo.x);
-          int regionMode = int(regionInfo.y);
-          if (regionOrder == order) {
-            if (regionMode == 0) {
-              break; // I don't know why we have to do this.
-            }
-            if (regionMode == 1 && inner) {
-              fill = true;
-              break;
-            } else if (regionMode == 2 && outer) {
-              fill = true;
-              break;
-            } else if (regionMode == 3) {
-              fill = true;
-              break;
-            }
-          }
-        }
+        bool fill = pointInTwister(${twisterIndex}, point);
 
         if (fill) {
           tmin = min(tmin, t);
