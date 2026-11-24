@@ -6,7 +6,6 @@ import {
   type Ref,
   onMounted,
   watch,
-  nextTick,
   onUnmounted,
 } from "vue";
 
@@ -108,13 +107,11 @@ const shaderLog: Ref<string> = ref("");
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Shader
 
-const fragmentShader = computed(() =>
-  fragmentShaderTemplate
-    .replace("$maxNumRingDots", maxNumRingDots.toString())
-    .replace("$maxNumPipes", maxNumPipes.toString())
-    .replace("$maxNeighbors", maxNeighbors.toString())
-    .replace("$maxNumRegions", maxNumRegions.toString()),
-);
+const fragmentShader = fragmentShaderTemplate
+  .replace("$maxNumRingDots", maxNumRingDots.toString())
+  .replace("$maxNumPipes", maxNumPipes.toString())
+  .replace("$maxNeighbors", maxNeighbors.toString())
+  .replace("$maxNumRegions", maxNumRegions.toString());
 
 const vertexShader = `
 void main() {
@@ -259,8 +256,6 @@ watch(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 
-const loading = ref(false);
-
 function getUniforms(): { [key: string]: any } {
   return {
     iResolution: { value: [canvasSize.value, canvasSize.value] },
@@ -331,11 +326,18 @@ onMounted(() => {
   );
   scene.add(mesh);
 
+  const material = new THREE.ShaderMaterial({
+    uniforms: getUniforms(),
+    vertexShader,
+    fragmentShader,
+    glslVersion: THREE.GLSL3,
+  });
+  mesh.material = material;
+
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas.value!,
     alpha: true,
   });
-  let material: THREE.ShaderMaterial | null = null;
 
   function updateUniforms() {
     if (material) {
@@ -352,36 +354,6 @@ onMounted(() => {
       renderer.setSize(newCanvasSize, newCanvasSize, false);
       updateUniforms();
       renderer.render(scene, threeCamera);
-    },
-    { immediate: true },
-  );
-
-  watch(
-    fragmentShader,
-    (newValue) => {
-      loading.value = true;
-
-      // Disable calls to updateUniforms() and renderer.render in the middle of changing
-      // polytwisters, as this can cause nondeterministic errors.
-      renderingEnabled = false;
-
-      // The "new THREE.ShaderMaterial" call below may temporarily freeze the browser as it causes
-      // shaders to compile. To ensure that the loading message displays before the freeze we use
-      // Vue's nextTick to wait for the DOM to update. Unfortunately even this doesn't display the
-      // loading message sometimes. Waiting for 1 millisecond seems to work.
-      nextTick(() => {
-        setTimeout(() => {
-          material = new THREE.ShaderMaterial({
-            uniforms: getUniforms(),
-            vertexShader: vertexShader,
-            fragmentShader: newValue,
-            glslVersion: THREE.GLSL3,
-          });
-          mesh.material = material;
-          loading.value = false;
-          renderingEnabled = true;
-        }, 1);
-      });
     },
     { immediate: true },
   );
