@@ -338,5 +338,5 @@ void main() {
   vec4 color = render(getCameraRay());
   float gamma = 0.65;
   color = pow(color, vec4(vec3(gamma), 1.0));
-  gl_FragColor = color;
+  outColor = color;
 }
