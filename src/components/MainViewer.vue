@@ -236,6 +236,26 @@ function writeRegionsToTextures(
   valuesTexture.needsUpdate = true;
 }
 
+function updateTextures() {
+  writeVector3sToTexture(pipesTexture, pipesR3.value);
+  writeVector3sToTexture(orthogonalPipesTexture, orthogonalPipesR3.value);
+  writeVector3sToTexture(twisterColorsTexture, twisterColors.value);
+  write2DIntsToTexture(
+    numNeighborsTexture,
+    neighborsTexture,
+    twisterNeighborIndices.value,
+  );
+  writeRegionsToTextures(numRegionsTexture, regionsTexture, regions.value);
+}
+
+watch(
+  [pipesR3, orthogonalPipesR3, twisterColors, twisterNeighborIndices, regions],
+  () => {
+    updateTextures();
+  },
+  { immediate: true },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 
@@ -317,18 +337,9 @@ onMounted(() => {
   });
   let material: THREE.ShaderMaterial | null = null;
 
-  function updateUniformsAndTextures() {
+  function updateUniforms() {
     if (material) {
       const newUniforms = getUniforms();
-      writeVector3sToTexture(pipesTexture, pipesR3.value);
-      writeVector3sToTexture(orthogonalPipesTexture, orthogonalPipesR3.value);
-      writeVector3sToTexture(twisterColorsTexture, twisterColors.value);
-      write2DIntsToTexture(
-        numNeighborsTexture,
-        neighborsTexture,
-        twisterNeighborIndices.value,
-      );
-      writeRegionsToTextures(numRegionsTexture, regionsTexture, regions.value);
       for (let key of Object.keys(newUniforms)) {
         material.uniforms[key].value = newUniforms[key].value;
       }
@@ -339,7 +350,7 @@ onMounted(() => {
     globalState.canvasSize,
     (newCanvasSize) => {
       renderer.setSize(newCanvasSize, newCanvasSize, false);
-      updateUniformsAndTextures();
+      updateUniforms();
       renderer.render(scene, threeCamera);
     },
     { immediate: true },
@@ -386,7 +397,7 @@ onMounted(() => {
     tickFPSTimer();
 
     if (renderingEnabled) {
-      updateUniformsAndTextures();
+      updateUniforms();
       renderer.render(scene, threeCamera);
     }
 
