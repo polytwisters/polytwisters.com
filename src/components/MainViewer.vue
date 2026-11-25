@@ -365,8 +365,13 @@ onMounted(() => {
     }
 
     if (globalState.takingScreenshot.value) {
-      const screenshot = renderer.domElement.toDataURL();
-      window.open(screenshot);
+      renderer.domElement.toBlob((blob) => {
+        if (blob) {
+          let url = URL.createObjectURL(blob);
+          window.open(url);
+          URL.revokeObjectURL(url);
+        }
+      });
       globalState.takingScreenshot.value = false;
     }
     animationFrame = requestAnimationFrame(update);
