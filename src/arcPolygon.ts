@@ -28,6 +28,11 @@ export function safeFloor(n: number): number {
   return Math.floor(n + EPSILON);
 }
 
+export enum FillingMethod {
+  Solid = "Solid",
+  Binary = "Binary",
+}
+
 export enum RegionMode {
   Inner = "Inner",
   Outer = "Outer",
@@ -41,6 +46,21 @@ export interface Region {
 
 export function encodeRegionMode(mode: RegionMode) {
   return mode === RegionMode.Inner ? 1 : mode === RegionMode.Outer ? 2 : 3;
+}
+
+export function fill(
+  method: FillingMethod,
+  n: number,
+  q: number,
+  d: number,
+  verticesOuter: boolean,
+  arcsOuter: boolean,
+) {
+  if (method === FillingMethod.Binary) {
+    return binaryFill(n, q, d, verticesOuter, arcsOuter);
+  } else {
+    return solidFill(n, q, d, verticesOuter, arcsOuter);
+  }
 }
 
 /**
@@ -71,7 +91,7 @@ export function encodeRegionMode(mode: RegionMode) {
  * - { order: k, mode: RegionMode.Outer } is all points that are contained
  * inside exactly k circles but are far from the origin.
  */
-export function regions(
+export function binaryFill(
   n: number,
   q: number,
   d: number,
@@ -164,6 +184,55 @@ export function regions(
       result.push({ order: q + 1, mode: RegionMode.Both });
     }
     return result;
+  }
+}
+
+export function solidFill(
+  n: number,
+  q: number,
+  d: number,
+  verticesOuter: boolean,
+  arcsOuter: boolean,
+): Region[] {
+  if (q === Infinity) {
+    // Create a list of all regions from [0] to [n] inclusive, outer to inner.
+    const allRegions: Region[] = [];
+    for (let i = 0; i <= n; i++) {
+      allRegions.push({ order: i, mode: RegionMode.Both });
+    }
+    if (arcsOuter) {
+      return allRegions.slice(1);
+    } else {
+      const sliceIndex = 1 + (verticesOuter ? d : n - d);
+      return allRegions.slice(sliceIndex);
+    }
+  } else {
+    // Create a list of "mainline" regions which looks like this:
+    // [0+] [1+] [2+] ... [(q-1)+] [q] [(q-1)-] ... [1-] [0-].
+    // There is one more region, [q+1], which is not in this mainline list.
+    // The regions are outer to inner.
+    // Also note that mainRegions[q] is region [q] -- we'll use that later.
+    const mainRegions: Region[] = [];
+    for (let i = 0; i < q; i++) {
+      mainRegions.push({ order: i, mode: RegionMode.Outer });
+    }
+    mainRegions.push({ order: q, mode: RegionMode.Both });
+    for (let i = 1; i <= q; i++) {
+      mainRegions.push({ order: q - i, mode: RegionMode.Inner });
+    }
+    const loopRegion = { order: q + 1, mode: RegionMode.Both };
+
+    if (arcsOuter) {
+      return mainRegions.slice(1).concat([loopRegion]);
+    } else {
+      const sliceIndex = 1 + (verticesOuter ? d : mainRegions.length - 1 - d);
+      const includeLoopRegion = verticesOuter ? d < q + 1 : d < q;
+      const result = mainRegions.slice(sliceIndex);
+      if (includeLoopRegion) {
+        result.push(loopRegion);
+      }
+      return result;
+    }
   }
 }
 

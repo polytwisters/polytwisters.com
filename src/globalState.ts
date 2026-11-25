@@ -3,6 +3,7 @@ import { ref, type Ref, computed, watch } from "vue";
 import { Polytwister } from "./polytwisters";
 import { PolytwisterSymbol } from "./symbol";
 import { database } from "./polytwisterDefs";
+import { FillingMethod } from "./arcPolygon";
 
 const DEFAULT_POLYTWISTER_ID: string = "5/3.3/2.3";
 const UNIFORM: string = "uniform=";
@@ -116,3 +117,5 @@ export enum Theme {
 export const theme: Ref<Theme> = ref(Theme.Default);
 export const animationDuration: Ref<number> = ref(3);
 export const devMode: Ref<boolean> = ref(false);
+
+export const fillingMethod: Ref<FillingMethod> = ref(FillingMethod.Binary);

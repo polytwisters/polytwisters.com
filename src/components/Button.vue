@@ -57,15 +57,14 @@ const iconSource = map.get(props.icon ?? "stop");
       }"
       @click="$emit('click')"
     >
-      <div
-        v-if="icon"
-        class="material theme-default:inline-block! oldschool:hidden!"
-      >
-        {{ icon }}
-      </div>
-      <div v-if="icon" class="theme-default:hidden oldschool:inline size-fit">
-        <img :src="iconSource" class="block" />
-      </div>
+      <template v-if="icon">
+        <div class="material theme-default:inline-block! oldschool:hidden!">
+          {{ icon }}
+        </div>
+        <div class="theme-default:hidden oldschool:inline size-fit">
+          <img :src="iconSource" class="block" />
+        </div>
+      </template>
       <div v-if="text">
         {{ text }}
       </div>

@@ -221,7 +221,10 @@ export class Polytwister {
     return this.orthogonalPipes().map((pipe) => pipe.toVector3W0());
   }
 
-  getTwisterFilling(twisterIndex: number): arcPolygon.Region[] {
+  getTwisterFilling(
+    twisterIndex: number,
+    fillingMethod: arcPolygon.FillingMethod,
+  ): arcPolygon.Region[] {
     const n = this.polyhedron.faces[twisterIndex].vertices.length;
     const symbol = this.polyhedron.faces[twisterIndex].symbol;
 
@@ -248,7 +251,14 @@ export class Polytwister {
     const ringsOuter =
       this.outerRings[this.polyhedron.faces[twisterIndex].orbit];
 
-    const filling = arcPolygon.regions(n, q, d, ringsOuter, this.bloated);
+    const filling = arcPolygon.fill(
+      fillingMethod,
+      n,
+      q,
+      d,
+      ringsOuter,
+      this.bloated,
+    );
     return filling;
   }
 
@@ -260,9 +270,9 @@ export class Polytwister {
   }
 
   /// Return an array of the neighbor indices for each twister.
-  regions(): Region[][] {
+  regions(fillingMethod: arcPolygon.FillingMethod): Region[][] {
     return _.range(this.polyhedron.faces.length).map((twisterIndex) =>
-      this.getTwisterFilling(twisterIndex),
+      this.getTwisterFilling(twisterIndex, fillingMethod),
     );
   }
 
@@ -277,7 +287,10 @@ export class Polytwister {
       twisterFillings: Array(this.polyhedron.numFaceOrbits)
         .fill(null)
         .map((_, orbit) =>
-          this.getTwisterFilling(this.polyhedron.getFaceIndexFromOrbit(orbit)),
+          this.getTwisterFilling(
+            this.polyhedron.getFaceIndexFromOrbit(orbit),
+            arcPolygon.FillingMethod.Binary,
+          ),
         ),
     };
   }

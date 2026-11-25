@@ -93,7 +93,7 @@ const radiusIndex = computed(() =>
 );
 const q = computed(() => arcPolygon.safeFloor(radiusIndex.value));
 const filling: Ref<arcPolygon.Region[]> = computed(() =>
-  arcPolygon.regions(
+  arcPolygon.solidFill(
     numCircles.value,
     q.value,
     d.value,

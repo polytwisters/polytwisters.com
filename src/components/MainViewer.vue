@@ -53,7 +53,9 @@ const orthogonalPipesR3 = computed(() => polytwister.value.orthogonalPipesR3());
 const twisterNeighborIndices = computed(() =>
   polytwister.value.twisterNeighbors(),
 );
-const regions = computed(() => polytwister.value.regions());
+const regions = computed(() =>
+  polytwister.value.regions(globalState.fillingMethod.value),
+);
 
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
