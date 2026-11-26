@@ -320,32 +320,31 @@ bool pointInTwister(int twisterIndex, vec3 point) {
   }
 
   int numRegions = int(getNumRegions(twisterIndex));
-  bool fill = false;
   for (int regionIndex = 0; regionIndex < MAX_REGIONS; regionIndex++) {
     if (regionIndex >= numRegions) {
-      break;
+      return false;
     }
     uvec2 regionInfo = getRegion(twisterIndex, regionIndex);
     int regionOrder = int(regionInfo.x);
     int regionMode = int(regionInfo.y);
     if (regionOrder == order) {
       if (regionMode == 0) {
-        break; // I don't know why we have to do this.
+        return false; // I don't know why we have to do this.
       }
       if (regionMode == 1 && inner) {
-        fill = true;
-        break;
+        return true;
       } else if (regionMode == 2 && outer) {
-        fill = true;
-        break;
+        return true;
       } else if (regionMode == 3) {
-        fill = true;
-        break;
+        return true;
       }
     }
   }
+  return false;
+}
 
-  return fill;
+float approxSDFPipe(Pipe pipe, vec3 point) {
+  return Pipe_scalar_field(pipe, point) / length(Pipe_scalar_field_gradient(pipe, point));
 }
 
 vec4 render(Ray ray) {
