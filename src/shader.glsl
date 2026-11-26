@@ -130,7 +130,7 @@ struct Pipe {
   float w;
 };
 
-bool Pipe_contains(Pipe pipe, vec3 p) {
+float Pipe_scalar_field(Pipe pipe, vec3 p) {
   float a = pipe.p.x;
   float b = pipe.p.y;
   float c = pipe.p.z;
@@ -138,11 +138,10 @@ bool Pipe_contains(Pipe pipe, vec3 p) {
   float x = p.x;
   float y = p.y;
   float z = p.z;
-  float tmp = square(a * x + b * y + c * z) + square(-b * x + a * y + c * w);
-  return tmp <= 1.0;
+  return square(a * x + b * y + c * z) + square(-b * x + a * y + c * w) - 1.0;
 }
 
-vec3 Pipe_normal(Pipe pipe, vec3 p) {
+vec3 Pipe_scalar_field_gradient(Pipe pipe, vec3 p) {
   float a = pipe.p.x;
   float b = pipe.p.y;
   float c = pipe.p.z;
@@ -150,13 +149,19 @@ vec3 Pipe_normal(Pipe pipe, vec3 p) {
   float x = p.x;
   float y = p.y;
   float z = p.z;
-  vec3 tmp = vec3(
+  return vec3(
     2.0 * a * (a * x + b * y + c * z) - 2.0 * b * (a * y - b * x + c * w),
     2.0 * a * (a * y - b * x + c * w) + 2.0 * b * (a * x + b * y + c * z),
     2.0 * c * (a * x + b * y + c * z)
   );
-  vec3 normal = normalize(tmp);
-  return normal;
+}
+
+bool Pipe_contains(Pipe pipe, vec3 p) {
+  return Pipe_scalar_field(pipe, p) <= 0.0;
+}
+
+vec3 Pipe_normal(Pipe pipe, vec3 p) {
+  return normalize(Pipe_scalar_field_gradient(pipe, p));
 }
 
 Interval intersectRayPipe(Ray ray, Pipe pipe) {
@@ -265,7 +270,6 @@ vec3 shadeDebug(vec3 normal) {
   vec3 color = rainbowColor * (0.6 + intensity * 0.4);
   return color;
 }
-
 
 Pipe getPipe(int index, float crossSectionW) {
   vec3 pipeR3 = texelFetch(pipesTexture, ivec2(index, 0), 0).xyz;
