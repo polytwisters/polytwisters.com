@@ -343,10 +343,6 @@ bool pointInTwister(int twisterIndex, vec3 point) {
   return false;
 }
 
-float approxSDFPipe(Pipe pipe, vec3 point) {
-  return Pipe_scalar_field(pipe, point) / length(Pipe_scalar_field_gradient(pipe, point));
-}
-
 vec4 render(Ray ray) {
   Sphere containingSphere = Sphere(vec3(0.0), radius);
   Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
