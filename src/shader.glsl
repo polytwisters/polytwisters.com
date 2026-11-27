@@ -360,32 +360,31 @@ Intersection closer(Intersection i1, Intersection i2) {
   }
 }
 
-Intersection none() {
+Intersection Intersection_none() {
   return Intersection(FAR, vec3(FAR, FAR, FAR), -1, false, vec3(0.0, 0.0, 0.0));
 }
 
-Intersection rayCastTwister(Ray ray, int twisterIndex) {
+Intersection rayCastTwister(Ray ray, int twisterIndex, Intersection bestIntersection) {
   Pipe pipe = getPipe(twisterIndex, crossSectionW);
   Interval interval = intersectRayPipe(ray, pipe);
-  float tmin = FAR;
-  vec3 point = vec3(FAR, FAR, FAR);
-  bool invert = false;
-  vec3 normal = vec3(0.0, 0.0, 0.0);
+  Intersection result = bestIntersection;
   vec3 p1 = Ray_at(ray, interval.x);
-  if (interval.x < tmin && pointInTwister(twisterIndex, p1)) {
-    tmin = interval.x;
-    point = p1;
-    invert = false;
-    normal = Pipe_normal(pipe, p1);
+  if (interval.x < result.t && pointInTwister(twisterIndex, p1)) {
+    result.t = interval.x;
+    result.twisterIndex = twisterIndex;
+    result.point = p1;
+    result.invert = false;
+    result.normal = Pipe_normal(pipe, p1);
   }
   vec3 p2 = Ray_at(ray, interval.y);
-  if (interval.y < tmin && pointInTwister(twisterIndex, p2)) {
-    tmin = interval.y;
-    point = p2;
-    invert = true;
-    normal = Pipe_normal(pipe, p2);
+  if (interval.y < result.t && pointInTwister(twisterIndex, p2)) {
+    result.t = interval.y;
+    result.twisterIndex = twisterIndex;
+    result.point = p2;
+    result.invert = true;
+    result.normal = Pipe_normal(pipe, p2);
   }
-  return Intersection(tmin, point, twisterIndex, invert, normal);
+  return result;
 }
 
 vec4 render(Ray ray) {
@@ -397,12 +396,12 @@ vec4 render(Ray ray) {
 
   float pi = radians(180.0);
   float dotRadius = 0.04;
-  Intersection intersection = none();
+  Intersection intersection = Intersection_none();
   for (int i = 0; i < MAX_NUM_PIPES; i++) {
     if (i >= numPipes) {
       break;
     }
-    intersection = closer(intersection, rayCastTwister(ray, i));
+    intersection = rayCastTwister(ray, i, intersection);
   }
   if (showRings) {
     for (int i = 0; i < MAX_NUM_RING_DOTS; i++) {
@@ -429,6 +428,7 @@ vec4 render(Ray ray) {
   vec3 color = shading == SHADING_DEBUG ?
     shadeDebug(normal)
     : shadePhong(normal, viewer, twisterColor);
+
   return vec4(color, 1.0);
 }
 
