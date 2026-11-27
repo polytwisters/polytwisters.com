@@ -343,6 +343,51 @@ bool pointInTwister(int twisterIndex, vec3 point) {
   return false;
 }
 
+
+struct Intersection {
+  float t;
+  vec3 point;
+  int twisterIndex;
+  bool invert;
+  vec3 normal;
+};
+
+Intersection closer(Intersection i1, Intersection i2) {
+  if (i1.t < i2.t) {
+    return i1;
+  } else {
+    return i2;
+  }
+}
+
+Intersection none() {
+  return Intersection(FAR, vec3(FAR, FAR, FAR), -1, false, vec3(0.0, 0.0, 0.0));
+}
+
+Intersection rayCastTwister(Ray ray, int twisterIndex) {
+  Pipe pipe = getPipe(twisterIndex, crossSectionW);
+  Interval interval = intersectRayPipe(ray, pipe);
+  float tmin = FAR;
+  vec3 point = vec3(FAR, FAR, FAR);
+  bool invert = false;
+  vec3 normal = vec3(0.0, 0.0, 0.0);
+  vec3 p1 = Ray_at(ray, interval.x);
+  if (interval.x < tmin && pointInTwister(twisterIndex, p1)) {
+    tmin = interval.x;
+    point = p1;
+    invert = false;
+    normal = Pipe_normal(pipe, p1);
+  }
+  vec3 p2 = Ray_at(ray, interval.y);
+  if (interval.y < tmin && pointInTwister(twisterIndex, p2)) {
+    tmin = interval.y;
+    point = p2;
+    invert = true;
+    normal = Pipe_normal(pipe, p2);
+  }
+  return Intersection(tmin, point, twisterIndex, invert, normal);
+}
+
 vec4 render(Ray ray) {
   Sphere containingSphere = Sphere(vec3(0.0), radius);
   Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
@@ -351,56 +396,19 @@ vec4 render(Ray ray) {
   }
 
   float pi = radians(180.0);
-
   float dotRadius = 0.04;
-
-  // Cast a ray onto each twister and collect the following information about the intersection:
-  //
-  // tmin: the t value in the ray.
-  // point: the 3D point of intersection.
-  // twisterIndex: the index of the twister we hit.
-  // normal: the normal vector.
-  // invert: if true, we're hitting a pipe from its interior, and the normal should be flipped.
-  float tmin = FAR;
-  vec3 point = vec3(FAR, FAR, FAR);
-  int twisterIndex = 0;
-  bool invert = false;
-  vec3 normal = vec3(0.0, 0.0, 0.0);
+  Intersection intersection = none();
   for (int i = 0; i < MAX_NUM_PIPES; i++) {
     if (i >= numPipes) {
       break;
     }
-    Pipe pipe = getPipe(i, crossSectionW);
-    Interval interval = intersectRayPipe(ray, pipe);
-
-    if (interval.x > 100.0) {
-      continue;
-    }
-
-    vec3 p1 = Ray_at(ray, interval.x);
-    if (interval.x < tmin && pointInTwister(i, p1)) {
-      tmin = interval.x;
-      point = p1;
-      invert = false;
-      twisterIndex = i;
-      normal = Pipe_normal(pipe, p1);
-    }
-
-    vec3 p2 = Ray_at(ray, interval.y);
-    if (interval.y < tmin && pointInTwister(i, p2)) {
-      tmin = interval.y;
-      point = p2;
-      invert = true;
-      twisterIndex = i;
-      normal = Pipe_normal(pipe, p2);
-    }
+    intersection = closer(intersection, rayCastTwister(ray, i));
   }
-
   if (showRings) {
     for (int i = 0; i < MAX_NUM_RING_DOTS; i++) {
       Sphere sphere1 = Sphere(ringDots[i], dotRadius);
       Interval intervalSphere = intersectRaySphere(ray, sphere1);
-      if (intervalSphere.x <= tmin && !Interval_empty(intervalSphere)) {
+      if (intervalSphere.x <= intersection.t && !Interval_empty(intervalSphere)) {
         // Dots have flat shading.
         vec3 color = vec3(1.0, 1.0, 1.0);
         return vec4(color, 1.0);
@@ -408,12 +416,13 @@ vec4 render(Ray ray) {
     }
   }
 
-  if (tmin == FAR) {
+  if (intersection.t == FAR) {
     return vec4(0.0, 0.0, 0.0, 0.0);
   }
 
-  vec3 twisterColor = getTwisterColor(twisterIndex);
-  if (invert) {
+  vec3 twisterColor = getTwisterColor(intersection.twisterIndex);
+  vec3 normal = intersection.normal;
+  if (intersection.invert) {
     normal *= -1.0;
   }
   vec3 viewer = ray.direction * -1.0;
