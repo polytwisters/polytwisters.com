@@ -391,19 +391,21 @@ float torusSDF(Pipe pipe1, Pipe pipe2, vec3 point) {
   float f2 = Pipe_scalar_field(pipe2, point);
   vec3 df1 = Pipe_scalar_field_gradient(pipe1, point);
   vec3 df2 = Pipe_scalar_field_gradient(pipe2, point);
-  return (f1 * f1 + f2 * f2) / (2.0 * length(df1 * f1 + df2 * f2));
+  float f = f1 * f1 + f2 * f2;
+  vec3 df = 2.0 * (df1 * f1 + df2 * f2);
+  return f / length(df);
 }
 
 bool rayMarchTorus(Pipe pipe1, Pipe pipe2, Ray ray) {
   float t = 0.0;
-  float inflate = 0.002;
-  for (int i = 0; i < 50; i++) {
+  float inflate = 5e-3;
+  for (int i = 0; i < 500; i++) {
     vec3 p = Ray_at(ray, t);
     float d = torusSDF(pipe1, pipe2, p) - inflate;
-    if (d < 1e-4) {
+    if (d < inflate * 0.05) {
       return true;
     }
-    t += d;
+    t += d * 0.9;
     if (t > 10.0) {
       return false;
     }
@@ -414,7 +416,7 @@ bool rayMarchTorus(Pipe pipe1, Pipe pipe2, Ray ray) {
 vec4 render(Ray ray) {
   bool torus = rayMarchTorus(
     getPipe(0, crossSectionW),
-    getPipe(3, crossSectionW),
+    getPipe(1, crossSectionW),
     ray
   );
   if (torus) {
