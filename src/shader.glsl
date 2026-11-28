@@ -5,6 +5,7 @@ out vec4 outColor;
 #define MAX_NUM_PIPES $maxNumPipes
 #define MAX_NEIGHBORS $maxNeighbors
 #define MAX_REGIONS $maxNumRegions
+#define MAX_NUM_STRIPS $maxNumStrips
 
 // Constants duplicated TypeScript.
 #define SHADING_PHONG 0
@@ -25,6 +26,8 @@ uniform float crossSectionW;
 
 // Geometry parameters.
 uniform int numPipes;
+uniform int numStrips;
+uniform bool stripsOuter;
 uniform sampler2D pipesTexture;
 uniform sampler2D orthogonalPipesTexture;
 uniform sampler2D twisterColorsTexture;
@@ -33,6 +36,7 @@ uniform usampler2D numNeighborsTexture;
 uniform usampler2D neighborsTexture;
 uniform usampler2D numRegionsTexture;
 uniform usampler2D regionsTexture;
+uniform usampler2D stripsTexture;
 
 uniform vec3 ringDots[MAX_NUM_RING_DOTS];
 uniform float radius;
@@ -40,6 +44,8 @@ uniform float radius;
 // Display options.
 uniform int shading;
 uniform bool showRings;
+
+const float stripRadius = 1e-3;
 
 const float FAR = 1e3;
 const float EPSILON = 1e-4;
@@ -281,6 +287,10 @@ Pipe getOrthogonalPipe(int index, float crossSectionW) {
   return Pipe(pipeR3, crossSectionW);
 }
 
+uvec2 getStripPipeIndices(int stripIndex) {
+  return texelFetch(stripsTexture, ivec2(stripIndex, 0), 0).xy;
+}
+
 vec3 getTwisterColor(int index) {
   return texelFetch(twisterColorsTexture, ivec2(index, 0), 0).xyz;
 }
@@ -386,6 +396,8 @@ Intersection rayCastTwister(Ray ray, int twisterIndex, Intersection bestIntersec
   return result;
 }
 
+// Distance estimation to a torus section (intersection of two pipes).
+// https://iquilezles.org/articles/distance/
 float torusSDF(Pipe pipe1, Pipe pipe2, vec3 point) {
   float f1 = Pipe_scalar_field(pipe1, point);
   float f2 = Pipe_scalar_field(pipe2, point);
@@ -396,17 +408,16 @@ float torusSDF(Pipe pipe1, Pipe pipe2, vec3 point) {
   return f / length(df);
 }
 
-bool rayMarchTorus(Pipe pipe1, Pipe pipe2, Ray ray) {
+bool rayMarchTorus(Pipe pipe1, Pipe pipe2, Ray ray, float maxDistance, out vec3 point) {
   float t = 0.0;
-  float inflate = 5e-3;
-  for (int i = 0; i < 500; i++) {
-    vec3 p = Ray_at(ray, t);
-    float d = torusSDF(pipe1, pipe2, p) - inflate;
-    if (d < inflate * 0.05) {
+  for (int i = 0; i < 60; i++) {
+    point = Ray_at(ray, t);
+    float d = torusSDF(pipe1, pipe2, point) - stripRadius;
+    if (d < stripRadius * 0.5) {
       return true;
     }
-    t += d * 0.9;
-    if (t > 10.0) {
+    t += d;
+    if (t > 8.0 || t > maxDistance) {
       return false;
     }
   }
@@ -414,16 +425,7 @@ bool rayMarchTorus(Pipe pipe1, Pipe pipe2, Ray ray) {
 }
 
 vec4 render(Ray ray) {
-  bool torus = rayMarchTorus(
-    getPipe(0, crossSectionW),
-    getPipe(1, crossSectionW),
-    ray
-  );
-  if (torus) {
-    return vec4(1.0, 1.0, 1.0, 1.0);
-  }
-
-  Sphere containingSphere = Sphere(vec3(0.0), radius);
+  Sphere containingSphere = Sphere(vec3(0.0), radius + stripRadius);
   Interval containingSphereInterval = intersectRaySphere(ray, containingSphere);
   if (Interval_empty(containingSphereInterval)) {
     return vec4(0.0, 0.0, 0.0, 0.0);
@@ -437,6 +439,24 @@ vec4 render(Ray ray) {
       break;
     }
     intersection = rayCastTwister(ray, i, intersection);
+  }
+
+  for (int stripIndex = 0; stripIndex < MAX_NUM_STRIPS; stripIndex++) {
+    if (stripIndex >= numStrips) {
+      break;
+    }
+    uvec2 pipeIndices = getStripPipeIndices(stripIndex);
+    vec3 point;
+    bool hit = rayMarchTorus(
+      getPipe(int(pipeIndices.x), crossSectionW),
+      getPipe(int(pipeIndices.y), crossSectionW),
+      ray,
+      intersection.t,
+      point
+    );
+    if (hit && (stripsOuter != Pipe_contains(getOrthogonalPipe(int(pipeIndices.x), crossSectionW), point))) {
+      return vec4(1.0, 1.0, 1.0, 1.0);
+    }
   }
 
   if (showRings) {

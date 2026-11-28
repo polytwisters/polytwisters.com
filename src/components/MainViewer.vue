@@ -44,6 +44,7 @@ const maxNumPipes = 50;
 const maxNeighbors = 8;
 const maxNumRegions = 8;
 const maxNumRingDots = 200;
+const maxNumStrips = 100;
 
 const polytwister = globalState.polytwister;
 const numPipes = computed(() => polytwister.value.numLogs);
@@ -60,6 +61,12 @@ const regions = computed(() =>
 const rings = computed(() => polytwister.value.rings);
 const ringDots: Ref<Vector3[]> = computed(() =>
   polytwisters.ringsCrossSection(rings.value, crossSectionW.value),
+);
+
+const numStrips = computed(() => polytwister.value.numStrips);
+const stripsOuter = computed(() => polytwister.value.bloated);
+const stripPipes: Ref<[number, number][]> = computed(() =>
+  polytwister.value.stripPipes(),
 );
 
 // The fragment shader requires an array of fixed size. ringDotsPadded is a version of ringDots
@@ -113,7 +120,8 @@ const fragmentShader = fragmentShaderTemplate
   .replace("$maxNumRingDots", maxNumRingDots.toString())
   .replace("$maxNumPipes", maxNumPipes.toString())
   .replace("$maxNeighbors", maxNeighbors.toString())
-  .replace("$maxNumRegions", maxNumRegions.toString());
+  .replace("$maxNumRegions", maxNumRegions.toString())
+  .replace("$maxNumStrips", maxNumStrips.toString());
 
 const vertexShader = `
 void main() {
@@ -235,6 +243,29 @@ function writeRegionsToTextures(
   valuesTexture.needsUpdate = true;
 }
 
+// 1D texture, each pair is [pipe1, pipe2]
+const stripsTexture = new THREE.DataTexture(
+  new Uint8Array(maxNumStrips * 2),
+  maxNumStrips,
+  1,
+  THREE.RGIntegerFormat,
+  THREE.UnsignedByteType,
+);
+
+function writeStripsToTexture(
+  stripsTexture: THREE.DataTexture,
+  values: [number, number][],
+) {
+  let valueData = stripsTexture.image.data as Uint8Array;
+  valueData.fill(0);
+  for (const [index, [pipe1Index, pipe2Index]] of values.entries()) {
+    const offset = index * 2;
+    valueData[offset] = pipe1Index;
+    valueData[offset + 1] = pipe2Index;
+  }
+  stripsTexture.needsUpdate = true;
+}
+
 function updateTextures() {
   writeVector3sToTexture(pipesTexture, pipesR3.value);
   writeVector3sToTexture(orthogonalPipesTexture, orthogonalPipesR3.value);
@@ -245,6 +276,7 @@ function updateTextures() {
     twisterNeighborIndices.value,
   );
   writeRegionsToTextures(numRegionsTexture, regionsTexture, regions.value);
+  writeStripsToTexture(stripsTexture, stripPipes.value);
 }
 
 watch(
@@ -273,6 +305,8 @@ function getUniforms(): { [key: string]: any } {
     radius: { value: radius },
 
     numPipes: { value: numPipes.value },
+    numStrips: { value: numStrips.value },
+    stripsOuter: { value: stripsOuter.value },
 
     pipesTexture: { value: pipesTexture },
     orthogonalPipesTexture: { value: orthogonalPipesTexture },
@@ -281,6 +315,7 @@ function getUniforms(): { [key: string]: any } {
     neighborsTexture: { value: neighborsTexture },
     numRegionsTexture: { value: numRegionsTexture },
     regionsTexture: { value: regionsTexture },
+    stripsTexture: { value: stripsTexture },
   };
 }
 

@@ -138,6 +138,19 @@ export class Polyhedron {
     return this.faces.findIndex((face) => face.orbit === orbit);
   }
 
+  getFacesIncidentOnEdge(edgeIndex: number): [number, number] {
+    let result = [];
+    for (let [faceIndex, face] of this.faces.entries()) {
+      if (face.edges.includes(edgeIndex)) {
+        result.push(faceIndex);
+      }
+    }
+    if (result.length !== 2) {
+      throw new Error(`edge with ${result.length} incident faces?`);
+    }
+    return [result[0], result[1]];
+  }
+
   export() {
     return {
       faces: this.faces.map((face) => ({

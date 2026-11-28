@@ -39,6 +39,11 @@ export function ringsCrossSection(rings: C2[], w: number): Vector3[] {
   return result;
 }
 
+export interface StripInfo {
+  pipeIndex1: number;
+  pipeIndex2: number;
+}
+
 export class Polytwister {
   logs: C2[];
   rings: C2[];
@@ -140,6 +145,10 @@ export class Polytwister {
 
   get numLogs(): number {
     return this.logs.length;
+  }
+
+  get numStrips(): number {
+    return this.polyhedron.edges.length;
   }
 
   /**
@@ -273,6 +282,13 @@ export class Polytwister {
   regions(fillingMethod: arcPolygon.FillingMethod): Region[][] {
     return _.range(this.polyhedron.faces.length).map((twisterIndex) =>
       this.getTwisterFilling(twisterIndex, fillingMethod),
+    );
+  }
+
+  /// Return an array of the indices of the two pipes incident on each strip.
+  stripPipes(): [number, number][] {
+    return _.range(this.polyhedron.edges.length).map((edgeIndex) =>
+      this.polyhedron.getFacesIncidentOnEdge(edgeIndex),
     );
   }
 
